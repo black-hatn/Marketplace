@@ -36,7 +36,7 @@ export function SiteHeader() {
       <div className="absolute inset-0 bg-white/60 dark:bg-slate-950/60 backdrop-blur-2xl border-b border-black/5 dark:border-white/10" />
       
       {/* Upper Navigation: Brand & Core Actions */}
-      <div className="relative mx-auto max-w-[1600px] px-6 h-20 flex items-center justify-between gap-10">
+      <div className="relative mx-auto max-w-[1600px] px-6 h-20 flex items-center justify-between gap-4 md:gap-10">
         {/* Logo Section */}
         <div className="flex-shrink-0">
           <Link href="/" className="group flex items-center gap-3">
@@ -122,7 +122,7 @@ export function SiteHeader() {
       </div>
 
       {/* Lower Navigation: Categories & Links */}
-      <div className="relative border-t border-black/5 dark:border-white/5">
+      <div className="relative border-t border-black/5 dark:border-white/5 hidden md:block">
         <div className="mx-auto max-w-[1600px] px-6 h-12 flex items-center justify-center">
           <nav className="flex items-center gap-8">
             <Link href="/" className={linkClass('/')}>Découvrir</Link>

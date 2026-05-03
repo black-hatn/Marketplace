@@ -8,3 +8,4 @@ pnpm-debug.log*
 *.env
 
 /generated/prisma
+.vercel

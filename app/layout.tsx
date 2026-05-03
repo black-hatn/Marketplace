@@ -62,7 +62,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${inter.className} min-h-screen bg-white dark:bg-slate-950 transition-colors duration-500`}>
+      <body className={`${inter.className} min-h-screen overflow-x-hidden bg-white dark:bg-slate-950 transition-colors duration-500`}>
         <Providers>
           <Toaster 
             position="bottom-right"
