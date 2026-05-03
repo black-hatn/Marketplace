@@ -42,7 +42,14 @@ export function ReviewSection({ productId, initialReviews }: { productId: string
     startTransition(async () => {
       try {
         const r = await addReview(productId, { rating, comment: fd.get('comment') as string, authorName: fd.get('authorName') as string, authorEmail: fd.get('authorEmail') as string });
-        setReviews((prev) => [{ ...r, createdAt: new Date(r.createdAt) }, ...prev]);
+        const newReview = {
+          id: r.id,
+          rating: r.rating,
+          comment: r.comment,
+          authorName: r.userName,
+          createdAt: new Date(r.createdAt)
+        };
+        setReviews((prev) => [newReview, ...prev]);
         setSubmitted(true);
         toast.success('Avis publié !', { icon: '⭐' });
       } catch { toast.error('Erreur lors de la publication.'); }

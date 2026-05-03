@@ -1,0 +1,51 @@
+{
+  "Header": {
+    "search": "ابحث عن علامة تجارية، منتج...",
+    "shop": "المتجر",
+    "categories": "الفئات",
+    "become_partner": "كن شريكاً",
+    "login": "تسجيل الدخول",
+    "register": "إنشاء حساب",
+    "discover": "اكتشف",
+    "brands": "العلامات التجارية",
+    "news": "وصلنا حديثاً",
+    "my_orders": "طلباتي",
+    "search_placeholder": "ابحث عن منتج، علامة تجارية، فئة...",
+    "searching": "جاري البحث...",
+    "no_results": "لا توجد نتائج لـ",
+    "products": "المنتجات",
+    "brands": "العلامات التجارية",
+    "view_all": "عرض الكل"
+  },
+  "Home": {
+    "official_shops": "متاجر رسمية",
+    "premium_products": "منتجات مميزة",
+    "cities_covered": "مدن مغطاة",
+    "customer_support": "دعم العملاء",
+    "trends_title": "اتجاهات غامرة.",
+    "innovation_quote": "\"الابتكار ليس تقنياً فحسب، بل هو أيضاً بصري وحسي.\"",
+    "brand_ecosystem_title": "نظامنا البيئي للعلامات التجارية",
+    "brand_ecosystem_desc": "اكتشف المبدعين الذين يتخطون حدود قطاعهم بشغف ونزاهة.",
+    "featured_selection_title": "مختارات مميزة",
+    "featured_selection_desc": "تقييم صارم لأبرز المنتجات لهذا الموسم."
+  },
+  "Footer": {
+    "help_center": "مركز المساعدة",
+    "track_order": "تتبع الطلب",
+    "return_policy": "سياسة الإرجاع",
+    "shipping_info": "الشحن والتوصيل",
+    "contact_us": "اتصل بنا",
+    "terms": "الشروط والأحكام",
+    "legal_mentions": "إشعارات قانونية",
+    "privacy": "الخصوصية",
+    "cookies": "سياسة الكوكيز",
+    "fast_delivery": "شحن سريع",
+    "free_return": "إرجاع مجاني",
+    "secure_payment": "دفع آمن",
+    "customer_support_247": "دعم 24/7",
+    "newsletter_desc": "مستقبل التجارة الإلكترونية متعددة القطاعات. تجربة سلسة بين العلامات التجارية والمنتجات والمستهلكين — من نجامينا إلى إفريقيا.",
+    "newsletter_placeholder": "بريدك@الإلكتروني.كوم",
+    "accepted_payments": "المدفوعات المقبولة",
+    "all_rights_reserved": "جميع الحقوق محفوظة."
+  }
+}

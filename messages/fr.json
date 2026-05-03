@@ -1,0 +1,51 @@
+{
+  "Header": {
+    "search": "Rechercher une marque, un produit...",
+    "shop": "Boutique",
+    "categories": "Catégories",
+    "become_partner": "Devenir Partenaire",
+    "login": "Connexion",
+    "register": "S'inscrire",
+    "discover": "Découvrir",
+    "brands": "Marques",
+    "news": "Nouveautés",
+    "my_orders": "Mes Achats",
+    "search_placeholder": "Rechercher un produit, une marque, une catégorie...",
+    "searching": "Recherche en cours...",
+    "no_results": "Aucun résultat pour",
+    "products": "Produits",
+    "brands": "Marques",
+    "view_all": "Voir tout"
+  },
+  "Home": {
+    "official_shops": "Boutiques Officielles",
+    "premium_products": "Produits Premium",
+    "cities_covered": "Villes Couvertes",
+    "customer_support": "Support Client",
+    "trends_title": "Tendances Immersives.",
+    "innovation_quote": "\"L'innovation n'est pas seulement technologique, elle est aussi visuelle et sensorielle.\"",
+    "brand_ecosystem_title": "Notre Écosystème de Marques",
+    "brand_ecosystem_desc": "Découvrez les créateurs qui repoussent les limites de leur secteur avec passion et intégrité.",
+    "featured_selection_title": "Sélection en Vedette",
+    "featured_selection_desc": "Une curation rigoureuse des produits les plus marquants de la saison."
+  },
+  "Footer": {
+    "help_center": "Centre d'aide",
+    "track_order": "Suivre ma commande",
+    "return_policy": "Politique de retour",
+    "shipping_info": "Livraison & délais",
+    "contact_us": "Nous contacter",
+    "terms": "CGV",
+    "legal_mentions": "Mentions légales",
+    "privacy": "Confidentialité & RGPD",
+    "cookies": "Politique de cookies",
+    "fast_delivery": "Livraison rapide",
+    "free_return": "Retour gratuit",
+    "secure_payment": "Paiement sécurisé",
+    "customer_support_247": "Support 24/7",
+    "newsletter_desc": "L'avenir du e-commerce multi-sectoriel. Une expérience fluide entre marques, produits et consommateurs — depuis N'Djaména pour l'Afrique.",
+    "newsletter_placeholder": "votre@email.com",
+    "accepted_payments": "Paiements acceptés",
+    "all_rights_reserved": "Tous droits réservés."
+  }
+}

@@ -16,10 +16,10 @@ type ProductProps = {
   price: number;
   rating: number;
   reviews: number;
-  badge: string | null;
-  tagline: string | null;
+  badge?: string | null;
+  tagline?: string | null;
   image: string;
-  href: string | null;
+  href?: string | null;
   description?: string | null;
   city?: string;
 };
@@ -67,7 +67,7 @@ export default function ProductsClient({ initialProducts }: { initialProducts: P
         product.vendor.toLowerCase().includes(search.toLowerCase());
       return matchesCategory && matchesCity && matchesSearch;
     });
-  }, [category, city, search]);
+  }, [category, city, search, initialProducts]);
 
   const displayedProducts = filteredProducts.slice(0, visibleCount);
   const hasMore = visibleCount < filteredProducts.length;

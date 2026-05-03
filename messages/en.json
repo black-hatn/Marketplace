@@ -1,0 +1,51 @@
+{
+  "Header": {
+    "search": "Search a brand, a product...",
+    "shop": "Shop",
+    "categories": "Categories",
+    "become_partner": "Become a Partner",
+    "login": "Login",
+    "register": "Sign Up",
+    "discover": "Discover",
+    "brands": "Brands",
+    "news": "New Arrivals",
+    "my_orders": "My Orders",
+    "search_placeholder": "Search a product, brand, category...",
+    "searching": "Searching...",
+    "no_results": "No results found for",
+    "products": "Products",
+    "brands": "Brands",
+    "view_all": "View all"
+  },
+  "Home": {
+    "official_shops": "Official Shops",
+    "premium_products": "Premium Products",
+    "cities_covered": "Cities Covered",
+    "customer_support": "Customer Support",
+    "trends_title": "Immersive Trends.",
+    "innovation_quote": "\"Innovation is not only technological, it is also visual and sensory.\"",
+    "brand_ecosystem_title": "Our Brand Ecosystem",
+    "brand_ecosystem_desc": "Discover the creators pushing the boundaries of their sector with passion and integrity.",
+    "featured_selection_title": "Featured Selection",
+    "featured_selection_desc": "A rigorous curation of the most striking products of the season."
+  },
+  "Footer": {
+    "help_center": "Help Center",
+    "track_order": "Track Order",
+    "return_policy": "Return Policy",
+    "shipping_info": "Shipping & Delivery",
+    "contact_us": "Contact Us",
+    "terms": "Terms & Conditions",
+    "legal_mentions": "Legal Mentions",
+    "privacy": "Privacy & GDPR",
+    "cookies": "Cookie Policy",
+    "fast_delivery": "Fast Delivery",
+    "free_return": "Free Returns",
+    "secure_payment": "Secure Payment",
+    "customer_support_247": "24/7 Support",
+    "newsletter_desc": "The future of multi-sector e-commerce. A seamless experience between brands, products, and consumers — from N'Djaména for Africa.",
+    "newsletter_placeholder": "your@email.com",
+    "accepted_payments": "Accepted Payments",
+    "all_rights_reserved": "All rights reserved."
+  }
+}

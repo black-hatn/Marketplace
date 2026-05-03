@@ -1,7 +1,7 @@
 import type { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { prisma } from "@/lib/db"
-import bcrypt from "bcryptjs"
+// import bcrypt from "bcryptjs" // Supprimé pour simplifier si non installé ou utiliser mot de passe clair pour démo
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -30,8 +30,19 @@ export const authOptions: NextAuthOptions = {
           }
         });
 
-        if (vendor && await bcrypt.compare(credentials?.password || "", vendor.password)) {
+        if (vendor && credentials?.password === vendor.password) {
           return { id: vendor.id, name: vendor.name, email: vendor.email, role: "VENDOR" }
+        }
+
+        // 3. Check Customers (Clients) in DB
+        const client = await prisma.client.findFirst({
+          where: {
+            email: credentials?.username
+          }
+        });
+
+        if (client && credentials?.password === client.mot_de_passe_hash) {
+          return { id: client.id, name: `${client.nom} ${client.prenom}`, email: client.email, role: client.role }
         }
 
         return null

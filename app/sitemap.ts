@@ -1,4 +1,3 @@
-// app/sitemap.ts
 import { MetadataRoute } from 'next';
 import { prisma } from '@/lib/db';
 
@@ -6,7 +5,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
 
   const [products, brands] = await Promise.all([
-    prisma.product.findMany({ select: { id: true, updatedAt: true } }),
+    prisma.produit.findMany({ select: { id: true, updatedAt: true } }),
     prisma.brand.findMany({ select: { slug: true, updatedAt: true } }),
   ]);
 

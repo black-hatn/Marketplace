@@ -2,7 +2,8 @@
 
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { Search, X, Package, Tags, ArrowRight, Loader2 } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 import { globalSearch } from '@/lib/actions';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -27,6 +28,7 @@ type SearchResult = {
 import Image from 'next/image';
 
 export function GlobalSearch() {
+  const t = useTranslations('Header');
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult | null>(null);
   const [loading, setLoading] = useState(false);
@@ -92,7 +94,7 @@ export function GlobalSearch() {
           onChange={handleChange}
           onFocus={() => setFocused(true)}
           onBlur={() => setTimeout(() => setFocused(false), 200)}
-          placeholder="Rechercher un produit, une marque, une catégorie..."
+          placeholder={t('search_placeholder')}
           className="flex-1 bg-transparent text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none"
         />
         {query && (
@@ -115,14 +117,14 @@ export function GlobalSearch() {
             {loading && !results && (
               <div className="p-6 text-center text-sm text-slate-500">
                 <Loader2 className="h-5 w-5 animate-spin mx-auto mb-2 text-cyan-500" />
-                Recherche en cours...
+                {t('searching')}
               </div>
             )}
 
             {noResults && (
               <div className="p-6 text-center text-sm text-slate-500">
                 <Search className="h-6 w-6 mx-auto mb-2 text-slate-300 dark:text-slate-700" />
-                Aucun résultat pour &quot;<strong>{query}</strong>&quot;
+                {t('no_results')} &quot;<strong>{query}</strong>&quot;
               </div>
             )}
 
@@ -133,7 +135,7 @@ export function GlobalSearch() {
                   <div>
                     <div className="px-4 py-2 flex items-center gap-2">
                       <Package className="h-3.5 w-3.5 text-slate-400" />
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Produits</span>
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{t('products')}</span>
                     </div>
                     {results.products.map((p) => (
                       <Link
@@ -162,7 +164,7 @@ export function GlobalSearch() {
                   <div>
                     <div className="px-4 py-2 flex items-center gap-2">
                       <Tags className="h-3.5 w-3.5 text-slate-400" />
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Marques</span>
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{t('brands')}</span>
                     </div>
                     {results.brands.map((b) => (
                       <Link
@@ -192,7 +194,7 @@ export function GlobalSearch() {
                     href={`/produits?search=${encodeURIComponent(query)}`}
                     className="text-xs font-semibold text-cyan-600 dark:text-cyan-400 hover:underline flex items-center gap-1"
                   >
-                    Voir tout <ArrowRight className="h-3 w-3" />
+                    {t('view_all')} <ArrowRight className="h-3 w-3" />
                   </Link>
                 </div>
               </div>

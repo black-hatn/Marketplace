@@ -1,12 +1,17 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import { Filter, ChevronRight, BarChart3, Globe } from 'lucide-react';
-import { categoryFilters } from '@/lib/content';
+import Link from 'next/link';
 
-export function SmartFilterSidebar() {
-  const [active, setActive] = useState('mode');
+interface SmartFilterSidebarProps {
+  categories?: { id: string; name: string }[];
+  productsCount?: number;
+  brandsCount?: number;
+}
+
+export function SmartFilterSidebar({ categories = [], productsCount = 0, brandsCount = 0 }: SmartFilterSidebarProps) {
+  const [active, setActive] = useState('tous');
 
   return (
     <aside className="glass-card h-fit rounded-[2.5rem] p-8 lg:sticky lg:top-32 shadow-xl shadow-black/[0.02]">
@@ -17,18 +22,32 @@ export function SmartFilterSidebar() {
           </div>
           <div>
             <h2 className="text-xl font-bold text-slate-900 dark:text-white leading-none">Navigation</h2>
-            <p className="mt-2 text-xs font-medium text-slate-400 uppercase tracking-widest">Secteurs hybrides</p>
+            <p className="mt-2 text-xs font-medium text-slate-400 uppercase tracking-widest">Secteurs actifs</p>
           </div>
         </div>
 
-        <nav className="space-y-3">
-          {categoryFilters.map((category) => {
+        <nav className="space-y-2">
+          <button
+            onClick={() => setActive('tous')}
+            className={`group relative flex w-full items-center justify-between rounded-2xl px-6 py-4 text-sm font-bold transition-all duration-300 ${
+              active === 'tous' 
+                ? 'text-cyan-600 dark:text-cyan-300 bg-cyan-500/[0.03]' 
+                : 'text-slate-500 dark:text-slate-400 hover:bg-black/[0.02] dark:hover:bg-white/[0.02]'
+            }`}
+          >
+            <div className="relative z-10 flex items-center gap-4">
+              <span className={`h-1.5 w-1.5 rounded-full ${active === 'tous' ? 'bg-cyan-500' : 'bg-slate-300 dark:bg-slate-700'}`} />
+              <span>Tous les produits</span>
+            </div>
+          </button>
+
+          {categories.map((category) => {
             const isActive = active === category.id;
             return (
-              <button
+              <Link
                 key={category.id}
-                onClick={() => setActive(category.id)}
-                className={`group relative flex w-full items-center justify-between rounded-2xl px-6 py-5 text-sm font-bold transition-all duration-300 ${
+                href={`/produits?category=${encodeURIComponent(category.name)}`}
+                className={`group relative flex w-full items-center justify-between rounded-2xl px-6 py-4 text-sm font-bold transition-all duration-300 ${
                   isActive 
                     ? 'text-cyan-600 dark:text-cyan-300 bg-cyan-500/[0.03]' 
                     : 'text-slate-500 dark:text-slate-400 hover:bg-black/[0.02] dark:hover:bg-white/[0.02]'
@@ -36,21 +55,14 @@ export function SmartFilterSidebar() {
               >
                 <div className="relative z-10 flex items-center gap-4">
                   <span className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${isActive ? 'bg-cyan-500 scale-125 shadow-glow-sm' : 'bg-slate-300 dark:bg-slate-700'}`} />
-                  <span>{category.label}</span>
+                  <span>{category.name}</span>
                 </div>
                 <ChevronRight
                   className={`relative z-10 h-4 w-4 transition-all duration-500 ${
                     isActive ? 'rotate-90 text-cyan-600 dark:text-cyan-400 scale-110' : 'opacity-20 -translate-x-2'
                   }`}
                 />
-                {isActive && (
-                  <motion.div
-                    layoutId="activeFilter"
-                    className="absolute inset-0 rounded-2xl border border-cyan-500/10 dark:border-cyan-500/20 bg-gradient-to-r from-cyan-500/[0.02] to-transparent shadow-inner"
-                    transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
-                  />
-                )}
-              </button>
+              </Link>
             );
           })}
         </nav>
@@ -62,7 +74,7 @@ export function SmartFilterSidebar() {
             <div className="flex items-center gap-4 p-4 rounded-3xl bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5">
               <BarChart3 className="h-5 w-5 text-cyan-600 dark:text-cyan-400" />
               <div>
-                <span className="block text-lg font-bold text-slate-900 dark:text-white">12,4k</span>
+                <span className="block text-lg font-bold text-slate-900 dark:text-white">{productsCount}</span>
                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Produits actifs</span>
               </div>
             </div>
@@ -70,8 +82,8 @@ export function SmartFilterSidebar() {
             <div className="flex items-center gap-4 p-4 rounded-3xl bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5">
               <Globe className="h-5 w-5 text-cyan-600 dark:text-cyan-400" />
               <div>
-                <span className="block text-lg font-bold text-slate-900 dark:text-white">850</span>
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Marques vérifiées</span>
+                <span className="block text-lg font-bold text-slate-900 dark:text-white">{brandsCount}</span>
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Marques partenaires</span>
               </div>
             </div>
           </div>
