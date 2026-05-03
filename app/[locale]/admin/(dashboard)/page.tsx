@@ -50,7 +50,7 @@ export default async function AdminDashboard() {
           <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-xs font-bold mb-4 backdrop-blur-sm">
             <ShieldAlert className="h-3 w-3" /> Système de sécurité actif
           </span>
-          <h1 className="text-3xl font-black mb-3">Bonjour, Administrateur</h1>
+          <h1 className="text-3xl font-black mb-3">Panel Super Administrateur</h1>
           <p className="text-blue-100/80 leading-relaxed text-sm">
             La marketplace est sous surveillance continue. Vous avez <b>{commandesCount} commandes</b> en cours aujourd'hui et <b>{brandsCount} vendeurs</b> partenaires actifs sur la plateforme.
           </p>
