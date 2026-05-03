@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/db';
 import { Package, Tags, ShoppingCart, Activity, ShieldAlert, TrendingUp, BarChart3, Users, Search, Bell, Moon, LogOut, LayoutDashboard, Zap, Database, Lock } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
 import { AdminProductModal } from '@/components/AdminProductModal';
 import { RevenueChart } from '@/components/RevenueChart';
 import { getAnalyticsData } from '@/lib/actions';

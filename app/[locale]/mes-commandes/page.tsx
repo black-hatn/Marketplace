@@ -5,7 +5,7 @@ import { getOrdersByEmail } from '@/lib/actions';
 import { Package, Search, Calendar, CreditCard, ChevronRight, Loader2, ArrowLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSession } from 'next-auth/react';
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
 
 export default function MyOrdersPage() {
   const { data: session } = useSession();
