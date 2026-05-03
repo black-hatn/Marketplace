@@ -51,7 +51,7 @@ export function SiteHeader() {
             </div>
             <div className="flex flex-col">
               <h1 className="text-xl font-black tracking-tighter text-slate-900 dark:text-white leading-tight uppercase">
-                ADMIN-TEST<span className="text-cyan-500">.</span>
+                Immersive<span className="text-cyan-500">.</span>
               </h1>
               <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-slate-400">Marketplace Pro</p>
             </div>
