@@ -9,6 +9,8 @@ import { usePathname } from 'next/navigation';
 export function AdminNav() {
   const pathname = usePathname();
   
+  if (!pathname) return null;
+  
   const sidebarLinks = [
     { icon: LayoutDashboard, label: 'Dashboard', href: '/admin' },
     { icon: ShoppingCart, label: 'Commandes', href: '/admin/commandes' },
