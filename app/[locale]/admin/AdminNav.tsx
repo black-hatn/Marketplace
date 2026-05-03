@@ -19,7 +19,7 @@ export function AdminNav() {
   ];
 
   return (
-    <aside className="w-[280px] bg-[#0A1128] text-white flex flex-col fixed inset-y-0 z-50">
+    <aside className="hidden lg:flex w-72 bg-[#0A1128] text-white flex-col fixed inset-y-0 z-50 shadow-2xl">
         <div className="p-6 flex items-center gap-3">
           <div className="bg-blue-500 p-2 rounded-xl">
             <ShieldAlert className="h-6 w-6 text-white" />

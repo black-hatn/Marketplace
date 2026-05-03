@@ -21,7 +21,7 @@ export default async function AdminDashboardLayout({ children }: { children: Rea
   return (
     <div className="flex min-h-screen bg-[#F8FAFC] dark:bg-slate-950 font-sans">
       <AdminNav />
-      <main className="flex-1 ml-[280px] flex flex-col min-h-screen max-w-[calc(100vw-280px)]">
+      <main className="flex-1 lg:ml-72 flex flex-col min-h-screen w-full">
         <header className="h-20 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-8 sticky top-0 z-40">
           <div>
             <h2 className="text-xl font-black text-slate-900 dark:text-white">Panel Administration</h2>
