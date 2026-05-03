@@ -10,7 +10,8 @@ export function Footer() {
   const t = useTranslations('Footer');
   const th = useTranslations('Header');
 
-  if (pathname.includes('/admin')) return null;
+  const isAdminPage = pathname.split('/').some(s => s === 'admin');
+  if (isAdminPage) return null;
   
   const footerLinks = {
     boutique: [

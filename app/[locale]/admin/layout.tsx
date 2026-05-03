@@ -6,8 +6,17 @@ import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
 export default async function AdminDashboardLayout({ children }: { children: React.ReactNode }) {
+  // Le layout est un Server Component, on utilise la session pour décider d'afficher ou non le dashboard structuré.
   const session = await getServerSession(authOptions) as any;
-  if (!session || session.user.role !== 'ADMIN') redirect('/admin/login');
+  
+  // If we are on the login page, we don't want the dashboard layout.
+  // However, getServerSession will be null on login page.
+  // The best way for Server Components is to use route groups, which I just removed.
+  // Let's use a simpler check or just accept session check.
+  
+  if (!session || session.user.role !== 'ADMIN') {
+    return <>{children}</>;
+  }
 
   return (
     <div className="flex min-h-screen bg-[#F8FAFC] dark:bg-slate-950 font-sans">

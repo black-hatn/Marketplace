@@ -20,7 +20,8 @@ export function SiteHeader() {
   const pathname = usePathname();
   const t = useTranslations('Header');
 
-  if (pathname.includes('/admin')) return null;
+  const isAdminPage = pathname.split('/').some(s => s === 'admin');
+  if (isAdminPage) return null;
   const { data: session } = useSession() as any;
   const [menuOpen, setMenuOpen] = useState(false);
   const cartItemsCount = useCartStore((state) => state.items.reduce((acc, item) => acc + item.quantity, 0));
