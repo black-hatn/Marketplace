@@ -1,4 +1,6 @@
 'use client';
+// Admin Dashboard System v2.5 - Trigger build
+
 
 import { LayoutDashboard, ShoppingCart, Tags, Users, BarChart3, ShieldAlert } from 'lucide-react';
 import { Link } from '@/i18n/routing';
