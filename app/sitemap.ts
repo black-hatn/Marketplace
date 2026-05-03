@@ -4,11 +4,6 @@ import { prisma } from '@/lib/db';
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
 
-  const [products, brands] = await Promise.all([
-    prisma.produit.findMany({ select: { id: true, updatedAt: true } }),
-    prisma.brand.findMany({ select: { slug: true, updatedAt: true } }),
-  ]);
-
   const staticPages: MetadataRoute.Sitemap = [
     { url: baseUrl, lastModified: new Date(), changeFrequency: 'daily', priority: 1 },
     { url: `${baseUrl}/produits`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.9 },
@@ -16,19 +11,29 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/categories`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.7 },
   ];
 
-  const productPages: MetadataRoute.Sitemap = products.map((p) => ({
-    url: `${baseUrl}/produit/${p.id}`,
-    lastModified: p.updatedAt,
-    changeFrequency: 'weekly' as const,
-    priority: 0.7,
-  }));
+  try {
+    const [products, brands] = await Promise.all([
+      prisma.produit.findMany({ select: { id: true, updatedAt: true } }),
+      prisma.brand.findMany({ select: { slug: true, updatedAt: true } }),
+    ]);
 
-  const brandPages: MetadataRoute.Sitemap = brands.map((b) => ({
-    url: `${baseUrl}/marques/${b.slug}`,
-    lastModified: b.updatedAt,
-    changeFrequency: 'monthly' as const,
-    priority: 0.6,
-  }));
+    const productPages: MetadataRoute.Sitemap = products.map((p) => ({
+      url: `${baseUrl}/produit/${p.id}`,
+      lastModified: p.updatedAt,
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    }));
 
-  return [...staticPages, ...productPages, ...brandPages];
+    const brandPages: MetadataRoute.Sitemap = brands.map((b) => ({
+      url: `${baseUrl}/marques/${b.slug}`,
+      lastModified: b.updatedAt,
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    }));
+
+    return [...staticPages, ...productPages, ...brandPages];
+  } catch (error) {
+    console.error('Sitemap generation failed:', error);
+    return staticPages;
+  }
 }
