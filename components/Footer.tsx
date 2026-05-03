@@ -3,10 +3,14 @@
 import { Link } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
 import { Sparkles, Instagram, Twitter, Youtube, CreditCard, Truck, RotateCcw, HeadphonesIcon } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
 export function Footer() {
+  const pathname = usePathname();
   const t = useTranslations('Footer');
   const th = useTranslations('Header');
+
+  if (pathname.includes('/admin')) return null;
   
   const footerLinks = {
     boutique: [

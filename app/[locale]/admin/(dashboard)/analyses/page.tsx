@@ -18,25 +18,13 @@ export default async function AnalyticsPage() {
   const latestMonth = data[0] || { ca: 0, volume_ventes: 0, panier_moyen: 0 };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white pb-16">
-      {/* Header */}
-      <nav className="sticky top-0 z-40 border-b border-black/5 dark:border-white/10 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 justify-between items-center">
-            <div className="flex items-center gap-3">
-              <div className="h-9 w-9 rounded-xl bg-cyan-500/10 flex items-center justify-center">
-                <BarChart3 className="h-5 w-5 text-cyan-600" />
-              </div>
-              <span className="text-lg font-bold">Rapports Analytiques</span>
-            </div>
-            <Link href="/admin" className="text-sm font-medium text-slate-500 hover:text-slate-900 dark:hover:text-white flex items-center gap-2">
-              <ArrowLeft className="h-4 w-4" /> Retour Dashboard
-            </Link>
-          </div>
+    <div className="space-y-8">
+      <div className="flex items-center gap-3">
+        <div className="h-9 w-9 rounded-xl bg-cyan-500/10 flex items-center justify-center">
+          <BarChart3 className="h-5 w-5 text-cyan-600" />
         </div>
-      </nav>
-
-      <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        <span className="text-xl font-bold">Rapports Analytiques</span>
+      </div>
         {/* Key Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="glass-card p-6 rounded-[2rem] border border-black/5 dark:border-white/10">
@@ -119,8 +107,7 @@ export default async function AnalyticsPage() {
               </tbody>
             </table>
           </div>
-        </div>
-      </main>
+      </div>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import type { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { prisma } from "@/lib/db"
-// import bcrypt from "bcryptjs" // Supprimé pour simplifier si non installé ou utiliser mot de passe clair pour démo
+import bcrypt from "bcryptjs";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -12,13 +12,15 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
+        if (!credentials?.username || !credentials?.password) return null;
+
         // 1. Check Admin from Env
         const adminEmail = process.env.ADMIN_EMAIL || "nouradinezakariamahamat2@gmail.com";
         const adminPassword = process.env.ADMIN_PASSWORD || "Fatmah23";
 
         if (
-          credentials?.username === adminEmail && 
-          credentials?.password === adminPassword
+          credentials.username === adminEmail && 
+          credentials.password === adminPassword
         ) {
           return { id: "admin", name: "Nouradine Admin", email: adminEmail, role: "ADMIN" }
         }
@@ -26,23 +28,30 @@ export const authOptions: NextAuthOptions = {
         // 2. Check Vendors in DB
         const vendor = await prisma.brand.findFirst({
           where: {
-            email: credentials?.username
+            email: credentials.username
           }
         });
 
-        if (vendor && credentials?.password === vendor.password) {
-          return { id: vendor.id, name: vendor.name, email: vendor.email, role: "VENDOR" }
+        if (vendor) {
+          const isPasswordValid = await bcrypt.compare(credentials.password, vendor.password);
+          // Fallback for old unhashed passwords
+          if (isPasswordValid || credentials.password === vendor.password) {
+            return { id: vendor.id, name: vendor.name, email: vendor.email, role: "VENDOR" }
+          }
         }
 
         // 3. Check Customers (Clients) in DB
         const client = await prisma.client.findFirst({
           where: {
-            email: credentials?.username
+            email: credentials.username
           }
         });
 
-        if (client && credentials?.password === client.mot_de_passe_hash) {
-          return { id: client.id, name: `${client.nom} ${client.prenom}`, email: client.email, role: client.role }
+        if (client) {
+          const isPasswordValid = await bcrypt.compare(credentials.password, client.mot_de_passe_hash);
+          if (isPasswordValid || credentials.password === client.mot_de_passe_hash) {
+            return { id: client.id, name: `${client.nom} ${client.prenom}`, email: client.email, role: client.role }
+          }
         }
 
         return null

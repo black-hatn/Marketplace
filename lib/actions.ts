@@ -28,8 +28,8 @@ export async function createProduct(data: any) {
       tva: 18,
       prix_ttc: parseFloat(data.price || data.prix_ttc),
       stock: parseInt(data.stock),
-      images: [data.image || data.images[0]],
-      categories: [data.category || data.categories[0]],
+      images: data.images ? data.images.split(',').map((u: string) => u.trim()).filter(Boolean) : [data.image].filter(Boolean),
+      categories: [data.category || data.categories?.[0]],
       brandId: data.brandId,
     }
   });
@@ -47,7 +47,7 @@ export async function updateProduct(id: string, data: any) {
       prix_ht: parseFloat(data.price || data.prix_ht),
       prix_ttc: parseFloat(data.price || data.prix_ttc),
       stock: parseInt(data.stock),
-      images: data.image ? [data.image] : undefined,
+      images: data.images ? data.images.split(',').map((u: string) => u.trim()).filter(Boolean) : (data.image ? [data.image] : undefined),
     }
   });
   revalidatePath('/admin');
@@ -180,6 +180,8 @@ export async function getOrdersByEmail(email: string) {
   });
 }
 
+import bcrypt from 'bcryptjs';
+
 // --- ACTIONS AUTH ---
 
 export async function registerUser(formData: FormData) {
@@ -191,12 +193,14 @@ export async function registerUser(formData: FormData) {
   const existing = await prisma.client.findUnique({ where: { email } });
   if (existing) throw new Error('Email déjà utilisé');
 
+  const hashedPassword = await bcrypt.hash(password, 10);
+
   return prisma.client.create({
     data: {
       nom: name.split(' ')[0],
       prenom: name.split(' ').slice(1).join(' '),
       email,
-      mot_de_passe_hash: password,
+      mot_de_passe_hash: hashedPassword,
       telephone: phone,
       role: 'CLIENT'
     }
@@ -211,12 +215,14 @@ export async function registerVendor(formData: FormData) {
   const existing = await prisma.brand.findUnique({ where: { email } });
   if (existing) throw new Error('Email déjà utilisé');
 
+  const hashedPassword = await bcrypt.hash(password, 10);
+
   return prisma.brand.create({
     data: {
       name,
       slug: name.toLowerCase().replace(/ /g, '-'),
       email,
-      password,
+      password: hashedPassword,
       title: name,
       tagline: 'Luxe & Innovation',
       description: 'Partenaire Immersive',

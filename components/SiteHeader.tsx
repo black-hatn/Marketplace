@@ -17,10 +17,12 @@ import { LanguageSwitcher } from './LanguageSwitcher';
 import { useCartStore } from '@/lib/store';
 
 export function SiteHeader() {
+  const pathname = usePathname();
   const t = useTranslations('Header');
+
+  if (pathname.includes('/admin')) return null;
   const { data: session } = useSession() as any;
   const [menuOpen, setMenuOpen] = useState(false);
-  const pathname = usePathname();
   const cartItemsCount = useCartStore((state) => state.items.reduce((acc, item) => acc + item.quantity, 0));
 
   const isLinkActive = (href: string) => {

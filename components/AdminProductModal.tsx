@@ -146,8 +146,16 @@ export function AdminProductModal({
               </div>
 
               <div>
-                <label className={labelClass}><ImageIcon className="inline h-3 w-3 mr-1" /> URL Photo *</label>
-                <input name="image" type="url" required defaultValue={product?.images?.[0] || product?.image} placeholder="https://..." className={inputClass} />
+                <label className={labelClass}><ImageIcon className="inline h-3 w-3 mr-1" /> URLs des Photos (Galerie)</label>
+                <textarea 
+                  name="images" 
+                  required 
+                  defaultValue={product?.images?.join(', ') || product?.image || ""} 
+                  placeholder="https://image1.jpg, https://image2.jpg, ..." 
+                  rows={3}
+                  className={inputClass} 
+                />
+                <p className="text-[10px] text-slate-500 mt-1">Séparez les URLs par des virgules pour créer une galerie.</p>
               </div>
 
               <div>

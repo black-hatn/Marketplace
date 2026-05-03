@@ -46,31 +46,9 @@ export default async function OrdersPage() {
   const countByStatus = (status: string) => orders.filter((o: any) => o.statut === status).length;
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white pb-16">
-      <nav className="sticky top-0 z-40 border-b border-black/5 dark:border-white/10 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 justify-between items-center">
-            <div className="flex items-center gap-3">
-              <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
-                <ShieldAlert className="h-5 w-5 text-white" />
-              </div>
-              <div>
-                <span className="text-lg font-bold tracking-tight">Admin<span className="text-cyan-500">Panel</span></span>
-                <p className="text-[10px] text-slate-400 -mt-0.5 font-medium uppercase tracking-widest">Gestion Commandes</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <Link href="/admin" className="flex items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">
-                ← Tableau de bord
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-2xl font-bold flex items-center gap-2">
             <ShoppingCart className="h-6 w-6 text-cyan-500" />
             Gestion des Commandes
           </h1>
@@ -145,7 +123,6 @@ export default async function OrdersPage() {
             </div>
           </div>
         )}
-      </main>
-    </div>
+      </div>
   );
 }

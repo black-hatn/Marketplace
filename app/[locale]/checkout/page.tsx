@@ -52,9 +52,23 @@ export default function CheckoutPage() {
         }))
       });
 
-      toast.success('Commande enregistrée ! Nous vérifions votre transfert.');
+      // Format WhatsApp message
+      const whatsappMessage = `Bonjour Nouradine,\nJe viens de valider une commande sur Plateforme Immersive.\n\n` +
+        `📝 *Détails:*\n` +
+        items.map(i => `- ${i.quantity}x ${i.title}`).join('\n') +
+        `\n\n💰 *Total TTC:* ${grandTotal.toLocaleString()} XAF\n` +
+        `🚚 *Adresse:* ${formData.customerAddress}, ${formData.customerCity}\n\n` +
+        `Comment puis-je procéder au paiement Mobile Money ?`;
+
+      const whatsappUrl = `https://wa.me/23566000000?text=${encodeURIComponent(whatsappMessage)}`;
+      
+      toast.success('Commande enregistrée ! Redirection vers WhatsApp...');
       clearCart();
+      
+      // Redirect to WhatsApp in a new tab, then go to orders page
+      window.open(whatsappUrl, '_blank');
       router.push('/mes-commandes');
+      
     } catch (err: any) {
       toast.error('Erreur lors de la commande.');
     } finally {
