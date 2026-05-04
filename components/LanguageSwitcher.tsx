@@ -21,7 +21,7 @@ export function LanguageSwitcher() {
       title="Changer de langue"
     >
       <Languages className="h-5 w-5 text-slate-600 dark:text-slate-400 group-hover:text-cyan-500 transition-colors" />
-      <span className="text-[10px] font-black uppercase text-slate-500 dark:text-slate-400">
+      <span className="hidden sm:block text-[10px] font-black uppercase text-slate-500 dark:text-slate-400">
         {locale}
       </span>
     </button>

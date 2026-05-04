@@ -48,64 +48,66 @@ export default async function HomePage() {
           <div className="absolute bottom-[-10%] right-[-10%] h-[50%] w-[50%] rounded-full bg-blue-500/[0.03] dark:bg-blue-500/[0.07] blur-[120px]" />
         </div>
 
-        <div className="relative z-10 mx-auto w-full max-w-[1800px] px-6 space-y-12 py-10 lg:py-20">
-          <section className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] items-center">
+        <div className="relative z-10 mx-auto w-full max-w-[1800px] px-3 sm:px-6 space-y-8 sm:space-y-12 py-6 sm:py-10 lg:py-20">
+          <section>
             <SearchHero />
-            <div className="hidden lg:block h-[500px]">
+            <div className="hidden lg:block h-[500px] mt-8">
               <ThreePlaceholder />
             </div>
           </section>
 
           {/* Stats Section */}
-          <section className="glass-card rounded-[2.5rem] p-8 border border-black/5 dark:border-white/10 flex flex-wrap justify-center gap-12 sm:gap-24">
-            <div className="text-center">
-              <p className="text-4xl font-black text-slate-900 dark:text-white mb-2">{clientsCount}</p>
-              <p className="text-xs font-bold uppercase tracking-widest text-slate-500">Membres Actifs</p>
-            </div>
-            <div className="text-center">
-              <p className="text-4xl font-black text-cyan-600 dark:text-cyan-400 mb-2">{produitsCount}</p>
-              <p className="text-xs font-bold uppercase tracking-widest text-slate-500">{t('premium_products')}</p>
-            </div>
-            <div className="text-center">
-              <p className="text-4xl font-black text-slate-900 dark:text-white mb-2">12</p>
-              <p className="text-xs font-bold uppercase tracking-widest text-slate-500">{t('cities_covered')}</p>
-            </div>
-            <div className="text-center">
-              <p className="text-4xl font-black text-cyan-600 dark:text-cyan-400 mb-2">24/7</p>
-              <p className="text-xs font-bold uppercase tracking-widest text-slate-500">{t('customer_support')}</p>
+          <section className="glass-card rounded-[1.5rem] sm:rounded-[2.5rem] p-4 sm:p-8 border border-black/5 dark:border-white/10">
+            <div className="grid grid-cols-2 gap-4 sm:flex sm:flex-wrap sm:justify-center sm:gap-12 lg:gap-24">
+              <div className="text-center">
+                <p className="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white mb-1">{clientsCount}</p>
+                <p className="text-[9px] sm:text-xs font-bold uppercase tracking-widest text-slate-500">Membres Actifs</p>
+              </div>
+              <div className="text-center">
+                <p className="text-2xl sm:text-4xl font-black text-cyan-600 dark:text-cyan-400 mb-1">{produitsCount}</p>
+                <p className="text-[9px] sm:text-xs font-bold uppercase tracking-widest text-slate-500">{t('premium_products')}</p>
+              </div>
+              <div className="text-center">
+                <p className="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white mb-1">12</p>
+                <p className="text-[9px] sm:text-xs font-bold uppercase tracking-widest text-slate-500">{t('cities_covered')}</p>
+              </div>
+              <div className="text-center">
+                <p className="text-2xl sm:text-4xl font-black text-cyan-600 dark:text-cyan-400 mb-1">24/7</p>
+                <p className="text-[9px] sm:text-xs font-bold uppercase tracking-widest text-slate-500">{t('customer_support')}</p>
+              </div>
             </div>
           </section>
 
-          <section className="grid gap-10 lg:grid-cols-[1fr] xl:gap-16">
-            <div className="space-y-20">
-              <div className="space-y-8">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between border-b border-black/5 dark:border-white/10 pb-8">
-                  <div>
-                    <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.3em] text-cyan-600 dark:text-cyan-400">
-                      <span className="h-1.5 w-1.5 rounded-full bg-cyan-500 animate-pulse" />
-                      Live Exploration
-                    </div>
-                    <h2 className="mt-4 text-4xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-5xl">
-                      {t('trends_title')}
-                    </h2>
+          <section className="space-y-10 sm:space-y-16">
+            {/* BentoGrid section */}
+            <div className="space-y-4 sm:space-y-8">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between border-b border-black/5 dark:border-white/10 pb-4 sm:pb-8">
+                <div>
+                  <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.3em] text-cyan-600 dark:text-cyan-400">
+                    <span className="h-1.5 w-1.5 rounded-full bg-cyan-500 animate-pulse" />
+                    Live Exploration
                   </div>
-                  <p className="max-w-md text-sm text-slate-500 dark:text-slate-400 text-right italic">
-                    {t('innovation_quote')}
-                  </p>
+                  <h2 className="mt-2 sm:mt-4 text-2xl sm:text-4xl font-bold tracking-tight text-slate-900 dark:text-white">
+                    {t('trends_title')}
+                  </h2>
                 </div>
-                <BentoGrid />
+                <p className="hidden sm:block max-w-md text-sm text-slate-500 dark:text-slate-400 text-right italic">
+                  {t('innovation_quote')}
+                </p>
               </div>
+              <BentoGrid />
+            </div>
 
-              <div className="space-y-24">
-                <TrustSection />
-                <StorySection />
-                <div className="space-y-12">
-                  <div className="max-w-3xl">
-                    <h2 className="text-3xl font-bold text-slate-900 dark:text-white">{t('featured_selection_title')}</h2>
-                    <p className="mt-4 text-slate-600 dark:text-slate-400">{t('featured_selection_desc')}</p>
-                  </div>
-                  <ProductShowcase products={serializedProducts} />
+            {/* Trust + Story + Products */}
+            <div className="space-y-10 sm:space-y-16 lg:space-y-24">
+              <TrustSection />
+              <StorySection />
+              <div className="space-y-6 sm:space-y-12">
+                <div>
+                  <h2 className="text-xl sm:text-3xl font-bold text-slate-900 dark:text-white">{t('featured_selection_title')}</h2>
+                  <p className="mt-2 text-sm sm:text-base text-slate-600 dark:text-slate-400">{t('featured_selection_desc')}</p>
                 </div>
+                <ProductShowcase products={serializedProducts} />
               </div>
             </div>
           </section>

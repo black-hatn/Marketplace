@@ -47,17 +47,17 @@ export function Footer() {
   return (
     <footer className="border-t border-black/5 dark:border-white/10 bg-white/50 dark:bg-slate-950/50 backdrop-blur-xl">
       {/* Trust badges bar */}
-      <div className="border-b border-black/5 dark:border-white/10 py-6">
-        <div className="mx-auto max-w-[1600px] px-6">
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+      <div className="border-b border-black/5 dark:border-white/10 py-4 sm:py-6">
+        <div className="mx-auto max-w-[1600px] px-4 sm:px-6">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-4">
             {trustBadges.map((badge) => (
-              <div key={badge.label} className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-xl bg-cyan-500/10 flex items-center justify-center flex-shrink-0">
-                  <badge.icon className="h-5 w-5 text-cyan-600 dark:text-cyan-400" />
+              <div key={badge.label} className="flex items-center gap-2 sm:gap-3">
+                <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-xl bg-cyan-500/10 flex items-center justify-center flex-shrink-0">
+                  <badge.icon className="h-4 w-4 sm:h-5 sm:w-5 text-cyan-600 dark:text-cyan-400" />
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-slate-900 dark:text-white">{badge.label}</p>
-                  <p className="text-xs text-slate-500">{badge.sub}</p>
+                  <p className="text-xs font-bold text-slate-900 dark:text-white leading-tight">{badge.label}</p>
+                  <p className="text-[10px] text-slate-500">{badge.sub}</p>
                 </div>
               </div>
             ))}
@@ -66,8 +66,8 @@ export function Footer() {
       </div>
 
       {/* Main footer */}
-      <div className="mx-auto max-w-[1600px] px-6 py-16">
-        <div className="grid gap-12 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
+      <div className="mx-auto max-w-[1600px] px-4 sm:px-6 py-10 sm:py-16">
+        <div className="grid gap-8 sm:gap-12 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
           {/* Brand column */}
           <div className="space-y-6">
             <Link href="/" className="group flex items-center gap-3">

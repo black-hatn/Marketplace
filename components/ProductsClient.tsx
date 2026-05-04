@@ -89,32 +89,32 @@ export default function ProductsClient({ initialProducts }: { initialProducts: P
           <div className="absolute bottom-[-10%] right-[-10%] h-[50%] w-[50%] rounded-full bg-blue-500/[0.03] dark:bg-blue-500/[0.07] blur-[120px]" />
         </div>
 
-        <div className="relative z-10 mx-auto w-full max-w-[1800px] px-6 py-10 lg:py-20 space-y-12">
-          <div className="glass-card relative overflow-hidden rounded-[2.5rem] p-10 lg:p-16">
+        <div className="relative z-10 mx-auto w-full max-w-[1800px] px-3 sm:px-6 py-6 sm:py-10 lg:py-20 space-y-8 sm:space-y-12">
+          <div className="glass-card relative overflow-hidden rounded-[1.5rem] sm:rounded-[2.5rem] p-5 sm:p-10 lg:p-16">
             <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/[0.05] dark:from-cyan-500/[0.1] via-transparent to-transparent" />
             <div className="relative z-10 flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between">
               <div className="max-w-2xl">
                 <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.3em] text-cyan-600 dark:text-cyan-400">
-                  <ShoppingBag className="h-4 w-4" /> Catalogue Immersif
+                  <ShoppingBag className="h-3 w-3 sm:h-4 sm:w-4" /> Catalogue Immersif
                 </div>
-                <h1 className="mt-6 text-4xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-6xl leading-tight">
-                  L'Excellence à portée de <span className="text-cyan-600 dark:text-cyan-400">découverte</span>.
+                <h1 className="mt-3 sm:mt-6 text-xl sm:text-4xl lg:text-6xl font-bold tracking-tight text-slate-900 dark:text-white leading-tight">
+                  L&apos;Excellence à portée de <span className="text-cyan-600 dark:text-cyan-400">découverte</span>.
                 </h1>
-                <p className="mt-8 text-xl leading-relaxed text-slate-600 dark:text-slate-300">
+                <p className="mt-3 sm:mt-8 text-sm sm:text-xl leading-relaxed text-slate-600 dark:text-slate-300 hidden sm:block">
                   Découvrez des produits premium qui redéfinissent votre quotidien.
                 </p>
               </div>
               
               <div className="relative w-full max-w-md">
-                <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none">
-                  <Search className="h-5 w-5 text-slate-400" />
+                <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                  <Search className="h-4 w-4 text-slate-400" />
                 </div>
                 <input
                   type="text"
-                  placeholder="Rechercher un produit, une marque..."
+                  placeholder="Rechercher..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full rounded-full bg-white dark:bg-slate-900 border border-black/5 dark:border-white/10 px-14 py-5 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 shadow-xl transition-all"
+                  className="w-full rounded-full bg-white dark:bg-slate-900 border border-black/5 dark:border-white/10 px-10 py-3 sm:py-5 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 shadow-xl transition-all"
                 />
               </div>
             </div>
@@ -122,13 +122,13 @@ export default function ProductsClient({ initialProducts }: { initialProducts: P
 
           <div className="grid gap-10">
             <div className="flex flex-col gap-6">
-              <div className="flex flex-wrap items-center gap-3">
-                <span className="text-xs font-bold uppercase tracking-widest text-slate-400 mr-2">Catégories :</span>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs font-bold uppercase tracking-widest text-slate-400 mr-1">Catégories :</span>
                 {categories.map((cat) => (
                   <button
                     key={cat}
                     onClick={() => { setCategory(cat); setVisibleCount(ITEMS_PER_PAGE); }}
-                    className={`rounded-full px-6 py-3 text-xs font-bold uppercase tracking-widest transition-all ${
+                    className={`rounded-full px-3 py-1.5 sm:px-6 sm:py-3 text-xs font-bold uppercase tracking-widest transition-all ${
                       category === cat
                         ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/20'
                         : 'bg-black/5 dark:bg-white/5 text-slate-600 dark:text-slate-400 hover:bg-cyan-500/10 hover:text-cyan-600'

@@ -47,8 +47,8 @@ export default async function BrandPage({ params }: BrandPageProps) {
   }));
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-700 pb-20">
-      <div className="relative h-[60vh] min-h-[500px] w-full overflow-hidden">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-700 pb-12 sm:pb-20">
+      <div className="relative h-[50vh] sm:h-[60vh] min-h-[350px] sm:min-h-[500px] w-full overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Image
             src={brand.image}
@@ -60,23 +60,18 @@ export default async function BrandPage({ params }: BrandPageProps) {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-slate-950/20 to-slate-50 dark:to-slate-950" />
         </div>
 
-        <div className="relative z-10 mx-auto max-w-[1600px] h-full px-6 flex flex-col justify-end pb-12 lg:pb-20">
-          <Link href="/marques" className="mb-10 inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-white/70 hover:text-white transition-colors group">
+        <div className="relative z-10 mx-auto max-w-[1600px] h-full px-4 sm:px-6 flex flex-col justify-end pb-8 sm:pb-12 lg:pb-20">
+          <Link href="/marques" className="mb-6 sm:mb-10 inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-white/70 hover:text-white transition-colors group">
             <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" /> Retour aux marques
           </Link>
 
-          <div className="flex flex-col lg:flex-row lg:items-end gap-10">
-            <div className="relative h-40 w-40 lg:h-56 lg:w-56 flex-shrink-0 overflow-hidden rounded-[2.5rem] shadow-2xl border-4 border-white/10 backdrop-blur-xl ring-1 ring-white/20">
-              <Image
-                src={brand.image}
-                alt={brand.name}
-                fill
-                className="object-cover"
-              />
+          <div className="flex flex-col lg:flex-row lg:items-end gap-6 sm:gap-10">
+            <div className="relative h-28 w-28 sm:h-40 sm:w-40 lg:h-56 lg:w-56 flex-shrink-0 overflow-hidden rounded-[1.5rem] sm:rounded-[2.5rem] shadow-2xl border-4 border-white/10 backdrop-blur-xl ring-1 ring-white/20">
+              <Image src={brand.image} alt={brand.name} fill className="object-cover" sizes="(max-width: 640px) 112px, (max-width: 1024px) 160px, 224px" />
             </div>
             
-            <div className="flex-1 space-y-4">
-              <div className="flex items-center gap-3">
+            <div className="flex-1 space-y-3 sm:space-y-4">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                 <span className="px-3 py-1 rounded-full bg-cyan-500/20 backdrop-blur-md border border-cyan-500/30 text-[10px] font-black uppercase tracking-widest text-cyan-400">
                   <ShieldCheck className="inline h-3 w-3 mr-1" /> Marque Vérifiée
                 </span>
@@ -84,17 +79,17 @@ export default async function BrandPage({ params }: BrandPageProps) {
                   Membre depuis 2024
                 </span>
               </div>
-              <h1 className="text-5xl lg:text-7xl font-black tracking-tighter text-white uppercase italic">
+              <h1 className="text-3xl sm:text-5xl lg:text-7xl font-black tracking-tighter text-white uppercase italic">
                 {brand.name}<span className="text-cyan-500">.</span>
               </h1>
-              <p className="text-xl lg:text-2xl text-cyan-400 font-bold italic tracking-wide">{brand.tagline}</p>
+              <p className="text-base sm:text-xl lg:text-2xl text-cyan-400 font-bold italic tracking-wide">{brand.tagline}</p>
             </div>
 
-            <div className="flex items-center gap-4 lg:pb-4">
-               <button className="h-14 w-14 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all">
-                  <Share2 className="h-6 w-6" />
+            <div className="flex items-center gap-3 sm:gap-4 lg:pb-4">
+               <button className="h-12 w-12 sm:h-14 sm:w-14 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all">
+                  <Share2 className="h-5 w-5 sm:h-6 sm:w-6" />
                </button>
-               <button className="h-14 px-8 rounded-2xl bg-white text-slate-900 font-black uppercase tracking-widest text-xs hover:scale-105 transition-all shadow-xl">
+               <button className="h-12 px-5 sm:h-14 sm:px-8 rounded-2xl bg-white text-slate-900 font-black uppercase tracking-widest text-xs hover:scale-105 transition-all shadow-xl">
                   Suivre la marque
                </button>
             </div>
@@ -102,7 +97,7 @@ export default async function BrandPage({ params }: BrandPageProps) {
         </div>
       </div>
 
-      <div className="relative z-20 mx-auto max-w-[1600px] px-6 mt-12 grid gap-12 lg:grid-cols-[1fr_380px]">
+      <div className="relative z-20 mx-auto max-w-[1600px] px-4 sm:px-6 mt-8 sm:mt-12 grid gap-8 sm:gap-12 lg:grid-cols-[1fr_380px]">
         <div className="space-y-16">
           <div className="bg-white dark:bg-slate-900/50 p-8 lg:p-12 rounded-[3rem] border border-black/5 dark:border-white/5 shadow-xl shadow-black/5">
             <div className="flex items-center gap-3 mb-8">

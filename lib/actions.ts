@@ -293,15 +293,48 @@ export async function incrementBrandViews(id: string) {
 }
 
 export async function globalSearch(query: string) {
-  return prisma.produit.findMany({
-    where: {
-      OR: [
-        { nom: { contains: query, mode: 'insensitive' } },
-        { description: { contains: query, mode: 'insensitive' } }
-      ]
-    },
-    take: 5
-  });
+  const [products, brands] = await Promise.all([
+    prisma.produit.findMany({
+      where: {
+        OR: [
+          { nom: { contains: query, mode: 'insensitive' } },
+          { description: { contains: query, mode: 'insensitive' } }
+        ]
+      },
+      include: {
+        brand: true,
+        // Assuming category relation exists or we just map it
+      },
+      take: 6
+    }),
+    prisma.brand.findMany({
+      where: {
+        OR: [
+          { name: { contains: query, mode: 'insensitive' } },
+          { tagline: { contains: query, mode: 'insensitive' } }
+        ]
+      },
+      take: 3
+    })
+  ]);
+
+  return {
+    products: products.map(p => ({
+      ...p,
+      title: p.nom,
+      price: Number(p.prix_ttc),
+      image: p.images[0] || '/placeholder.png',
+      brand: { name: p.brand?.name || 'Immersive Pro' },
+      category: { name: p.categories[0] || 'Général' }
+    })),
+    brands: brands.map(b => ({
+      id: b.id,
+      slug: b.slug,
+      name: b.name,
+      tagline: b.tagline,
+      image: b.image
+    }))
+  };
 }
 
 // --- ACTIONS WISHLIST ---

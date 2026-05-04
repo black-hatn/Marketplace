@@ -8,12 +8,10 @@ import { CartSlideOver } from '@/components/CartSlideOver';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { MegaMenu } from '@/components/MegaMenu';
 import { GlobalSearch } from '@/components/GlobalSearch';
-import { ShinyButton } from '@/components/ShinyButton';
 import { signOut } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { LanguageSwitcher } from './LanguageSwitcher';
-
 import { useCartStore } from '@/lib/store';
 
 export function SiteHeader() {
@@ -41,30 +39,31 @@ export function SiteHeader() {
     <header className="sticky top-0 z-50 w-full transition-all duration-500">
       <div className="absolute inset-0 bg-white/60 dark:bg-slate-950/60 backdrop-blur-2xl border-b border-black/5 dark:border-white/10" />
       
-      {/* Upper Navigation: Brand & Core Actions */}
-      <div className="relative mx-auto max-w-[1600px] px-6 h-20 flex items-center justify-between gap-4 md:gap-10">
-        {/* Logo Section */}
+      {/* Upper Navigation */}
+      <div className="relative mx-auto max-w-[1600px] px-3 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-2">
+        {/* Logo */}
         <div className="flex-shrink-0">
-          <Link href="/" className="group flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-slate-900 dark:bg-white flex items-center justify-center shadow-2xl rotate-3 group-hover:rotate-0 transition-all duration-500">
-              <Sparkles className="h-5 w-5 text-white dark:text-slate-900" />
+          <Link href="/" className="group flex items-center gap-2 sm:gap-3">
+            <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-xl bg-slate-900 dark:bg-white flex items-center justify-center shadow-2xl rotate-3 group-hover:rotate-0 transition-all duration-500">
+              <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-white dark:text-slate-900" />
             </div>
             <div className="flex flex-col">
-              <h1 className="text-xl font-black tracking-tighter text-slate-900 dark:text-white leading-tight uppercase">
+              <h1 className="text-base sm:text-xl font-black tracking-tighter text-slate-900 dark:text-white leading-tight uppercase">
                 Immersive<span className="text-cyan-500">.</span>
               </h1>
-              <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-slate-400">Marketplace Pro</p>
+              <p className="hidden sm:block text-[8px] font-bold uppercase tracking-[0.3em] text-slate-400">Marketplace Pro</p>
             </div>
           </Link>
         </div>
 
-        {/* Centered Search (Expanded & Refined) */}
+        {/* Search — only on md+ */}
         <div className="flex-1 max-w-xl hidden md:block">
           <GlobalSearch />
         </div>
 
-        {/* Action Controls */}
-        <div className="flex items-center gap-4">
+        {/* Actions */}
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          {/* Desktop nav links */}
           <div className="hidden lg:flex items-center gap-1 p-1 bg-black/5 dark:bg-white/5 rounded-2xl border border-black/5 dark:border-white/10">
             {session?.user?.role === "VENDOR" ? (
               <Link href="/vendeur/dashboard" className="flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest text-emerald-600 bg-white dark:bg-slate-900 shadow-sm border border-emerald-500/10">
@@ -79,13 +78,10 @@ export function SiteHeader() {
                 <Rocket className="h-3.5 w-3.5" /> {t('become_partner')}
               </Link>
             )}
-            
             <div className="h-4 w-px bg-black/10 dark:bg-white/10 mx-1" />
-            
             <Link href="/mes-commandes" className="flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 hover:text-cyan-600 transition-colors">
               {t('my_orders')}
             </Link>
-
             {!session && (
               <>
                 <div className="h-4 w-px bg-black/10 dark:bg-white/10 mx-1" />
@@ -98,7 +94,6 @@ export function SiteHeader() {
                 </Link>
               </>
             )}
-
             {session && (
               <>
                 <div className="h-4 w-px bg-black/10 dark:bg-white/10 mx-1" />
@@ -113,26 +108,31 @@ export function SiteHeader() {
             )}
           </div>
 
-          <div className="flex items-center gap-2">
-            <Link href="/favoris" title="Favoris" className="hidden sm:flex p-3 rounded-2xl bg-white/50 dark:bg-slate-900/50 border border-black/5 dark:border-white/10 hover:border-red-500/30 transition-all group">
-              <Heart className="h-5 w-5 text-slate-600 dark:text-slate-400 group-hover:text-red-500 transition-colors" />
-            </Link>
-            
-            <LanguageSwitcher />
-            <ThemeToggle />
-            <CartSlideOver />
+          {/* Favorites — hidden on xs */}
+          <Link href="/favoris" title="Favoris" className="hidden sm:flex p-2.5 rounded-2xl bg-white/50 dark:bg-slate-900/50 border border-black/5 dark:border-white/10 hover:border-red-500/30 transition-all group">
+            <Heart className="h-4 w-4 sm:h-5 sm:w-5 text-slate-600 dark:text-slate-400 group-hover:text-red-500 transition-colors" />
+          </Link>
+          
+          <LanguageSwitcher />
+          <ThemeToggle />
+          <CartSlideOver />
 
-            <button 
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="lg:hidden p-3 rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xl"
-            >
-              {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </button>
-          </div>
+          {/* Mobile menu button */}
+          <button 
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="lg:hidden p-2 sm:p-2.5 rounded-xl sm:rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xl"
+          >
+            {menuOpen ? <X className="h-4 w-4 sm:h-5 sm:w-5" /> : <Menu className="h-4 w-4 sm:h-5 sm:w-5" />}
+          </button>
         </div>
       </div>
 
-      {/* Lower Navigation: Categories & Links */}
+      {/* Mobile Search Bar — shown only on mobile */}
+      <div className="relative border-t border-black/5 dark:border-white/5 px-3 py-2 md:hidden">
+        <GlobalSearch />
+      </div>
+
+      {/* Lower Navigation — desktop only */}
       <div className="relative border-t border-black/5 dark:border-white/5 hidden md:block">
         <div className="mx-auto max-w-[1600px] px-6 h-12 flex items-center justify-center">
           <nav className="flex items-center gap-8">

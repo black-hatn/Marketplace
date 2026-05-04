@@ -17,7 +17,7 @@ export function AdminNav() {
     { icon: Tags, label: 'Vendeurs', href: '/admin/vendeurs' },
     { icon: Users, label: 'Clients', href: '/admin/clients' },
     { icon: BarChart3, label: 'Statistiques', href: '/admin/analyses' },
-    { icon: ShieldAlert, label: 'Audit Sécurité', href: '#' },
+    { icon: ShieldAlert, label: 'Audit Sécurité', href: '/admin/audit' },
   ];
 
   return (

@@ -57,7 +57,7 @@ export default async function ProductPage({ params }: Props) {
           <div className="absolute bottom-[-10%] right-[-10%] h-[50%] w-[50%] rounded-full bg-blue-500/[0.03] dark:bg-blue-500/[0.07] blur-[120px]" />
         </div>
 
-        <div className="relative z-10 mx-auto w-full max-w-[1600px] px-6 py-10 lg:py-20 space-y-16">
+        <div className="relative z-10 mx-auto w-full max-w-[1600px] px-4 sm:px-6 py-6 sm:py-10 lg:py-20 space-y-10 sm:space-y-16">
           <div className="flex items-center gap-4">
             <Link href="/produits" className="group flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
               <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
@@ -65,11 +65,11 @@ export default async function ProductPage({ params }: Props) {
             </Link>
           </div>
 
-          <section className="grid gap-12 lg:grid-cols-2 lg:items-start">
+          <section className="grid gap-8 lg:gap-12 lg:grid-cols-2 lg:items-start">
             <ProductGallery images={images} title={product.nom} />
 
-            <div className="space-y-6 lg:sticky lg:top-24">
-              <div className="flex items-center gap-3 flex-wrap">
+            <div className="space-y-5 sm:space-y-6 lg:sticky lg:top-24">
+              <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-xs font-bold uppercase tracking-widest text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-900/20 px-3 py-1 rounded-full">
                   {product.categories[0]}
                 </span>
@@ -77,7 +77,7 @@ export default async function ProductPage({ params }: Props) {
                 {!inStock && <span className="text-xs font-bold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 px-3 py-1 rounded-full">Rupture de stock</span>}
               </div>
 
-              <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
                 {product.nom}
               </h1>
 

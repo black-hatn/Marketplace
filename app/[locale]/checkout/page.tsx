@@ -60,7 +60,7 @@ export default function CheckoutPage() {
         `🚚 *Adresse:* ${formData.customerAddress}, ${formData.customerCity}\n\n` +
         `Comment puis-je procéder au paiement Mobile Money ?`;
 
-      const whatsappUrl = `https://wa.me/23566000000?text=${encodeURIComponent(whatsappMessage)}`;
+      const whatsappUrl = `https://wa.me/23560909092?text=${encodeURIComponent(whatsappMessage)}`;
       
       toast.success('Commande enregistrée ! Redirection vers WhatsApp...');
       clearCart();
@@ -328,7 +328,7 @@ export default function CheckoutPage() {
                           <p className="text-xs text-slate-600 dark:text-slate-400">Envoyez le montant total au numéro suivant :</p>
                         </div>
                         <div className="ml-8 p-3 rounded-xl bg-white dark:bg-slate-800 border border-dashed border-cyan-500/30 text-center">
-                          <p className="text-lg font-black text-cyan-600">+235 66 00 00 00</p>
+                          <p className="text-lg font-black text-cyan-600">+235 60 90 90 92</p>
                           <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Nouradine Z. (Manager)</p>
                         </div>
                         <div className="flex items-start gap-3">
