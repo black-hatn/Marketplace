@@ -10,6 +10,7 @@ interface ShinyButtonProps {
   onClick?: () => void;
   className?: string;
   disabled?: boolean;
+  type?: 'button' | 'submit' | 'reset';
 }
 
 export function ShinyButton({ 
@@ -33,6 +34,7 @@ export function ShinyButton({
       whileTap={{ scale: 0.98 }}
       onClick={onClick}
       disabled={disabled}
+      type={type}
       className={`
         relative overflow-hidden px-6 py-3 rounded-2xl font-bold text-sm
         flex items-center justify-center gap-2 transition-all duration-300

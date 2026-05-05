@@ -102,6 +102,7 @@ export default function AdminLogin() {
               <ShinyButton
                 variant="primary"
                 disabled={loading}
+                type="submit"
                 className="w-full !py-4"
               >
                 {loading ? 'Connexion...' : 'Se connecter'}

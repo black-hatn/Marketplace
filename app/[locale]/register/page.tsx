@@ -85,6 +85,7 @@ export default function RegisterPage() {
             <ShinyButton
               variant="primary"
               disabled={loading}
+              type="submit"
               className="w-full !py-5 text-base mt-4"
             >
               {loading ? "Création en cours..." : "Créer mon compte"}
