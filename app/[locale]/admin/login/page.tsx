@@ -2,12 +2,11 @@
 
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { Lock, ShieldAlert } from 'lucide-react';
+import { useRouter, Link } from '@/i18n/routing';
+import { Lock } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { ShinyButton } from '@/components/ShinyButton';
-import Link from 'next/link';
 
 export default function AdminLogin() {
   const [username, setUsername] = useState('');
@@ -68,9 +67,6 @@ export default function AdminLogin() {
         className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10"
       >
         <div className="glass-card py-8 px-4 shadow sm:rounded-3xl sm:px-10 border border-slate-200 dark:border-white/10">
-          
-
-
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">

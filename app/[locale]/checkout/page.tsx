@@ -5,8 +5,7 @@ import { useCartStore } from '@/lib/store';
 import { CreditCard, Truck, ShieldCheck, Loader2, ArrowLeft, Lock, Zap } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, Link } from '@/i18n/routing';
 
 type Step = 'info' | 'payment';
 

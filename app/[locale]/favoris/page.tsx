@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { getWishlist } from '@/lib/actions';
 import { Heart, ShoppingCart } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
 import { ProductCard } from '@/components/ProductCard';
 
 export const metadata: Metadata = {

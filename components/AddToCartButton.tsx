@@ -5,7 +5,7 @@ import { ShoppingCart, Loader2 } from 'lucide-react';
 import { useCartStore } from '@/lib/store';
 import { useRecentlyViewed } from '@/components/RecentlyViewed';
 import toast from 'react-hot-toast';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 import { ShinyButton } from '@/components/ShinyButton';
 
@@ -16,10 +16,17 @@ export function AddToCartButton({ product, disabled }: { product: any; disabled?
   const { addProduct } = useRecentlyViewed();
 
   const handleAdd = () => {
-    addItem({ ...product, quantity: 1 });
-    addProduct({ id: product.id, title: product.title, price: product.price, image: product.image, href: `/produit/${product.id}` });
+    const title = product.nom || product.title || 'Produit';
+    const price = Number(product.prix_ttc || product.price || 0);
+    const image = product.images?.[0] || product.image || '/placeholder.png';
+    const category = product.categories?.[0] || product.category || 'Général';
+    const vendor = product.brand?.name || product.vendor || 'Immersive';
+
+    addItem({ ...product, title, price, image, category, vendor, quantity: 1 });
+    addProduct({ id: product.id, title, price, image, href: `/produit/${product.id}` });
+    
     setAdded(true);
-    toast.success(`${product.title} ajouté au panier !`, { icon: '🛍️' });
+    toast.success(`${title} ajouté !`, { icon: '🛍️' });
     setTimeout(() => setAdded(false), 2000);
   };
 

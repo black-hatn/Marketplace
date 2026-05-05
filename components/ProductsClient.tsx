@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, Search, FilterX, Sparkles, Plus, Scale, X, ArrowRight } from 'lucide-react';
 import Image from 'next/image';

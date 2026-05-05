@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
 import { motion } from 'framer-motion';
 import { Globe, ArrowRight, Sparkles } from 'lucide-react';
 import { brands } from '@/lib/content';

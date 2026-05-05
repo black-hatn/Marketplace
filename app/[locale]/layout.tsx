@@ -78,7 +78,7 @@ export default async function RootLayout({
         />
       </head>
       <body className={`${inter.className} min-h-screen overflow-x-hidden bg-white dark:bg-slate-950 transition-colors duration-500`}>
-        <NextIntlClientProvider messages={messages}>
+        <NextIntlClientProvider messages={messages} locale={locale}>
           <Providers>
             <Toaster 
               position="bottom-right"

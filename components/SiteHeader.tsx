@@ -2,15 +2,13 @@
 
 import { useState } from 'react';
 import { Menu, X, ShieldAlert, Heart, ShoppingCart, Rocket, LayoutDashboard, Sparkles, LogOut } from 'lucide-react';
-import { useSession } from 'next-auth/react';
-import { usePathname } from 'next/navigation';
+import { useSession, signOut } from 'next-auth/react';
+import { useRouter, usePathname, Link } from '@/i18n/routing';
 import { CartSlideOver } from '@/components/CartSlideOver';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { MegaMenu } from '@/components/MegaMenu';
 import { GlobalSearch } from '@/components/GlobalSearch';
-import { signOut } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
-import { Link } from '@/i18n/routing';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { useCartStore } from '@/lib/store';
 
@@ -18,15 +16,15 @@ export function SiteHeader() {
   const pathname = usePathname();
   const t = useTranslations('Header');
 
-  if (!pathname) return null;
-  if (pathname.includes('/admin')) return null;
+  if (pathname?.includes('/admin')) return null;
+  
   const { data: session } = useSession() as any;
   const [menuOpen, setMenuOpen] = useState(false);
   const cartItemsCount = useCartStore((state) => state.items.reduce((acc, item) => acc + item.quantity, 0));
 
   const isLinkActive = (href: string) => {
     if (href === '/') return pathname === '/';
-    return pathname.startsWith(href);
+    return pathname?.startsWith(href);
   };
 
   const linkClass = (href: string) => `text-[11px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${
@@ -79,8 +77,8 @@ export function SiteHeader() {
               </Link>
             )}
             <div className="h-4 w-px bg-black/10 dark:bg-white/10 mx-1" />
-            <Link href="/mes-commandes" className="flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 hover:text-cyan-600 transition-colors">
-              {t('my_orders')}
+            <Link href="/favoris" className="flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 hover:text-cyan-600 transition-colors">
+              <Heart className="h-3.5 w-3.5" /> {t('discover')}
             </Link>
             {!session && (
               <>
@@ -108,11 +106,6 @@ export function SiteHeader() {
             )}
           </div>
 
-          {/* Favorites — hidden on xs */}
-          <Link href="/favoris" title="Favoris" className="hidden sm:flex p-2.5 rounded-2xl bg-white/50 dark:bg-slate-900/50 border border-black/5 dark:border-white/10 hover:border-red-500/30 transition-all group">
-            <Heart className="h-4 w-4 sm:h-5 sm:w-5 text-slate-600 dark:text-slate-400 group-hover:text-red-500 transition-colors" />
-          </Link>
-          
           <LanguageSwitcher />
           <ThemeToggle />
           <CartSlideOver />

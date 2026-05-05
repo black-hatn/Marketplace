@@ -6,8 +6,7 @@ import { ShinyButton } from '@/components/ShinyButton';
 import { registerUser } from '@/lib/actions';
 import { User, Mail, Lock, Sparkles, ArrowRight, Phone, MapPin } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useRouter, Link } from '@/i18n/routing';
 
 export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
