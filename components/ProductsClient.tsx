@@ -168,7 +168,7 @@ export default function ProductsClient({ initialProducts }: { initialProducts: P
                 <div className="space-y-12">
                   <motion.div 
                     layout
-                    className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                    className="grid gap-3 sm:gap-6 grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
                   >
                     {displayedProducts.map((product) => (
                       <motion.div
