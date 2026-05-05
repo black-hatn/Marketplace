@@ -23,6 +23,7 @@ type ProductProps = {
   href?: string | null;
   description?: string | null;
   city?: string;
+  stock?: number;
 };
 
 const ITEMS_PER_PAGE = 8;
@@ -32,6 +33,8 @@ export default function ProductsClient({ initialProducts }: { initialProducts: P
   const [category, setCategory] = useState('Tous');
   const [city, setCity] = useState('Tout le Tchad');
   const [search, setSearch] = useState('');
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000000]);
+  const [sortBy, setSortBy] = useState<'newest' | 'price-asc' | 'price-desc' | 'rating'>('newest');
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
   const [compareList, setCompareList] = useState<ProductProps[]>([]);
   const [showCompare, setShowCompare] = useState(false);
@@ -63,16 +66,27 @@ export default function ProductsClient({ initialProducts }: { initialProducts: P
 
   const filteredProducts = useMemo(() => {
     if (!initialProducts) return [];
-    return initialProducts.filter((product) => {
+    
+    let result = initialProducts.filter((product) => {
       const matchesCategory = category === 'Tous' || product.category === category;
       const matchesCity = city === 'Tout le Tchad' || (product.city || "N'Djaména") === city;
       const matchesSearch =
         search.trim() === '' ||
         product.title.toLowerCase().includes(search.toLowerCase()) ||
         product.vendor.toLowerCase().includes(search.toLowerCase());
-      return matchesCategory && matchesCity && matchesSearch;
+      const matchesPrice = product.price >= priceRange[0] && product.price <= priceRange[1];
+      
+      return matchesCategory && matchesCity && matchesSearch && matchesPrice;
     });
-  }, [category, city, search, initialProducts]);
+
+    // Sorting
+    return result.sort((a, b) => {
+      if (sortBy === 'price-asc') return a.price - b.price;
+      if (sortBy === 'price-desc') return b.price - a.price;
+      if (sortBy === 'rating') return b.rating - a.rating;
+      return 0;
+    });
+  }, [category, city, search, priceRange, sortBy, initialProducts]);
 
   const displayedProducts = filteredProducts.slice(0, visibleCount);
   const hasMore = visibleCount < filteredProducts.length;
@@ -81,7 +95,7 @@ export default function ProductsClient({ initialProducts }: { initialProducts: P
     if (compareList.find(p => p.id === product.id)) {
       setCompareList(prev => prev.filter(p => p.id !== product.id));
     } else {
-      if (compareList.length >= 3) return; // Limit to 3
+      if (compareList.length >= 3) return;
       setCompareList(prev => [...prev, product]);
     }
   };
@@ -162,10 +176,37 @@ export default function ProductsClient({ initialProducts }: { initialProducts: P
               </div>
             </div>
 
-            <div className="flex items-center justify-between border-b border-black/5 dark:border-white/10 pb-6">
+            <div className="flex flex-col sm:flex-row items-center justify-between border-b border-black/5 dark:border-white/10 pb-6 gap-4">
               <p className="text-sm font-bold text-slate-500">
                 <span className="text-slate-900 dark:text-white">{filteredProducts.length}</span> produits correspondent
               </p>
+              
+              <div className="flex items-center gap-4 w-full sm:w-auto">
+                <select 
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as any)}
+                  className="flex-1 sm:flex-none bg-white dark:bg-slate-900 border border-black/5 dark:border-white/10 rounded-xl px-4 py-2 text-xs font-bold uppercase tracking-widest outline-none focus:ring-2 focus:ring-cyan-500/20"
+                >
+                  <option value="newest">Nouveautés</option>
+                  <option value="price-asc">Prix croissant</option>
+                  <option value="price-desc">Prix décroissant</option>
+                  <option value="rating">Mieux notés</option>
+                </select>
+                
+                <div className="hidden lg:flex items-center gap-2 bg-black/5 dark:bg-white/5 rounded-xl px-4 py-2">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Budget max :</span>
+                  <input 
+                    type="range" 
+                    min="0" 
+                    max="1000000" 
+                    step="10000"
+                    value={priceRange[1]}
+                    onChange={(e) => setPriceRange([0, parseInt(e.target.value)])}
+                    className="accent-cyan-500"
+                  />
+                  <span className="text-xs font-bold text-slate-900 dark:text-white">{priceRange[1].toLocaleString()} F</span>
+                </div>
+              </div>
             </div>
 
             <AnimatePresence mode="popLayout">
@@ -224,7 +265,7 @@ export default function ProductsClient({ initialProducts }: { initialProducts: P
                   </div>
                   <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Aucun résultat trouvé</h2>
                   <button
-                    onClick={() => { setCategory('Tous'); setSearch(''); }}
+                    onClick={() => { setCategory('Tous'); setSearch(''); setPriceRange([0, 1000000]); }}
                     className="mt-8 rounded-full bg-cyan-500 px-8 py-4 text-sm font-bold text-white transition-all hover:bg-cyan-400"
                   >
                     Réinitialiser les filtres

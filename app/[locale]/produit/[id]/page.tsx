@@ -8,6 +8,7 @@ import { isWishlisted, getRecommendedProducts } from '@/lib/actions';
 import { Metadata } from 'next';
 import { AddToCartButton } from '@/components/AddToCartButton';
 import { Recommendations } from '@/components/Recommendations';
+import { ReviewSection } from '@/components/ReviewSection';
 import PageTransition from '@/components/PageTransition';
 
 type Props = { params: { id: string } };
@@ -18,13 +19,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     include: { brand: true },
   });
   if (!product) return { title: 'Produit introuvable' };
+  
+  const imageUrl = product.images[0] || '/placeholder.png';
+  
   return {
-    title: `${product.nom} | Plateforme Immersive`,
-    description: product.description,
+    title: `${product.nom} | ${Number(product.prix_ttc).toLocaleString()} FCFA`,
+    description: product.description.slice(0, 160),
     openGraph: {
       title: product.nom,
-      description: product.description,
-      images: [{ url: product.images[0] || '/placeholder.png' }],
+      description: product.description.slice(0, 160),
+      url: `https://tchad-market.vercel.app/produit/${params.id}`,
+      siteName: 'Plateforme Immersive',
+      images: [{ url: imageUrl, width: 1200, height: 630, alt: product.nom }],
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: product.nom,
+      description: product.description.slice(0, 160),
+      images: [imageUrl],
     },
   };
 }
@@ -38,6 +51,9 @@ export default async function ProductPage({ params }: Props) {
       include: {
         brand: true,
         category: true,
+        avis: {
+          orderBy: { createdAt: 'desc' }
+        }
       },
     }),
     isWishlisted(params.id),
@@ -119,6 +135,44 @@ export default async function ProductPage({ params }: Props) {
                 <ul className="text-xs space-y-2 text-amber-800/70 dark:text-amber-400/70 list-disc pl-4 font-medium">
                   <li><strong>Ne payez jamais à l'avance</strong> sans avoir vu l'article.</li>
                   <li>Vérifiez l'état de l'article avant de conclure l'achat.</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <section className="grid gap-12 lg:grid-cols-[1fr_400px] border-t border-black/5 dark:border-white/10 pt-16">
+            <div className="space-y-10">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center">
+                  <Star className="h-5 w-5 text-amber-500 fill-amber-500" />
+                </div>
+                <h2 className="text-2xl font-bold">Avis Clients</h2>
+              </div>
+              <ReviewSection 
+                productId={product.id} 
+                initialReviews={product.avis.map(a => ({
+                  id: a.id,
+                  rating: a.rating,
+                  comment: a.comment,
+                  authorName: a.userName,
+                  createdAt: a.createdAt
+                }))} 
+              />
+            </div>
+            
+            <div className="hidden lg:block space-y-8">
+              <div className="glass-card p-8 rounded-[2.5rem] border border-cyan-500/10">
+                <h3 className="text-sm font-black uppercase tracking-widest text-cyan-600 mb-4">Garantie Immersive</h3>
+                <ul className="space-y-4">
+                  {[
+                    { icon: ShieldCheck, text: "Vérification rigoureuse du vendeur" },
+                    { icon: Truck, text: "Livraison sécurisée N'Djaména" },
+                    { icon: RotateCcw, text: "7 jours pour changer d'avis" }
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-center gap-3 text-xs font-bold text-slate-600 dark:text-slate-300">
+                      <item.icon className="h-4 w-4 text-cyan-500" /> {item.text}
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>

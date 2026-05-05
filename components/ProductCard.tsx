@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Star, ShoppingCart } from 'lucide-react';
+import { ShoppingBag, Star, MapPin, Scale, Zap, ShoppingCart } from 'lucide-react';
 import { useCartStore } from '@/lib/store';
 import toast from 'react-hot-toast';
 
@@ -17,12 +17,13 @@ export function ProductCard({ product, className = "", onQuickView }: { product:
   const vendor = product.brand?.name || product.vendor || 'Immersive';
   const rating = Number(product.rating || 4.5);
   const reviews = Number(product.reviews || 0);
+  const isLowStock = product.stock > 0 && product.stock <= 5;
   const href = product.href || `/produit/${product.id}`;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    addItem({ ...product, id: product.id, title, price, image, quantity: 1 });
+    addItem({ ...product, id: product.id, title, price, image, quantity: 1, category, vendor });
     toast.success(`${title} ajouté !`, { icon: '🛍️' });
   };
 
@@ -65,17 +66,24 @@ export function ProductCard({ product, className = "", onQuickView }: { product:
           </button>
         </div>
 
-        {/* Badge */}
-        {product.badge && (
-          <span className="absolute left-2.5 top-2.5 sm:left-4 sm:top-4 rounded-full bg-cyan-500/10 dark:bg-cyan-500/20 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-cyan-700 dark:text-cyan-200 shadow-lg backdrop-blur-md z-20">
-            {product.badge}
-          </span>
-        )}
+        {/* Badges */}
+        <div className="absolute left-2.5 top-2.5 sm:left-4 sm:top-4 flex flex-col gap-2 z-20">
+          {product.badge && (
+            <span className="rounded-full bg-cyan-500/10 dark:bg-cyan-500/20 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-cyan-700 dark:text-cyan-200 shadow-lg backdrop-blur-md">
+              {product.badge}
+            </span>
+          )}
+          {isLowStock && (
+            <span className="rounded-full bg-amber-500 px-2.5 py-1 text-[8px] font-black uppercase tracking-tighter text-white shadow-lg animate-pulse">
+              ⚡ Plus que {product.stock}
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Content */}
       <div className="flex flex-1 flex-col p-3 sm:p-5 gap-2 sm:gap-3">
-        {/* Category & Vendor */}
+        {/* Category & Vendor info row */}
         <div className="flex items-center justify-between gap-1 text-[9px] sm:text-[10px] uppercase tracking-widest text-slate-400 dark:text-slate-500">
           <span className="truncate font-bold">{category}</span>
           <span className="truncate font-medium">{vendor}</span>
@@ -86,29 +94,30 @@ export function ProductCard({ product, className = "", onQuickView }: { product:
           {title}
         </h3>
 
-        {/* Bottom area */}
-        <div className="mt-auto pt-2 sm:pt-3 border-t border-black/5 dark:border-white/5">
-          {/* Rating */}
-          <div className="flex items-center gap-1 mb-2">
-            <Star className="h-3 w-3 text-amber-400 flex-shrink-0" />
-            <span className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400">
-              {rating.toFixed(1)}
-              {reviews > 0 && <span className="ml-1 opacity-70">({reviews})</span>}
-            </span>
+        {/* Rating & City */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1 text-[10px] font-bold text-amber-500">
+            <Star className="h-3 w-3 fill-amber-500" />
+            <span>{rating.toFixed(1)}</span>
+            <span className="text-slate-400 font-medium">({reviews})</span>
           </div>
+          <div className="flex items-center gap-1 text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
+            <MapPin className="h-3 w-3 text-cyan-500" />
+            {product.city || "N'Djaména"}
+          </div>
+        </div>
 
-          {/* Price + CTA */}
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-sm sm:text-base font-black text-slate-900 dark:text-white whitespace-nowrap">
-              {price.toLocaleString()} <span className="text-[10px] font-bold text-slate-400">FCFA</span>
-            </span>
-            <button
-              onClick={handleAddToCart}
-              className="relative z-20 flex-shrink-0 rounded-xl bg-slate-900 dark:bg-white px-3 py-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-white dark:text-slate-900 transition hover:bg-cyan-500 dark:hover:bg-cyan-400 active:scale-95 shadow-sm"
-            >
-              + Panier
-            </button>
-          </div>
+        {/* Bottom area: Price + CTA */}
+        <div className="mt-auto pt-2 sm:pt-3 border-t border-black/5 dark:border-white/5 flex items-center justify-between gap-2">
+          <span className="text-sm sm:text-base font-black text-slate-900 dark:text-white whitespace-nowrap">
+            {price.toLocaleString()} <span className="text-[10px] font-bold text-slate-400">FCFA</span>
+          </span>
+          <button
+            onClick={handleAddToCart}
+            className="relative z-20 flex-shrink-0 rounded-xl bg-slate-900 dark:bg-white px-3 py-1.5 text-[10px] sm:text-xs font-black uppercase tracking-widest text-white dark:text-slate-900 transition hover:bg-cyan-500 dark:hover:bg-cyan-400 active:scale-95 shadow-sm"
+          >
+            + Panier
+          </button>
         </div>
       </div>
     </motion.article>

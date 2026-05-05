@@ -24,17 +24,40 @@ export function AddToCartButton({ product, disabled }: { product: any; disabled?
   };
 
   return (
-    <ShinyButton
-      variant={added ? 'glass' : 'primary'}
-      onClick={handleAdd}
-      disabled={disabled}
-      className={`flex-1 !py-4 ${added ? 'bg-emerald-500/20 text-emerald-600 border-emerald-500/30' : ''}`}
+    <motion.div
+      whileTap={{ scale: 0.95 }}
+      className="flex-1"
     >
-      {added ? (
-        <span className="flex items-center gap-2">✓ Ajouté !</span>
-      ) : (
-        <span className="flex items-center gap-2"><ShoppingCart className="h-5 w-5" /> Ajouter au panier</span>
-      )}
-    </ShinyButton>
+      <ShinyButton
+        variant={added ? 'glass' : 'primary'}
+        onClick={handleAdd}
+        disabled={disabled}
+        className={`w-full !py-4 transition-all duration-500 ${added ? 'bg-emerald-500/20 text-emerald-600 border-emerald-500/30' : ''}`}
+      >
+        <AnimatePresence mode="wait">
+          {added ? (
+            <motion.span 
+              key="added"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="flex items-center gap-2"
+            >
+              ✓ Ajouté au panier !
+            </motion.span>
+          ) : (
+            <motion.span 
+              key="add"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="flex items-center gap-2"
+            >
+              <ShoppingCart className="h-5 w-5" /> Ajouter au panier
+            </motion.span>
+          )}
+        </AnimatePresence>
+      </ShinyButton>
+    </motion.div>
   );
 }

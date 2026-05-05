@@ -4,6 +4,8 @@ import { prisma } from "./db";
 import { revalidatePath } from "next/cache";
 import { uploadImage } from "./upload";
 import { z } from "zod";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "./auth";
 
 // --- SCHEMAS ---
 const productSchema = z.object({
@@ -19,6 +21,13 @@ const productSchema = z.object({
 // --- ACTIONS PRODUITS ---
 
 export async function createProduct(data: any) {
+  const session = await getServerSession(authOptions) as any;
+  if (!session || (session.user.role !== "VENDOR" && session.user.role !== "ADMIN")) {
+    throw new Error("Non autorisé");
+  }
+
+  const brandId = session.user.role === "VENDOR" ? session.user.id : data.brandId;
+
   const product = await prisma.produit.create({
     data: {
       sku: data.sku || `SKU-${Date.now()}`,
@@ -28,9 +37,9 @@ export async function createProduct(data: any) {
       tva: 18,
       prix_ttc: parseFloat(data.price || data.prix_ttc),
       stock: parseInt(data.stock),
-      images: data.images ? data.images.split(',').map((u: string) => u.trim()).filter(Boolean) : [data.image].filter(Boolean),
+      images: data.images ? data.images.split(',').map((u: string) => u.trim()).filter(Boolean) : (data.image ? [data.image] : []),
       categories: [data.category || data.categories?.[0]],
-      brandId: data.brandId,
+      brandId: brandId,
     }
   });
   revalidatePath('/admin');
@@ -39,6 +48,17 @@ export async function createProduct(data: any) {
 }
 
 export async function updateProduct(id: string, data: any) {
+  const session = await getServerSession(authOptions) as any;
+  if (!session) throw new Error("Non autorisé");
+
+  const existingProduct = await prisma.produit.findUnique({ where: { id } });
+  if (!existingProduct) throw new Error("Produit introuvable");
+
+  // Si c'est un vendeur, il ne peut modifier que ses propres produits
+  if (session.user.role === "VENDOR" && existingProduct.brandId !== session.user.id) {
+    throw new Error("Accès refusé");
+  }
+
   const product = await prisma.produit.update({
     where: { id },
     data: {
@@ -52,10 +72,21 @@ export async function updateProduct(id: string, data: any) {
   });
   revalidatePath('/admin');
   revalidatePath(`/produit/${id}`);
+  revalidatePath('/produits');
   return product;
 }
 
 export async function deleteProduct(id: string) {
+  const session = await getServerSession(authOptions) as any;
+  if (!session) throw new Error("Non autorisé");
+
+  const existingProduct = await prisma.produit.findUnique({ where: { id } });
+  if (!existingProduct) return;
+
+  if (session.user.role === "VENDOR" && existingProduct.brandId !== session.user.id) {
+    throw new Error("Accès refusé");
+  }
+
   await prisma.produit.delete({ where: { id } });
   revalidatePath('/admin');
   revalidatePath('/produits');
@@ -370,12 +401,30 @@ export async function getWishlist(sessionId: string) {
 }
 
 export async function getRecommendedProducts(productId: string) {
-  const results = await prisma.$queryRaw`
-    SELECT p.* FROM "Produit" p
-    JOIN vue_recommandations vr ON p.id = vr.recommended_product_id
-    WHERE vr.source_product_id = ${productId}
-    ORDER BY vr.strength DESC
-    LIMIT 4
-  ` as any[];
-  return results;
+  try {
+    const results = await prisma.$queryRaw`
+      SELECT p.* FROM "Produit" p
+      JOIN vue_recommandations vr ON p.id = vr.recommended_product_id
+      WHERE vr.source_product_id = ${productId}
+      ORDER BY vr.strength DESC
+      LIMIT 4
+    ` as any[];
+
+    if (results && results.length > 0) return results;
+    
+    // Fallback: produits de la même catégorie
+    const product = await prisma.produit.findUnique({ where: { id: productId } });
+    if (!product) return [];
+
+    return prisma.produit.findMany({
+      where: {
+        categories: { hasSome: product.categories },
+        id: { not: productId }
+      },
+      take: 4
+    });
+  } catch (e) {
+    // Si la vue n'existe pas encore ou erreur SQL
+    return prisma.produit.findMany({ take: 4 });
+  }
 }
