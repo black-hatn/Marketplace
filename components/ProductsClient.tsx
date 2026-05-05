@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, Search, FilterX, Sparkles, Plus, Scale, X, ArrowRight } from 'lucide-react';
+import Image from 'next/image';
 import { ProductCard } from '@/components/ProductCard';
 import PageTransition from '@/components/PageTransition';
 
@@ -26,8 +27,6 @@ type ProductProps = {
 
 const ITEMS_PER_PAGE = 8;
 
-import Image from 'next/image';
-
 export default function ProductsClient({ initialProducts }: { initialProducts: ProductProps[] }) {
   const searchParams = useSearchParams();
   const [category, setCategory] = useState('Tous');
@@ -37,27 +36,33 @@ export default function ProductsClient({ initialProducts }: { initialProducts: P
   const [compareList, setCompareList] = useState<ProductProps[]>([]);
   const [showCompare, setShowCompare] = useState(false);
 
-  // Sync with URL search params
-  useEffect(() => {
-    const s = searchParams.get('search');
-    const b = searchParams.get('badge');
-    if (s) setSearch(s);
-    if (b) {
-      setSearch(b);
-    }
-  }, [searchParams]);
-
   const categories = useMemo(
-    () => ['Tous', ...Array.from(new Set(initialProducts.map((p) => p.category))).sort()],
+    () => ['Tous', ...Array.from(new Set((initialProducts || []).map((p) => p.category))).sort()],
     [initialProducts]
   );
 
   const cities = useMemo(
-    () => ['Tout le Tchad', ...Array.from(new Set(initialProducts.map((p) => p.city || "N'Djaména"))).sort()],
+    () => ['Tout le Tchad', ...Array.from(new Set((initialProducts || []).map((p) => p.city || "N'Djaména"))).sort()],
     [initialProducts]
   );
 
+  // Sync with URL search params
+  useEffect(() => {
+    if (!searchParams) return;
+    const s = searchParams.get('search');
+    const b = searchParams.get('badge');
+    const c = searchParams.get('category');
+    
+    if (s) setSearch(s);
+    if (b) setSearch(b);
+    if (c && categories.length > 0) {
+      const found = categories.find(cat => cat.toLowerCase() === c.toLowerCase());
+      if (found) setCategory(found);
+    }
+  }, [searchParams, categories]);
+
   const filteredProducts = useMemo(() => {
+    if (!initialProducts) return [];
     return initialProducts.filter((product) => {
       const matchesCategory = category === 'Tous' || product.category === category;
       const matchesCity = city === 'Tout le Tchad' || (product.city || "N'Djaména") === city;
