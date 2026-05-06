@@ -463,7 +463,7 @@ export async function updateProfile(id: string, role: string, formData: FormData
 }
 
 export async function getNotifications(brandId: string) {
-  return prisma.notification.findMany({
+  return (prisma as any).notification.findMany({
     where: { brandId },
     orderBy: { createdAt: 'desc' },
     take: 10
@@ -471,7 +471,7 @@ export async function getNotifications(brandId: string) {
 }
 
 export async function markAsRead(notificationId: string) {
-  await prisma.notification.update({
+  await (prisma as any).notification.update({
     where: { id: notificationId },
     data: { read: true }
   });
@@ -608,7 +608,7 @@ export async function getRecommendedProducts(productId: string) {
 // --- ADVANCED VENDOR ACTIONS ---
 
 export async function getCoupons(brandId: string) {
-  return prisma.coupon.findMany({
+  return (prisma as any).coupon.findMany({
     where: { brandId },
     orderBy: { createdAt: 'desc' }
   });
@@ -620,7 +620,7 @@ export async function createCoupon(brandId: string, formData: FormData) {
   const type = formData.get('type') as string;
   const expiresAt = new Date(formData.get('expiresAt') as string);
 
-  await prisma.coupon.create({
+  await (prisma as any).coupon.create({
     data: {
       code,
       discount,
@@ -633,25 +633,25 @@ export async function createCoupon(brandId: string, formData: FormData) {
 }
 
 export async function deleteCoupon(id: string) {
-  await prisma.coupon.delete({ where: { id } });
+  await (prisma as any).coupon.delete({ where: { id } });
   revalidatePath('/vendeur/dashboard');
 }
 
 export async function replyToReview(reviewId: string, reply: string) {
-  await prisma.review.update({
+  await (prisma as any).review.update({
     where: { id: reviewId },
-    data: { reply }
+    data: { reply } as any
   });
 }
 
 export async function getVendorWallet(brandId: string) {
-  let wallet = await prisma.wallet.findUnique({
+  let wallet = await (prisma as any).wallet.findUnique({
     where: { brandId },
     include: { requests: { orderBy: { createdAt: 'desc' } } }
   });
 
   if (!wallet) {
-    wallet = await prisma.wallet.create({
+    wallet = await (prisma as any).wallet.create({
       data: { brandId, balance: 0 },
       include: { requests: { orderBy: { createdAt: 'desc' } } }
     });
@@ -660,17 +660,17 @@ export async function getVendorWallet(brandId: string) {
 }
 
 export async function requestWithdrawal(walletId: string, amount: number, method: string) {
-  const wallet = await prisma.wallet.findUnique({ where: { id: walletId } });
+  const wallet = await (prisma as any).wallet.findUnique({ where: { id: walletId } });
   if (!wallet || Number(wallet.balance) < amount) {
     throw new Error("Solde insuffisant");
   }
 
-  await prisma.$transaction([
-    prisma.wallet.update({
+  await (prisma as any).$transaction([
+    (prisma as any).wallet.update({
       where: { id: walletId },
       data: { balance: { decrement: amount } }
     }),
-    prisma.withdrawalRequest.create({
+    (prisma as any).withdrawalRequest.create({
       data: { walletId, amount, method }
     })
   ]);
@@ -678,7 +678,7 @@ export async function requestWithdrawal(walletId: string, amount: number, method
 }
 
 export async function createNotification(brandId: string, type: string, title: string, message: string) {
-  return prisma.notification.create({
+  return (prisma as any).notification.create({
     data: { brandId, type, title, message }
   });
 }

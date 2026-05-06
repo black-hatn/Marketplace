@@ -87,7 +87,7 @@ export default async function VendorFinancesPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-black/5 dark:divide-white/5">
-                  {wallet.requests.map((req) => (
+                  {wallet.requests.map((req: any) => (
                     <tr key={req.id} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors">
                       <td className="px-8 py-4 text-sm font-bold text-slate-600 dark:text-slate-400">
                         {new Date(req.createdAt).toLocaleDateString()}

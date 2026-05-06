@@ -76,11 +76,11 @@ export default async function VendorReviewsPage() {
                 </div>
 
                 <div className="mt-8 space-y-4">
-                  {review.reply ? (
+                  {(review as any).reply ? (
                     <div className="bg-blue-500/5 border border-blue-500/10 p-5 rounded-2xl relative">
                       <CornerDownRight className="absolute -left-6 top-6 h-5 w-5 text-blue-500/30" />
                       <p className="text-[10px] font-black uppercase tracking-widest text-blue-600 mb-2">Votre réponse</p>
-                      <p className="text-sm font-medium text-slate-600 dark:text-slate-400">{review.reply}</p>
+                      <p className="text-sm font-medium text-slate-600 dark:text-slate-400">{(review as any).reply}</p>
                     </div>
                   ) : (
                     <form action={handleReply} className="flex gap-3">

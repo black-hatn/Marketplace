@@ -83,7 +83,7 @@ export default async function VendorCouponsPage() {
 
         {/* List */}
         <div className="lg:col-span-2 space-y-6">
-          {coupons.map((coupon) => (
+          {coupons.map((coupon: any) => (
             <div key={coupon.id} className="bg-white dark:bg-slate-900 p-6 rounded-[2rem] border border-black/5 dark:border-white/10 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-6 hover:shadow-md transition-all">
               <div className="flex items-center gap-6">
                 <div className="h-16 w-16 rounded-2xl bg-cyan-500/10 flex items-center justify-center">
