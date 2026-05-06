@@ -301,6 +301,39 @@ export async function getAnalyticsData() {
   };
 }
 
+export async function getVendorAnalytics(brandId: string) {
+  const [ordersCount, revenueData] = await Promise.all([
+    prisma.commande.count({
+      where: {
+        lignes_commande: {
+          some: { produit: { brandId } }
+        }
+      }
+    }),
+    prisma.ligneCommande.findMany({
+      where: {
+        produit: { brandId },
+        commande: {
+          statut: { in: ['PAYEE', 'VALIDEE', 'EXPEDIEE', 'LIVREE'] }
+        }
+      },
+      select: {
+        prix_unitaire_ht: true,
+        quantite: true
+      }
+    })
+  ]);
+
+  const totalRevenue = revenueData.reduce((acc, curr) => {
+    return acc + (Number(curr.prix_unitaire_ht) * curr.quantite);
+  }, 0);
+
+  return {
+    totalOrders: ordersCount,
+    totalRevenue: totalRevenue
+  };
+}
+
 export async function toggleBrandVerification(id: string) {
   const brand = await prisma.brand.findUnique({ where: { id } });
   if (!brand) return;
