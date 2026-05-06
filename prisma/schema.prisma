@@ -93,6 +93,7 @@ model Client {
   prenom           String
   telephone        String?
   role             Role      @default(CLIENT)
+  image            String?
   anonymise        Boolean   @default(false) // RGPD
   date_inscription DateTime  @default(now())
   createdAt        DateTime  @default(now())

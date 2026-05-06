@@ -334,6 +334,53 @@ export async function getVendorAnalytics(brandId: string) {
   };
 }
 
+export async function getUserProfile(id: string, role: string) {
+  if (role === 'VENDOR') {
+    return prisma.brand.findUnique({ where: { id } });
+  } else {
+    return prisma.client.findUnique({ where: { id } });
+  }
+}
+
+export async function updateProfile(id: string, role: string, formData: FormData) {
+  const name = formData.get('name') as string;
+  const email = formData.get('email') as string;
+  const phone = formData.get('phone') as string;
+  const prenom = formData.get('prenom') as string;
+  const imageFile = formData.get('imageFile') as File;
+  let imageUrl = formData.get('existingImage') as string;
+
+  if (imageFile && imageFile.size > 0) {
+    imageUrl = await uploadImage(imageFile);
+  }
+
+  if (role === 'VENDOR') {
+    await prisma.brand.update({
+      where: { id },
+      data: {
+        name,
+        email,
+        phone,
+        image: imageUrl
+      }
+    });
+  } else {
+    await prisma.client.update({
+      where: { id },
+      data: {
+        nom: name,
+        prenom: prenom || "",
+        email,
+        telephone: phone,
+        image: imageUrl
+      }
+    });
+  }
+  
+  revalidatePath('/[locale]/vendeur/dashboard', 'layout');
+  revalidatePath('/[locale]/admin', 'layout');
+}
+
 export async function toggleBrandVerification(id: string) {
   const brand = await prisma.brand.findUnique({ where: { id } });
   if (!brand) return;

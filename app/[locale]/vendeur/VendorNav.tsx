@@ -14,7 +14,7 @@ export function VendorNav() {
     { icon: ShoppingCart, label: 'Commandes', href: '/vendeur/commandes' },
     { icon: Package, label: 'Inventaire', href: '/vendeur/dashboard' }, // Same for now or separate
     { icon: Activity, label: 'Performances', href: '/vendeur/dashboard' },
-    { icon: Settings, label: 'Profil Boutique', href: '/vendeur/dashboard' },
+    { icon: Settings, label: 'Mon Profil', href: '/vendeur/profil' },
   ];
 
   return (

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Menu, X, ShieldAlert, Heart, ShoppingCart, Rocket, LayoutDashboard, Sparkles, LogOut } from 'lucide-react';
+import { Menu, X, ShieldAlert, Heart, ShoppingCart, Rocket, LayoutDashboard, Sparkles, LogOut, User } from 'lucide-react';
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter, usePathname, Link } from '@/i18n/routing';
 import { CartSlideOver } from '@/components/CartSlideOver';
@@ -70,13 +70,22 @@ export function SiteHeader() {
             </Link>
             
             {session ? (
-              <Link 
-                href={session.user.role === "ADMIN" ? "/admin" : "/vendeur/dashboard"} 
-                className="p-2.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-300 hover:text-cyan-600"
-                title="Tableau de bord"
-              >
-                <LayoutDashboard className="h-5 w-5" />
-              </Link>
+              <div className="flex items-center gap-1">
+                <Link 
+                  href={session.user.role === "ADMIN" ? "/admin" : (session.user.role === "VENDOR" ? "/vendeur/dashboard" : "/profil")} 
+                  className="p-2.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-300 hover:text-cyan-600"
+                  title="Tableau de bord"
+                >
+                  <LayoutDashboard className="h-5 w-5" />
+                </Link>
+                <Link 
+                  href={session.user.role === "ADMIN" ? "/admin/profil" : (session.user.role === "VENDOR" ? "/vendeur/profil" : "/profil")} 
+                  className="p-2.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-300 hover:text-cyan-600"
+                  title="Mon Profil"
+                >
+                  <User className="h-5 w-5" />
+                </Link>
+              </div>
             ) : (
               <Link href="/admin/login" className="flex items-center gap-2 px-4 py-2 mx-1 rounded-full text-xs font-bold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
                 {t('login')}

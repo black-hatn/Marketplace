@@ -2,7 +2,7 @@
 // Admin Dashboard System v2.5 - Trigger build
 
 
-import { LayoutDashboard, ShoppingCart, Tags, Users, BarChart3, ShieldAlert } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, Tags, Users, BarChart3, ShieldAlert, Settings } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import { usePathname } from 'next/navigation';
 
@@ -17,6 +17,7 @@ export function AdminNav() {
     { icon: Tags, label: 'Vendeurs', href: '/admin/vendeurs' },
     { icon: Users, label: 'Clients', href: '/admin/clients' },
     { icon: BarChart3, label: 'Statistiques', href: '/admin/analyses' },
+    { icon: Settings, label: 'Profil Admin', href: '/admin/profil' },
     { icon: ShieldAlert, label: 'Audit Sécurité', href: '/admin/audit' },
   ];
 
