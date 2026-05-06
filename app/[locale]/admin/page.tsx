@@ -55,7 +55,14 @@ export default async function AdminDashboard() {
         </div>
         
         <div className="flex items-center gap-3">
-          <div className="relative">
+          <Link 
+            href="/"
+            className="hidden sm:flex items-center gap-2 px-4 py-2.5 rounded-full bg-violet-50 dark:bg-violet-500/10 text-violet-600 dark:text-violet-400 text-sm font-semibold hover:bg-violet-100 dark:hover:bg-violet-500/20 transition-colors border border-violet-100 dark:border-violet-500/20"
+          >
+            <ArrowUpRight className="h-4 w-4" />
+            Retour au site
+          </Link>
+          <div className="relative hidden md:block">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
             <input 
               type="text" 
@@ -63,7 +70,7 @@ export default async function AdminDashboard() {
               className="pl-10 pr-4 py-2.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/20 transition-all shadow-sm w-48 focus:w-64"
             />
           </div>
-          <button className="h-10 w-10 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-600 hover:text-violet-600 transition-colors shadow-sm relative">
+          <button className="h-10 w-10 shrink-0 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-600 hover:text-violet-600 transition-colors shadow-sm relative">
             <Bell className="h-5 w-5" />
             <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-slate-900"></span>
           </button>
