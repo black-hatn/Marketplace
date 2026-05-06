@@ -1,6 +1,6 @@
 'use client';
 
-import { LayoutDashboard, ShoppingCart, Package, Users, BarChart3, ShieldCheck, Activity, Settings, Eye } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, Package, Activity, Settings, Eye, ChevronRight } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import { usePathname } from 'next/navigation';
 
@@ -12,59 +12,53 @@ export function VendorNav() {
   const sidebarLinks = [
     { icon: LayoutDashboard, label: 'Dashboard', href: '/vendeur/dashboard' },
     { icon: ShoppingCart, label: 'Commandes', href: '/vendeur/commandes' },
-    { icon: Package, label: 'Inventaire', href: '/vendeur/dashboard' }, // Same for now or separate
-    { icon: Activity, label: 'Performances', href: '/vendeur/dashboard' },
-    { icon: Settings, label: 'Mon Profil', href: '/vendeur/profil' },
+    { icon: Package, label: 'Inventaire', href: '/vendeur/dashboard' },
+    { icon: Activity, label: 'Analytics', href: '/vendeur/dashboard' },
+    { icon: Settings, label: 'Profil', href: '/vendeur/profil' },
   ];
 
   return (
-    <aside className="hidden lg:flex w-72 bg-[#0A1128] text-white flex-col fixed inset-y-0 z-50 shadow-2xl">
-        <div className="p-6 flex items-center gap-3">
-          <div className="bg-cyan-500 p-2 rounded-xl">
-            <ShieldCheck className="h-6 w-6 text-white" />
-          </div>
-          <div>
-            <h1 className="font-black text-xl leading-none">Vendor<span className="text-cyan-400">Hub</span></h1>
-            <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold mt-1">Marketplace Pro</p>
-          </div>
-        </div>
+    <aside className="fixed left-6 top-1/2 -translate-y-1/2 z-50 hidden lg:block">
+      <div className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-2xl border border-black/5 dark:border-white/10 rounded-[2.5rem] p-4 flex flex-col items-center gap-6 shadow-2xl shadow-black/10">
+        
+        {/* Brand Icon */}
+        <Link href="/" className="h-12 w-12 bg-slate-900 dark:bg-white rounded-2xl flex items-center justify-center shadow-lg hover:rotate-6 transition-all">
+          <Eye className="h-6 w-6 text-white dark:text-slate-900" />
+        </Link>
 
-        <div className="px-6 py-4">
-          <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Espace Vendeur</p>
-          <nav className="space-y-1">
-            {sidebarLinks.map((link, idx) => {
-              const currentPath = pathname.replace(/^\/(fr|en|ar)/, '');
-              const pathToCheck = currentPath === '' ? '/' : currentPath;
-              const isActive = link.href === '/vendeur/dashboard' ? pathToCheck === '/vendeur/dashboard' : pathToCheck.startsWith(link.href);
-              
-              return (
+        <div className="w-8 h-px bg-black/5 dark:bg-white/10" />
+
+        {/* Nav Links */}
+        <nav className="flex flex-col gap-3">
+          {sidebarLinks.map((link, idx) => {
+            const currentPath = pathname.replace(/^\/(fr|en|ar)/, '');
+            const pathToCheck = currentPath === '' ? '/' : currentPath;
+            const isActive = link.href === '/vendeur/dashboard' ? pathToCheck === '/vendeur/dashboard' : pathToCheck.startsWith(link.href);
+            
+            return (
               <Link 
                 key={idx} 
                 href={link.href as any} 
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm font-semibold ${isActive ? 'bg-[#1E293B] text-white border-l-4 border-cyan-500' : 'text-slate-400 hover:text-white hover:bg-white/5 border-l-4 border-transparent'}`}
+                className={`group relative h-14 w-14 rounded-2xl flex items-center justify-center transition-all ${isActive ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/30' : 'text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'}`}
               >
-                <link.icon className="h-5 w-5" />
-                {link.label}
+                <link.icon className="h-6 w-6" />
+                
+                {/* Tooltip */}
+                <div className="absolute left-16 px-4 py-2 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-[10px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 translate-x-[-10px] group-hover:translate-x-0 transition-all pointer-events-none shadow-xl whitespace-nowrap z-50">
+                  {link.label}
+                  <div className="absolute left-[-4px] top-1/2 -translate-y-1/2 border-y-4 border-y-transparent border-r-4 border-r-slate-900 dark:border-r-white" />
+                </div>
               </Link>
             )})}
-          </nav>
-        </div>
+        </nav>
 
-        <div className="mt-auto p-6 space-y-4">
-          <Link href="/" className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-400 hover:text-white hover:bg-white/5 transition-all">
-             <Eye className="h-5 w-5" />
-             Voir ma boutique
-          </Link>
-          <div className="bg-white/5 rounded-2xl p-4 flex items-center gap-3 border border-white/10">
-            <div className="h-10 w-10 rounded-full bg-cyan-500 flex items-center justify-center font-bold text-white shrink-0 uppercase">
-              V
-            </div>
-            <div className="overflow-hidden">
-              <p className="text-sm font-bold text-white truncate">Ma Boutique</p>
-              <p className="text-[10px] text-slate-400 truncate">Vendeur Partenaire</p>
-            </div>
-          </div>
-        </div>
-      </aside>
+        <div className="w-8 h-px bg-black/5 dark:bg-white/10" />
+
+        {/* Bottom Profile */}
+        <Link href="/vendeur/profil" className="h-12 w-12 rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 ring-2 ring-black/5 hover:ring-cyan-500 transition-all">
+          <div className="h-full w-full flex items-center justify-center font-black text-xs text-slate-400">V</div>
+        </Link>
+      </div>
+    </aside>
   );
 }

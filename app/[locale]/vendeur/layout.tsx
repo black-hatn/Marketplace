@@ -16,8 +16,8 @@ export default async function VendorDashboardLayout({ children }: { children: Re
   return (
     <div className="flex min-h-screen bg-[#F8FAFC] dark:bg-slate-950 font-sans">
       <VendorNav />
-      <main className="flex-1 lg:ml-72 flex flex-col min-h-screen w-full">
-        <header className="h-20 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-8 sticky top-0 z-40">
+      <main className="flex-1 flex flex-col min-h-screen w-full lg:pl-32 pr-4 sm:pr-8">
+        <header className="h-20 bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl border-b border-black/5 dark:border-white/10 flex items-center justify-between px-8 sticky top-0 z-40">
           <div className="flex items-center gap-4">
             <div className="lg:hidden h-10 w-10 bg-cyan-500 rounded-xl flex items-center justify-center">
               <ShoppingBag className="h-6 w-6 text-white" />
