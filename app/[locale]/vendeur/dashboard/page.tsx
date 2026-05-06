@@ -1,10 +1,9 @@
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
-import { redirect } from "next/navigation";
+import { redirect, Link } from "@/i18n/routing";
 import { prisma } from "@/lib/db";
 import { getVendorProducts } from "@/lib/actions";
 import { Package, Plus, TrendingUp, ShoppingBag, ShieldCheck, ArrowUpRight, ShoppingCart } from "lucide-react";
-import Link from "next/link";
 import { AdminProductModal } from "@/components/AdminProductModal";
 
 import Image from 'next/image';
@@ -20,12 +19,34 @@ export default async function VendorDashboard() {
     redirect("/");
   }
 
-  const brand = await prisma.brand.findUnique({
-    where: { id: session.user.id },
-    include: { produits: true }
-  });
+  let brand;
+  if (session.user.role === "ADMIN") {
+    brand = await prisma.brand.findFirst({
+      include: { produits: true }
+    });
+  } else {
+    brand = await prisma.brand.findUnique({
+      where: { id: session.user.id },
+      include: { produits: true }
+    });
+  }
 
-  if (!brand) redirect("/");
+  if (!brand) {
+    if (session.user.role === "ADMIN") {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 pt-20">
+          <div className="text-center p-12 bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-xl border border-black/5 dark:border-white/10">
+            <h1 className="text-2xl font-black mb-4">Aucune marque trouvée</h1>
+            <p className="text-slate-500 mb-8">En tant qu'Admin, vous devez d'abord créer une marque pour voir ce dashboard.</p>
+            <Link href="/admin" className="px-8 py-4 bg-cyan-600 text-white rounded-2xl font-bold uppercase tracking-widest">
+              Retour au Panel Admin
+            </Link>
+          </div>
+        </div>
+      );
+    }
+    redirect("/");
+  }
 
   const products = await getVendorProducts(brand.id);
   const totalStock = products.reduce((acc, p) => acc + p.stock, 0);
