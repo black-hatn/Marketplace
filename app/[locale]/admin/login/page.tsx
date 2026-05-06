@@ -30,7 +30,18 @@ export default function AdminLogin() {
       toast.error('Identifiants incorrects');
     } else {
       toast.success('Connexion réussie');
-      router.push('/admin');
+      
+      // Get session to check role
+      const { getSession } = await import('next-auth/react');
+      const session = await getSession() as any;
+      
+      if (session?.user?.role === 'ADMIN') {
+        router.push('/admin');
+      } else if (session?.user?.role === 'VENDOR') {
+        router.push('/vendeur/dashboard');
+      } else {
+        router.push('/');
+      }
       router.refresh();
     }
   };

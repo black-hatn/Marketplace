@@ -12,8 +12,12 @@ import Image from 'next/image';
 export default async function VendorDashboard() {
   const session = await getServerSession(authOptions) as any;
 
-  if (!session || session.user.role !== "VENDOR") {
+  if (!session) {
     redirect("/admin/login");
+  }
+
+  if (session.user.role !== "VENDOR" && session.user.role !== "ADMIN") {
+    redirect("/");
   }
 
   const brand = await prisma.brand.findUnique({
