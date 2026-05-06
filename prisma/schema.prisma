@@ -26,9 +26,14 @@ model Brand {
   moovMoney   String?
   isVerified  Boolean   @default(false)
   views       Int       @default(0)
+  banner      String?
+  themeColor  String    @default("#06B6D4") // Cyan-500 par défaut
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   produits    Produit[]
+  coupons     Coupon[]
+  notifications Notification[]
+  wallet      Wallet?
 }
 
 model Category {
@@ -220,5 +225,50 @@ model Review {
   rating     Int
   comment    String   @db.Text
   userName   String
+  reply      String?   @db.Text
   createdAt  DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String?
+  brandId   String?
+  type      String   // ORDER, STOCK, SYSTEM, REVIEW
+  title     String
+  message   String   @db.Text
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  
+  brand     Brand?   @relation(fields: [brandId], references: [id])
+}
+
+model Coupon {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  discount    Float    // Pourcentage ou fixe
+  type        String   @default("PERCENTAGE") // PERCENTAGE ou FIXED
+  expiresAt   DateTime
+  isActive    Boolean  @default(true)
+  brandId     String
+  brand       Brand    @relation(fields: [brandId], references: [id])
+  createdAt   DateTime @default(now())
+}
+
+model Wallet {
+  id        String   @id @default(cuid())
+  balance   Decimal  @db.Decimal(12, 2) @default(0)
+  brandId   String   @unique
+  brand     Brand    @relation(fields: [brandId], references: [id])
+  updatedAt DateTime @updatedAt
+  requests  WithdrawalRequest[]
+}
+
+model WithdrawalRequest {
+  id        String   @id @default(cuid())
+  amount    Decimal  @db.Decimal(12, 2)
+  method    String   // AIRTEL, MOOV
+  status    String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  walletId  String
+  wallet    Wallet   @relation(fields: [walletId], references: [id])
+  createdAt DateTime @default(now())
 }

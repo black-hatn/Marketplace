@@ -4,7 +4,8 @@ import { redirect } from "next/navigation";
 import { Link } from "@/i18n/routing";
 import { prisma } from "@/lib/db";
 import { getVendorProducts, getVendorAnalytics } from "@/lib/actions";
-import { Package, Plus, TrendingUp, ShoppingBag, ShieldCheck, ArrowUpRight, ShoppingCart, DollarSign, Activity, Eye, Settings, LogOut, ChevronRight } from "lucide-react";
+import { Package, Plus, TrendingUp, ShoppingBag, ShieldCheck, ArrowUpRight, ShoppingCart, DollarSign, Activity, Eye, Settings, LogOut, ChevronRight, Bell, Sparkles } from "lucide-react";
+import { VendorRevenueChart } from "@/components/VendorRevenueChart";
 import { AdminProductModal } from "@/components/AdminProductModal";
 import Image from 'next/image';
 
@@ -110,6 +111,48 @@ export default async function VendorDashboard() {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Analytics & Actions Grid */}
+        <div className="grid lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 border border-black/5 dark:border-white/10 shadow-xl shadow-black/5">
+            <div className="flex items-center justify-between mb-8">
+              <div>
+                <h3 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Performance des Ventes</h3>
+                <p className="text-xs text-slate-500 font-bold uppercase tracking-widest mt-1">30 derniers jours</p>
+              </div>
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-600 text-[10px] font-black uppercase tracking-widest">
+                <TrendingUp className="h-3 w-3" /> +12.5%
+              </div>
+            </div>
+            <div className="h-[300px] w-full">
+              <VendorRevenueChart data={analytics.chartData} />
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 border border-black/5 dark:border-white/10 shadow-xl bg-gradient-to-br from-cyan-600 to-blue-700 text-white relative overflow-hidden group">
+              <div className="absolute top-[-20%] right-[-10%] w-32 h-32 bg-white/10 blur-3xl rounded-full group-hover:scale-150 transition-transform duration-700" />
+              <div className="relative z-10">
+                <Sparkles className="h-8 w-8 text-cyan-200 mb-4" />
+                <h3 className="text-xl font-black uppercase italic leading-tight">Booster vos <br/> ventes ?</h3>
+                <p className="text-xs text-white/70 mt-2 font-medium">Optimisez vos fiches produits pour apparaître en tête de liste.</p>
+                <button className="mt-6 px-6 py-3 bg-white text-cyan-600 rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-105 transition-all">
+                  Voir conseils
+                </button>
+              </div>
+            </div>
+
+            <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 border border-black/5 dark:border-white/10 shadow-xl">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Alertes Récentes</h3>
+                <Bell className="h-4 w-4 text-slate-400" />
+              </div>
+              <div className="space-y-4">
+                <p className="text-xs text-slate-500 text-center py-4">Pas de nouvelles alertes.</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">

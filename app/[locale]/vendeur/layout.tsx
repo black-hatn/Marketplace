@@ -1,9 +1,11 @@
-import { Search, Bell, Moon, LogOut, ShoppingBag } from 'lucide-react';
+import { Search, Moon, LogOut, ShoppingBag } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import { VendorNav } from './VendorNav';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { NotificationBell } from '@/components/NotificationBell';
+import { prisma } from '@/lib/db';
 
 export default async function VendorDashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions) as any;
@@ -11,6 +13,12 @@ export default async function VendorDashboardLayout({ children }: { children: Re
   // Restricted to VENDOR and ADMIN
   if (!session || (session.user.role !== 'VENDOR' && session.user.role !== 'ADMIN')) {
     return <>{children}</>;
+  }
+
+  let brandId = session.user.id;
+  if (session.user.role === 'ADMIN') {
+    const b = await prisma.brand.findFirst();
+    brandId = b?.id || "";
   }
 
   return (
@@ -33,7 +41,7 @@ export default async function VendorDashboardLayout({ children }: { children: Re
               <input type="text" placeholder="Rechercher..." className="pl-10 pr-4 py-2 bg-slate-100 dark:bg-slate-800 border-none rounded-full text-sm font-medium focus:ring-2 focus:ring-cyan-500 outline-none w-64" />
             </div>
             <div className="flex items-center gap-4 border-l border-slate-200 dark:border-slate-700 pl-6">
-              <button className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"><Bell className="h-5 w-5" /></button>
+              <NotificationBell brandId={brandId} />
               <button className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"><Moon className="h-5 w-5" /></button>
               <Link href="/api/auth/signout" className="flex items-center gap-2 text-sm font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 px-3 py-2 rounded-xl transition-all shadow-sm shadow-red-500/5">
                 <LogOut className="h-4 w-4" /> Quitter

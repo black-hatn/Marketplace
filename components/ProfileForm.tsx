@@ -14,13 +14,15 @@ interface ProfileFormProps {
 export function ProfileForm({ user, role }: ProfileFormProps) {
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState(user.image || null);
+  const [bannerPreview, setBannerPreview] = useState(user.banner || null);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>, type: 'profile' | 'banner') => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setPreview(reader.result as string);
+        if (type === 'profile') setPreview(reader.result as string);
+        else setBannerPreview(reader.result as string);
       };
       reader.readAsDataURL(file);
     }
@@ -31,6 +33,7 @@ export function ProfileForm({ user, role }: ProfileFormProps) {
     setLoading(true);
     const formData = new FormData(e.currentTarget);
     formData.append('existingImage', user.image || '');
+    formData.append('existingBanner', user.banner || '');
 
     try {
       await updateProfile(user.id, role, formData);
@@ -60,15 +63,51 @@ export function ProfileForm({ user, role }: ProfileFormProps) {
           </div>
           <label className="absolute bottom-0 right-0 h-10 w-10 bg-cyan-500 text-white rounded-full flex items-center justify-center cursor-pointer hover:scale-110 transition-transform shadow-lg border-4 border-white dark:border-slate-900">
             <Camera className="h-5 w-5" />
-            <input type="file" name="imageFile" className="hidden" accept="image/*" onChange={handleImageChange} />
+            <input type="file" name="imageFile" className="hidden" accept="image/*" onChange={(e) => handleImageChange(e, 'profile')} />
           </label>
         </div>
         <div className="flex-1 text-center sm:text-left">
-          <h3 className="text-xl font-black text-slate-900 dark:text-white">Photo de profil</h3>
-          <p className="text-sm text-slate-500 mt-1">Cliquez sur l'icône de caméra pour mettre à jour votre photo.</p>
+          <h3 className="text-xl font-black text-slate-900 dark:text-white">Logo / Photo de profil</h3>
+          <p className="text-sm text-slate-500 mt-1">Cliquez sur l'icône de caméra pour mettre à jour votre logo.</p>
           <p className="text-[10px] font-black uppercase tracking-widest text-cyan-600 mt-2">Format: JPG, PNG • Max: 5MB</p>
         </div>
       </div>
+
+      {role === 'VENDOR' && (
+        <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-black/5 dark:border-white/10 shadow-xl shadow-black/5 space-y-6">
+          <h3 className="text-xl font-black text-slate-900 dark:text-white">Identité de Marque</h3>
+          
+          <div className="space-y-4">
+            <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Bannière de boutique</label>
+            <div className="relative h-48 w-full rounded-3xl bg-slate-100 dark:bg-slate-800 overflow-hidden ring-1 ring-black/5 group">
+              {bannerPreview ? (
+                <Image src={bannerPreview} alt="Banner" fill className="object-cover" />
+              ) : (
+                <div className="h-full w-full flex items-center justify-center text-slate-300">
+                  <Camera className="h-10 w-10" />
+                </div>
+              )}
+              <label className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer">
+                <span className="bg-white text-slate-900 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest">Changer la bannière</span>
+                <input type="file" name="bannerFile" className="hidden" accept="image/*" onChange={(e) => handleImageChange(e, 'banner')} />
+              </label>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Couleur de la marque</label>
+            <div className="flex items-center gap-4">
+              <input 
+                type="color" 
+                name="themeColor" 
+                defaultValue={user.themeColor || "#06B6D4"}
+                className="h-12 w-24 rounded-xl border-none p-1 cursor-pointer bg-slate-50 dark:bg-slate-800"
+              />
+              <p className="text-xs text-slate-500 font-medium">Cette couleur sera utilisée pour vos boutons et accents sur votre boutique publique.</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Main Info */}
       <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-black/5 dark:border-white/10 shadow-xl shadow-black/5 space-y-6">

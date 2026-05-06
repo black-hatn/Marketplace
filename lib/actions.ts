@@ -134,7 +134,7 @@ export async function addReview(productId: string, data: { rating: number; comme
   });
 
   if (product) {
-    const avg = product.avis.reduce((acc, r) => acc + r.rating, 0) / product.avis.length;
+    const avg = product.avis.length > 0 ? product.avis.reduce((acc, r) => acc + r.rating, 0) / product.avis.length : 0;
     await prisma.produit.update({
       where: { id: productId },
       data: { 
@@ -142,6 +142,16 @@ export async function addReview(productId: string, data: { rating: number; comme
         reviews: product.avis.length
       }
     });
+
+    // Notify Vendor
+    if (product.brandId) {
+      await createNotification(
+        product.brandId,
+        'REVIEW',
+        'Nouvel avis client',
+        `${data.authorName} a laissé une note de ${data.rating}/5 sur ${product.nom}.`
+      );
+    }
   }
 
   revalidatePath(`/produit/${productId}`);
@@ -182,6 +192,19 @@ export async function createOrder(data: any) {
       }
     }
   });
+
+  // Notify Vendors
+  const vendorIds = [...new Set(data.items.map((item: any) => item.brandId))];
+  for (const brandId of vendorIds) {
+    if (brandId) {
+      await createNotification(
+        brandId as string,
+        'ORDER',
+        'Nouvelle commande reçue !',
+        `Une nouvelle commande (${commande.numero_commande}) vient d'être passée pour vos produits.`
+      );
+    }
+  }
 
   revalidatePath('/admin');
   return commande;
@@ -328,9 +351,58 @@ export async function getVendorAnalytics(brandId: string) {
     return acc + (Number(curr.prix_unitaire_ht) * curr.quantite);
   }, 0);
 
+  // Get chart data for the last 30 days
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+  const dailyStats = await prisma.ligneCommande.groupBy({
+    by: ['id'], // This is tricky, better to fetch orders and group in JS
+    where: {
+      produit: { brandId },
+      commande: { date_commande: { gte: thirtyDaysAgo } }
+    },
+    _sum: { quantite: true },
+  });
+
+  // Let's fetch all orders for this vendor in the last 30 days
+  const vendorOrders = await prisma.commande.findMany({
+    where: {
+      lignes_commande: { some: { produit: { brandId } } },
+      date_commande: { gte: thirtyDaysAgo }
+    },
+    include: {
+      lignes_commande: {
+        where: { produit: { brandId } }
+      }
+    },
+    orderBy: { date_commande: 'asc' }
+  });
+
+  // Group by date in JS
+  const chartMap = new Map();
+  for (let i = 0; i < 30; i++) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const dateStr = d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' });
+    chartMap.set(dateStr, { name: dateStr, revenue: 0, orders: 0 });
+  }
+
+  vendorOrders.forEach(order => {
+    const dateStr = new Date(order.date_commande).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' });
+    if (chartMap.has(dateStr)) {
+      const data = chartMap.get(dateStr);
+      const orderRevenue = order.lignes_commande.reduce((sum, item) => sum + (Number(item.prix_unitaire_ht) * item.quantite), 0);
+      data.revenue += orderRevenue;
+      data.orders += 1;
+    }
+  });
+
+  const chartData = Array.from(chartMap.values()).reverse();
+
   return {
     totalOrders: ordersCount,
-    totalRevenue: totalRevenue
+    totalRevenue: totalRevenue,
+    chartData: chartData
   };
 }
 
@@ -348,10 +420,17 @@ export async function updateProfile(id: string, role: string, formData: FormData
   const phone = formData.get('phone') as string;
   const prenom = formData.get('prenom') as string;
   const imageFile = formData.get('imageFile') as File;
+  const bannerFile = formData.get('bannerFile') as File;
+  const themeColor = formData.get('themeColor') as string;
   let imageUrl = formData.get('existingImage') as string;
+  let bannerUrl = formData.get('existingBanner') as string;
 
   if (imageFile && imageFile.size > 0) {
     imageUrl = await uploadImage(imageFile);
+  }
+
+  if (bannerFile && bannerFile.size > 0) {
+    bannerUrl = await uploadImage(bannerFile);
   }
 
   if (role === 'VENDOR') {
@@ -361,7 +440,9 @@ export async function updateProfile(id: string, role: string, formData: FormData
         name,
         email,
         phone,
-        image: imageUrl
+        image: imageUrl,
+        banner: bannerUrl,
+        themeColor: themeColor || "#06B6D4"
       } as any
     });
   } else {
@@ -379,6 +460,21 @@ export async function updateProfile(id: string, role: string, formData: FormData
   
   revalidatePath('/[locale]/vendeur/dashboard', 'layout');
   revalidatePath('/[locale]/admin', 'layout');
+}
+
+export async function getNotifications(brandId: string) {
+  return prisma.notification.findMany({
+    where: { brandId },
+    orderBy: { createdAt: 'desc' },
+    take: 10
+  });
+}
+
+export async function markAsRead(notificationId: string) {
+  await prisma.notification.update({
+    where: { id: notificationId },
+    data: { read: true }
+  });
 }
 
 export async function toggleBrandVerification(id: string) {
@@ -508,3 +604,82 @@ export async function getRecommendedProducts(productId: string) {
     return prisma.produit.findMany({ take: 4 });
   }
 }
+
+// --- ADVANCED VENDOR ACTIONS ---
+
+export async function getCoupons(brandId: string) {
+  return prisma.coupon.findMany({
+    where: { brandId },
+    orderBy: { createdAt: 'desc' }
+  });
+}
+
+export async function createCoupon(brandId: string, formData: FormData) {
+  const code = (formData.get('code') as string).toUpperCase();
+  const discount = parseFloat(formData.get('discount') as string);
+  const type = formData.get('type') as string;
+  const expiresAt = new Date(formData.get('expiresAt') as string);
+
+  await prisma.coupon.create({
+    data: {
+      code,
+      discount,
+      type,
+      expiresAt,
+      brandId
+    }
+  });
+  revalidatePath('/vendeur/dashboard');
+}
+
+export async function deleteCoupon(id: string) {
+  await prisma.coupon.delete({ where: { id } });
+  revalidatePath('/vendeur/dashboard');
+}
+
+export async function replyToReview(reviewId: string, reply: string) {
+  await prisma.review.update({
+    where: { id: reviewId },
+    data: { reply }
+  });
+}
+
+export async function getVendorWallet(brandId: string) {
+  let wallet = await prisma.wallet.findUnique({
+    where: { brandId },
+    include: { requests: { orderBy: { createdAt: 'desc' } } }
+  });
+
+  if (!wallet) {
+    wallet = await prisma.wallet.create({
+      data: { brandId, balance: 0 },
+      include: { requests: { orderBy: { createdAt: 'desc' } } }
+    });
+  }
+  return wallet;
+}
+
+export async function requestWithdrawal(walletId: string, amount: number, method: string) {
+  const wallet = await prisma.wallet.findUnique({ where: { id: walletId } });
+  if (!wallet || Number(wallet.balance) < amount) {
+    throw new Error("Solde insuffisant");
+  }
+
+  await prisma.$transaction([
+    prisma.wallet.update({
+      where: { id: walletId },
+      data: { balance: { decrement: amount } }
+    }),
+    prisma.withdrawalRequest.create({
+      data: { walletId, amount, method }
+    })
+  ]);
+  revalidatePath('/vendeur/dashboard');
+}
+
+export async function createNotification(brandId: string, type: string, title: string, message: string) {
+  return prisma.notification.create({
+    data: { brandId, type, title, message }
+  });
+}
+

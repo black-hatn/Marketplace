@@ -1,6 +1,6 @@
 'use client';
 
-import { LayoutDashboard, ShoppingCart, Package, Activity, Settings, Eye, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, Package, Activity, Settings, Eye, ChevronRight, Ticket, Wallet, MessageSquare } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import { usePathname } from 'next/navigation';
 
@@ -13,6 +13,9 @@ export function VendorNav() {
     { icon: LayoutDashboard, label: 'Dashboard', href: '/vendeur/dashboard' },
     { icon: ShoppingCart, label: 'Commandes', href: '/vendeur/commandes' },
     { icon: Package, label: 'Inventaire', href: '/vendeur/dashboard' },
+    { icon: Ticket, label: 'Coupons', href: '/vendeur/coupons' },
+    { icon: Wallet, label: 'Finances', href: '/vendeur/finances' },
+    { icon: MessageSquare, label: 'Avis Clients', href: '/vendeur/avis' },
     { icon: Activity, label: 'Analytics', href: '/vendeur/dashboard' },
     { icon: Settings, label: 'Profil', href: '/vendeur/profil' },
   ];
