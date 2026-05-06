@@ -11,7 +11,7 @@ export function Footer() {
   const th = useTranslations('Header');
 
   if (!pathname) return null;
-  if (pathname.includes('/admin')) return null;
+  if (pathname.includes('/admin') || pathname.includes('/vendeur')) return null;
   
   const footerLinks = {
     boutique: [

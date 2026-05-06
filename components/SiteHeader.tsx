@@ -20,7 +20,7 @@ export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const cartItemsCount = useCartStore((state) => state.items.reduce((acc, item) => acc + item.quantity, 0));
 
-  if (pathname?.includes('/admin')) return null;
+  if (pathname?.includes('/admin') || pathname?.includes('/vendeur')) return null;
 
 
   const isLinkActive = (href: string) => {
