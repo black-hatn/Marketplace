@@ -43,16 +43,13 @@ export function ThemeToggle() {
     <button
       type="button"
       onClick={toggleTheme}
-      className="group relative inline-flex items-center gap-2 rounded-full border border-black/5 dark:border-white/10 bg-white/80 dark:bg-slate-900/80 p-2.5 sm:px-4 sm:py-3 text-sm font-bold text-slate-900 dark:text-white shadow-lg dark:shadow-glow transition-all hover:bg-slate-100 dark:hover:bg-slate-800/90 active:scale-95"
+      className="p-2.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-300 relative overflow-hidden"
       aria-label={`Passer au mode ${theme === 'dark' ? 'clair' : 'sombre'}`}
     >
-      <div className="relative h-4 w-4">
-        <Sun className={`absolute inset-0 h-4 w-4 text-amber-500 dark:text-amber-300 transition-all duration-500 ${theme === 'dark' ? 'rotate-0 scale-100 opacity-100' : '-rotate-90 scale-0 opacity-0'}`} />
-        <Moon className={`absolute inset-0 h-4 w-4 text-cyan-600 dark:text-cyan-400 transition-all duration-500 ${theme === 'light' ? 'rotate-0 scale-100 opacity-100' : 'rotate-90 scale-0 opacity-0'}`} />
+      <div className="relative h-5 w-5">
+        <Sun className={`absolute inset-0 h-5 w-5 text-amber-500 dark:text-amber-300 transition-all duration-500 ${theme === 'dark' ? 'rotate-0 scale-100 opacity-100' : '-rotate-90 scale-0 opacity-0'}`} />
+        <Moon className={`absolute inset-0 h-5 w-5 text-cyan-600 dark:text-cyan-400 transition-all duration-500 ${theme === 'light' ? 'rotate-0 scale-100 opacity-100' : 'rotate-90 scale-0 opacity-0'}`} />
       </div>
-      <span className="hidden sm:block min-w-[45px] text-left transition-colors group-hover:text-cyan-600 dark:group-hover:text-cyan-300">
-        {theme === 'dark' ? 'Clair' : 'Sombre'}
-      </span>
     </button>
   );
 }

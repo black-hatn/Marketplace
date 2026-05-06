@@ -61,50 +61,39 @@ export function SiteHeader() {
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          {/* Desktop nav links */}
-          <div className="hidden lg:flex items-center gap-1 p-1 bg-black/5 dark:bg-white/5 rounded-2xl border border-black/5 dark:border-white/10">
-            {session?.user?.role === "VENDOR" ? (
-              <Link href="/vendeur/dashboard" className="flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest text-emerald-600 bg-white dark:bg-slate-900 shadow-sm border border-emerald-500/10">
-                <LayoutDashboard className="h-3.5 w-3.5" /> Dashboard Pro
-              </Link>
-            ) : session?.user?.role === "ADMIN" ? (
-              <Link href="/admin" className="flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest text-violet-600 bg-white dark:bg-slate-900 shadow-sm border border-violet-500/10">
-                <ShieldAlert className="h-3.5 w-3.5" /> Panel Admin
+        <div className="flex items-center gap-1 sm:gap-2">
+          
+          {/* User & Favoris (Clean) */}
+          <div className="hidden lg:flex items-center gap-1">
+            <Link href="/favoris" className="p-2.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-300 hover:text-cyan-600" title={t('discover')}>
+              <Heart className="h-5 w-5" />
+            </Link>
+            
+            {session ? (
+              <Link 
+                href={session.user.role === "ADMIN" ? "/admin" : "/vendeur/dashboard"} 
+                className="p-2.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-300 hover:text-cyan-600"
+                title="Tableau de bord"
+              >
+                <LayoutDashboard className="h-5 w-5" />
               </Link>
             ) : (
-              <Link href="/vendre" className="flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 hover:text-cyan-600 transition-colors">
-                <Rocket className="h-3.5 w-3.5" /> {t('become_partner')}
+              <Link href="/admin/login" className="flex items-center gap-2 px-4 py-2 mx-1 rounded-full text-xs font-bold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+                {t('login')}
               </Link>
             )}
-            <div className="h-4 w-px bg-black/10 dark:bg-white/10 mx-1" />
-            <Link href="/favoris" className="flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 hover:text-cyan-600 transition-colors">
-              <Heart className="h-3.5 w-3.5" /> {t('discover')}
-            </Link>
-            {!session && (
-              <>
-                <div className="h-4 w-px bg-black/10 dark:bg-white/10 mx-1" />
-                <Link href="/admin/login" className="flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 hover:text-cyan-600 transition-colors">
-                  {t('login')}
-                </Link>
-                <div className="h-4 w-px bg-black/10 dark:bg-white/10 mx-1" />
-                <Link href="/register" className="flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest text-cyan-600 dark:text-cyan-400 font-bold hover:bg-cyan-500/5 transition-colors">
-                  {t('register')}
-                </Link>
-              </>
-            )}
+            
             {session && (
-              <>
-                <div className="h-4 w-px bg-black/10 dark:bg-white/10 mx-1" />
-                <button 
-                  onClick={() => signOut({ callbackUrl: '/' })}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest text-red-500 hover:bg-red-500/5 transition-colors"
-                  title="Déconnexion"
-                >
-                  <LogOut className="h-3.5 w-3.5" />
-                </button>
-              </>
+              <button 
+                onClick={() => signOut({ callbackUrl: '/' })}
+                className="p-2.5 rounded-full hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors text-red-500"
+                title="Déconnexion"
+              >
+                <LogOut className="h-5 w-5" />
+              </button>
             )}
+            
+            <div className="h-5 w-px bg-slate-200 dark:bg-slate-800 mx-2" />
           </div>
 
           <LanguageSwitcher />
