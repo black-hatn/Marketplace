@@ -1,12 +1,15 @@
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
-import { redirect, Link } from "@/i18n/routing";
+import { redirect } from "next/navigation";
+import { Link } from "@/i18n/routing";
 import { prisma } from "@/lib/db";
 import { getVendorProducts } from "@/lib/actions";
 import { Package, Plus, TrendingUp, ShoppingBag, ShieldCheck, ArrowUpRight, ShoppingCart } from "lucide-react";
 import { AdminProductModal } from "@/components/AdminProductModal";
 
 import Image from 'next/image';
+
+export const dynamic = 'force-dynamic';
 
 export default async function VendorDashboard() {
   const session = await getServerSession(authOptions) as any;

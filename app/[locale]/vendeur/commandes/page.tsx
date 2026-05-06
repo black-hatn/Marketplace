@@ -1,6 +1,7 @@
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
-import { redirect, Link } from "@/i18n/routing";
+import { redirect } from "next/navigation";
+import { Link } from "@/i18n/routing";
 import { prisma } from "@/lib/db";
 import { ShoppingCart, Package, MapPin, Calendar, ArrowLeft } from "lucide-react";
 import Image from 'next/image';
