@@ -112,7 +112,7 @@ export default async function VendorDashboard() {
                     <td className="px-8 py-5">
                       <div className="flex items-center gap-4">
                         <div className="relative h-12 w-12 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 flex-shrink-0 ring-1 ring-black/5">
-                          <Image src={product.image} alt={product.title} fill className="object-cover" sizes="48px" />
+                          <Image src={product.image || '/placeholder.png'} alt={product.title || 'Produit'} fill className="object-cover" sizes="48px" />
                         </div>
                         <div className="min-w-0">
                           <p className="text-sm font-bold text-slate-900 dark:text-white truncate">{product.title}</p>
@@ -122,7 +122,7 @@ export default async function VendorDashboard() {
                     </td>
                     <td className="px-8 py-5">
                       <span className="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-600 dark:text-slate-400">
-                        {product.category}
+                        {typeof product.category === 'object' ? product.category?.name : product.category}
                       </span>
                     </td>
                     <td className="px-8 py-5">
