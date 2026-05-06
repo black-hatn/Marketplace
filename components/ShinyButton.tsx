@@ -19,7 +19,8 @@ export function ShinyButton({
   variant = 'primary', 
   onClick, 
   className = '',
-  disabled = false
+  disabled = false,
+  type = 'button'
 }: ShinyButtonProps) {
   
   const variants = {
