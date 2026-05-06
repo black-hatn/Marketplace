@@ -72,8 +72,7 @@ export default async function VendorOrdersPage() {
   });
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-24 pb-20 px-6">
-      <div className="max-w-6xl mx-auto space-y-8">
+    <div className="space-y-8">
         <div className="flex items-center gap-4">
           <Link href="/vendeur/dashboard" className="p-3 rounded-2xl bg-white dark:bg-slate-900 border border-black/5 dark:border-white/10 hover:bg-slate-50 transition-all">
             <ArrowLeft className="h-5 w-5" />
@@ -163,7 +162,6 @@ export default async function VendorOrdersPage() {
             </div>
           )}
         </div>
-      </div>
     </div>
   );
 }

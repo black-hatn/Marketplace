@@ -65,8 +65,7 @@ export default async function VendorDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] dark:bg-[#020617] pt-24 pb-20 px-4 sm:px-8">
-      <div className="max-w-[1600px] mx-auto space-y-10">
+    <div className="space-y-10">
         
         {/* Modern Header Section */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
@@ -241,7 +240,6 @@ export default async function VendorDashboard() {
             </div>
           </div>
         </div>
-      </div>
     </div>
   );
 }
