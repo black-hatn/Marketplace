@@ -362,7 +362,7 @@ export async function updateProfile(id: string, role: string, formData: FormData
         email,
         phone,
         image: imageUrl
-      }
+      } as any
     });
   } else {
     await prisma.client.update({
@@ -373,7 +373,7 @@ export async function updateProfile(id: string, role: string, formData: FormData
         email,
         telephone: phone,
         image: imageUrl
-      }
+      } as any
     });
   }
   
