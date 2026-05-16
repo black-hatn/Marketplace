@@ -1,10 +1,9 @@
 'use client';
-// Admin Dashboard System v2.5 - Trigger build
 
-
-import { LayoutDashboard, ShoppingCart, Tags, Users, BarChart3, ShieldAlert, Settings } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, Tags, Users, BarChart3, ShieldAlert, Settings, Sparkles, Box } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import { usePathname } from 'next/navigation';
+import { motion } from 'framer-motion';
 
 export function AdminNav() {
   const pathname = usePathname();
@@ -16,56 +15,78 @@ export function AdminNav() {
     { icon: ShoppingCart, label: 'Commandes', href: '/admin/commandes' },
     { icon: Tags, label: 'Vendeurs', href: '/admin/vendeurs' },
     { icon: Users, label: 'Clients', href: '/admin/clients' },
-    { icon: BarChart3, label: 'Statistiques', href: '/admin/analyses' },
-    { icon: Settings, label: 'Profil Admin', href: '/admin/profil' },
-    { icon: ShieldAlert, label: 'Audit Sécurité', href: '/admin/audit' },
+    { icon: BarChart3, label: 'Analyses', href: '/admin/analyses' },
+    { icon: ShieldAlert, label: 'Audit & Log', href: '/admin/audit' },
+    { icon: Settings, label: 'Paramètres', href: '/admin/profil' },
   ];
 
   return (
-    <aside className="hidden lg:flex w-72 bg-[#0A1128] text-white flex-col fixed inset-y-0 z-50 shadow-2xl">
-        <div className="p-6 flex items-center gap-3">
-          <div className="bg-blue-500 p-2 rounded-xl">
-            <ShieldAlert className="h-6 w-6 text-white" />
-          </div>
-          <div>
-            <h1 className="font-black text-xl leading-none">Admin<span className="text-blue-400">Panel</span></h1>
-            <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold mt-1">Marketplace</p>
+    <aside className="hidden lg:flex w-72 bg-[#050505] border-r border-white/5 flex-col fixed inset-y-0 z-50 overflow-hidden">
+      {/* Glow Effect */}
+      <div className="absolute top-0 left-0 w-full h-32 bg-blue-600/10 blur-[60px] pointer-events-none" />
+
+      <div className="relative z-10">
+        <div className="p-8 mb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center shadow-2xl">
+              <Sparkles className="w-6 h-6 text-black" />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-white tracking-tighter">Immersive</h1>
+              <p className="text-[10px] font-black text-blue-400 uppercase tracking-[0.3em]">Admin Panel</p>
+            </div>
           </div>
         </div>
 
-        <div className="px-6 py-4">
-          <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Menu Principal</p>
-          <nav className="space-y-1">
-            {sidebarLinks.map((link, idx) => {
-              // Extract the path without locale to match correctly
-              const currentPath = pathname.replace(/^\/(fr|en|ar)/, '');
-              const pathToCheck = currentPath === '' ? '/' : currentPath;
-              const isActive = link.href === '/admin' ? pathToCheck === '/admin' : pathToCheck.startsWith(link.href);
-              
-              return (
+        <nav className="px-4 space-y-2">
+          {sidebarLinks.map((link, idx) => {
+            const currentPath = pathname.replace(/^\/(fr|en|ar)/, '') || '/';
+            const isActive = link.href === '/admin' ? currentPath === '/admin' : currentPath.startsWith(link.href);
+            
+            return (
               <Link 
                 key={idx} 
                 href={link.href as any} 
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm font-semibold ${isActive ? 'bg-[#1E293B] text-white border-l-4 border-blue-500' : 'text-slate-400 hover:text-white hover:bg-white/5 border-l-4 border-transparent'}`}
+                className={`group flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-300 relative ${
+                  isActive ? 'text-white' : 'text-white/30 hover:text-white'
+                }`}
               >
-                <link.icon className="h-5 w-5" />
-                {link.label}
+                {isActive && (
+                  <motion.div 
+                    layoutId="nav-active"
+                    className="absolute inset-0 bg-white/5 border border-white/10 rounded-2xl"
+                    transition={{ type: 'spring', damping: 20, stiffness: 200 }}
+                  />
+                )}
+                <link.icon className={`h-5 w-5 relative z-10 transition-colors ${isActive ? 'text-blue-400' : 'group-hover:text-white'}`} />
+                <span className="text-sm font-bold relative z-10">{link.label}</span>
+                {isActive && <div className="absolute right-4 w-1.5 h-1.5 rounded-full bg-blue-400 shadow-[0_0_10px_rgba(59,130,246,0.8)] relative z-10" />}
               </Link>
-            )})}
-          </nav>
-        </div>
+            )
+          })}
+        </nav>
+      </div>
 
-        <div className="mt-auto p-6">
-          <div className="bg-white/5 rounded-2xl p-4 flex items-center gap-3 border border-white/10">
-            <div className="h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center font-bold text-white shrink-0">
+      {/* User Status Card */}
+      <div className="mt-auto p-6 relative z-10">
+        <div className="glass p-5 rounded-[2rem] border border-white/5 space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-sm font-bold text-white">
               AD
             </div>
-            <div className="overflow-hidden">
-              <p className="text-sm font-bold text-white truncate">Admin Principal</p>
-              <p className="text-[10px] text-slate-400 truncate">Superviseur</p>
+            <div className="min-w-0">
+              <p className="text-sm font-bold text-white truncate">Administrateur</p>
+              <p className="text-[10px] text-emerald-400 font-black uppercase tracking-widest flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> En Ligne
+              </p>
             </div>
           </div>
+          <div className="h-px bg-white/5" />
+          <Link href="/produits" className="flex items-center justify-between text-[10px] font-bold text-white/30 hover:text-white transition-colors uppercase tracking-widest">
+            Boutique Live <ArrowRight className="w-3 h-3" />
+          </Link>
         </div>
-      </aside>
+      </div>
+    </aside>
   );
 }

@@ -2,7 +2,7 @@
 
 import { Link } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
-import { Sparkles, Instagram, Twitter, Youtube, CreditCard, Truck, RotateCcw, HeadphonesIcon } from 'lucide-react';
+import { Sparkles, Instagram, Twitter, Youtube, CreditCard, Truck, RotateCcw, HeadphonesIcon, Facebook, ShieldCheck } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
 export function Footer() {
@@ -38,26 +38,30 @@ export function Footer() {
   };
 
   const trustBadges = [
-    { icon: Truck, label: t('fast_delivery'), sub: '1 à 7 jours' },
-    { icon: RotateCcw, label: t('free_return'), sub: '14 jours' },
-    { icon: CreditCard, label: t('secure_payment'), sub: 'Stripe PCI DSS' },
-    { icon: HeadphonesIcon, label: t('customer_support_247'), sub: 'Toujours là' },
+    { icon: Truck, label: t('fast_delivery'), sub: '1-7 Jours' },
+    { icon: RotateCcw, label: t('free_return'), sub: '14 Jours' },
+    { icon: ShieldCheck, label: t('secure_payment'), sub: 'Chiffré' },
+    { icon: HeadphonesIcon, label: t('customer_support_247'), sub: '24h/24' },
   ];
 
   return (
-    <footer className="border-t border-white/5 glass">
-      {/* Trust badges bar */}
-      <div className="border-b border-black/5 dark:border-white/10 py-4 sm:py-6">
-        <div className="mx-auto max-w-[1600px] px-4 sm:px-6">
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-4">
+    <footer className="relative bg-background border-t border-white/5 overflow-hidden">
+      {/* Glow Effects */}
+      <div className="absolute bottom-0 left-0 w-[40vw] h-[40vw] bg-blue-600/5 blur-[120px] pointer-events-none" />
+      <div className="absolute top-0 right-0 w-[40vw] h-[40vw] bg-purple-600/5 blur-[120px] pointer-events-none" />
+
+      {/* Trust bar */}
+      <div className="border-b border-white/5 relative z-10">
+        <div className="max-w-[1400px] mx-auto px-6 sm:px-12 py-10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {trustBadges.map((badge) => (
-              <div key={badge.label} className="flex items-center gap-2 sm:gap-3">
-                <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-xl bg-cyan-500/10 flex items-center justify-center flex-shrink-0">
-                  <badge.icon className="h-4 w-4 sm:h-5 sm:w-5 text-cyan-600 dark:text-cyan-400" />
+              <div key={badge.label} className="flex items-center gap-4 group">
+                <div className="w-12 h-12 rounded-2xl glass flex items-center justify-center text-white/40 group-hover:text-blue-400 group-hover:scale-110 transition-all duration-500">
+                  <badge.icon className="w-5 h-5" />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-slate-900 dark:text-white leading-tight">{badge.label}</p>
-                  <p className="text-[10px] text-slate-500">{badge.sub}</p>
+                  <p className="text-xs font-black text-white uppercase tracking-widest">{badge.label}</p>
+                  <p className="text-[10px] text-white/20 uppercase tracking-tighter mt-1">{badge.sub}</p>
                 </div>
               </div>
             ))}
@@ -65,74 +69,40 @@ export function Footer() {
         </div>
       </div>
 
-      {/* Main footer */}
-      <div className="mx-auto max-w-[1600px] px-4 sm:px-6 py-10 sm:py-16">
-        <div className="grid gap-8 sm:gap-12 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
-          {/* Brand column */}
-          <div className="space-y-6">
-            <Link href="/" className="group flex items-center gap-3">
-              <div className="h-10 w-10 rounded-xl bg-slate-900 dark:bg-white flex items-center justify-center shadow-lg">
-                <Sparkles className="h-5 w-5 text-white dark:text-slate-900" />
+      <div className="max-w-[1400px] mx-auto px-6 sm:px-12 pt-20 pb-12 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-16 lg:gap-12">
+          {/* Brand Info */}
+          <div className="lg:col-span-2 space-y-8">
+            <Link href="/" className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-2xl">
+                <Sparkles className="w-6 h-6 text-black" />
               </div>
               <div>
-                <p className="text-xl font-black tracking-tighter text-slate-900 dark:text-white uppercase">
-                  Immersive<span className="text-cyan-500">.</span>
-                </p>
-                <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-slate-400">Marketplace Pro</p>
+                <h2 className="text-xl font-bold text-white tracking-tighter uppercase">Immersive</h2>
+                <p className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em]">Marketplace Pro</p>
               </div>
             </Link>
-
-            <p className="text-sm leading-7 text-slate-600 dark:text-slate-400">
-              {t('newsletter_desc')}
+            
+            <p className="text-sm text-muted-foreground font-light leading-relaxed max-w-sm">
+              L&apos;excellence du e-commerce au Tchad. Une sélection rigoureuse de marques et créateurs pour une expérience shopping hors du commun.
             </p>
 
-            {/* Newsletter */}
-            <div>
-              <p className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-3">Newsletter</p>
-              <form className="flex gap-2" onSubmit={(e) => e.preventDefault()}>
-                <input
-                  type="email"
-                  placeholder={t('newsletter_placeholder')}
-                  className="flex-1 rounded-full bg-black/5 dark:bg-white/5 px-4 py-2.5 text-sm text-slate-900 dark:text-white border border-black/5 dark:border-white/10 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/10 transition-all"
-                />
-                <button
-                  type="submit"
-                  className="rounded-full bg-cyan-500 px-5 py-2.5 text-sm font-bold text-slate-950 hover:bg-cyan-400 transition-colors"
-                >
-                  OK
-                </button>
-              </form>
-            </div>
-
-            {/* Social links */}
             <div className="flex items-center gap-3">
-              {[
-                { icon: Instagram, href: '#', label: 'Instagram' },
-                { icon: Twitter, href: '#', label: 'Twitter/X' },
-                { icon: Youtube, href: '#', label: 'YouTube' },
-              ].map((social) => (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  aria-label={social.label}
-                  className="h-10 w-10 rounded-xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 flex items-center justify-center hover:bg-cyan-500/10 hover:border-cyan-500/30 hover:text-cyan-600 dark:hover:text-cyan-400 transition-all"
-                >
-                  <social.icon className="h-4 w-4 text-slate-600 dark:text-slate-400" />
+              {[Instagram, Twitter, Facebook, Youtube].map((Icon, i) => (
+                <a key={i} href="#" className="w-10 h-10 rounded-full glass flex items-center justify-center text-white/20 hover:text-white hover:bg-white/10 transition-all">
+                  <Icon className="w-4 h-4" />
                 </a>
               ))}
             </div>
           </div>
 
-          {/* Boutique links */}
+          {/* Links Columns */}
           <div>
-            <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-6">{th('shop')}</h3>
-            <ul className="space-y-3">
+            <h3 className="text-[10px] font-black text-white uppercase tracking-[0.3em] mb-8">Navigation</h3>
+            <ul className="space-y-4">
               {footerLinks.boutique.map((link) => (
                 <li key={link.label}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-slate-600 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
-                  >
+                  <Link href={link.href} className="text-sm text-white/40 hover:text-white transition-colors">
                     {link.label}
                   </Link>
                 </li>
@@ -140,16 +110,12 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Support links */}
           <div>
-            <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-6">Support</h3>
-            <ul className="space-y-3">
+            <h3 className="text-[10px] font-black text-white uppercase tracking-[0.3em] mb-8">Assistance</h3>
+            <ul className="space-y-4">
               {footerLinks.support.map((link) => (
                 <li key={link.label}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-slate-600 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
-                  >
+                  <Link href={link.href} className="text-sm text-white/40 hover:text-white transition-colors">
                     {link.label}
                   </Link>
                 </li>
@@ -157,49 +123,47 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Legal links */}
           <div>
-            <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-6">{t('legal_mentions')}</h3>
-            <ul className="space-y-3">
+            <h3 className="text-[10px] font-black text-white uppercase tracking-[0.3em] mb-8">Informations</h3>
+            <ul className="space-y-4">
               {footerLinks.legal.map((link) => (
                 <li key={link.label}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-slate-600 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
-                  >
+                  <Link href={link.href} className="text-sm text-white/40 hover:text-white transition-colors">
                     {link.label}
                   </Link>
                 </li>
               ))}
             </ul>
-
-            {/* Payment methods */}
-            <div className="mt-8">
-              <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-4">{t('accepted_payments')}</p>
-              <div className="flex flex-wrap gap-2">
-                {['Visa', 'MC', 'Amex', 'Stripe'].map((m) => (
-                  <span
-                    key={m}
-                    className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-500 border border-slate-200 dark:border-slate-700"
-                  >
-                    {m}
-                  </span>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="mt-16 border-t border-black/5 dark:border-white/10 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-slate-500">
-            © 2026 Marketplace Immersive SARL — N'Djaména, Tchad. {t('all_rights_reserved')}
+        {/* Newsletter Bar */}
+        <div className="mt-20 p-10 glass-card rounded-[3rem] border border-white/5 flex flex-col md:flex-row items-center justify-between gap-8">
+          <div>
+            <h3 className="text-xl font-bold text-white">Rejoindre l&apos;Insider</h3>
+            <p className="text-sm text-white/40 font-light mt-1">Recevez nos dernières collections en avant-première.</p>
+          </div>
+          <form className="flex w-full md:w-auto gap-3" onSubmit={(e) => e.preventDefault()}>
+            <input 
+              type="email" 
+              placeholder="votre@email.com"
+              className="flex-1 md:w-64 px-6 py-4 rounded-2xl glass text-white placeholder-white/20 outline-none focus:border-white/20 text-sm" 
+            />
+            <button className="px-8 py-4 rounded-2xl bg-white text-black font-bold uppercase tracking-widest text-[10px] hover:bg-white/90 transition-all">
+              S&apos;abonner
+            </button>
+          </form>
+        </div>
+
+        {/* Bottom Rights */}
+        <div className="mt-20 pt-8 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-6">
+          <p className="text-[10px] font-bold text-white/20 uppercase tracking-widest text-center sm:text-left">
+            © 2026 Immersive Marketplace. N&apos;Djaména, Tchad. Tous droits réservés.
           </p>
-          <div className="flex flex-wrap justify-center gap-4 text-xs text-slate-400">
-            <Link href="/legal/cgv" className="hover:text-slate-600 dark:hover:text-slate-300 transition-colors">CGV</Link>
-            <Link href="/legal/mentions-legales" className="hover:text-slate-600 dark:hover:text-slate-300 transition-colors">Mentions légales</Link>
-            <Link href="/legal/confidentialite" className="hover:text-slate-600 dark:hover:text-slate-300 transition-colors">Confidentialité</Link>
-            <Link href="/legal/retours" className="hover:text-slate-600 dark:hover:text-slate-300 transition-colors">Retours</Link>
+          <div className="flex flex-wrap justify-center gap-6">
+            {['Visa', 'Mastercard', 'Stripe', 'Airtel Money', 'Moov Money'].map((pay) => (
+              <span key={pay} className="text-[9px] font-black text-white/10 uppercase tracking-[0.2em]">{pay}</span>
+            ))}
           </div>
         </div>
       </div>

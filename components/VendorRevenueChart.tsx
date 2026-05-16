@@ -7,8 +7,8 @@ type DataPoint = { name: string; revenue: number; orders: number };
 export function VendorRevenueChart({ data }: { data: DataPoint[] }) {
   if (data.length === 0) {
     return (
-      <div className="h-64 flex items-center justify-center text-slate-400 text-sm font-medium">
-        Aucune donnée de revenus disponible.
+      <div className="h-64 flex items-center justify-center text-white/20 text-sm font-medium italic">
+        Données de vente indisponibles.
       </div>
     );
   }
@@ -22,17 +22,17 @@ export function VendorRevenueChart({ data }: { data: DataPoint[] }) {
             <stop offset="95%" stopColor="#06B6D4" stopOpacity={0} />
           </linearGradient>
         </defs>
-        <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.15)" vertical={false} />
+        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
         <XAxis 
           dataKey="name" 
-          tick={{ fontSize: 10, fill: '#64748b', fontWeight: 600 }} 
+          tick={{ fontSize: 10, fill: 'rgba(255,255,255,0.3)', fontWeight: 700 }} 
           axisLine={false} 
           tickLine={false} 
           dy={10}
-          interval={4} // Only show some ticks to avoid clutter
+          interval={4}
         />
         <YAxis 
-          tick={{ fontSize: 10, fill: '#64748b', fontWeight: 600 }} 
+          tick={{ fontSize: 10, fill: 'rgba(255,255,255,0.3)', fontWeight: 700 }} 
           axisLine={false} 
           tickLine={false} 
           tickFormatter={(v) => v >= 1000 ? `${(v / 1000)}k` : v} 
@@ -40,14 +40,14 @@ export function VendorRevenueChart({ data }: { data: DataPoint[] }) {
         />
         <Tooltip
           contentStyle={{ 
-            background: 'rgba(255, 255, 255, 0.9)', 
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(0,0,0,0.05)', 
+            background: 'rgba(10, 10, 10, 0.8)', 
+            backdropFilter: 'blur(16px)',
+            border: '1px solid rgba(255,255,255,0.1)', 
             borderRadius: '16px', 
             fontSize: '12px', 
             fontWeight: 'bold',
-            color: '#0f172a',
-            boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)'
+            color: '#fff',
+            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.5)'
           }}
           itemStyle={{ color: '#06B6D4', fontWeight: 900 }}
           formatter={(v: any) => [`${parseFloat(v).toLocaleString()} FCFA`, 'Ventes']}
@@ -56,10 +56,10 @@ export function VendorRevenueChart({ data }: { data: DataPoint[] }) {
           type="monotone" 
           dataKey="revenue" 
           stroke="#06B6D4" 
-          strokeWidth={3} 
+          strokeWidth={4} 
           fill="url(#revenueGradVendor)" 
           dot={false}
-          activeDot={{ r: 6, fill: '#06B6D4', stroke: '#fff', strokeWidth: 3 }} 
+          activeDot={{ r: 6, fill: '#fff', stroke: '#06B6D4', strokeWidth: 3 }} 
         />
       </AreaChart>
     </ResponsiveContainer>
