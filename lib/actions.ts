@@ -298,32 +298,44 @@ export async function getAnalyseVentes() {
 }
 
 export async function getAnalyticsData() {
+  try {
+    const [totalOrders, totalRevenueData, avgOrderData] = await Promise.all([
+      prisma.commande.count(),
+      prisma.commande.aggregate({
+        _sum: { montant_total: true },
+        where: { statut: { in: ['PAYEE', 'VALIDEE', 'EXPEDIEE'] } }
+      }),
+      prisma.commande.aggregate({
+        _avg: { montant_total: true }
+      })
+    ]);
 
-  const [totalOrders, totalRevenueData, avgOrderData] = await Promise.all([
-    prisma.commande.count(),
-    prisma.commande.aggregate({
-      _sum: { montant_total: true },
-      where: { statut: { in: ['PAYEE', 'VALIDEE', 'EXPEDIEE'] } }
-    }),
-    prisma.commande.aggregate({
-      _avg: { montant_total: true }
-    })
-  ]);
-
-  const salesReport = await prisma.$queryRaw`SELECT * FROM vue_analyse_ventes ORDER BY mois DESC` as any[];
-  
-  return {
-    stats: {
-      totalOrders,
-      totalRevenue: Number(totalRevenueData._sum.montant_total || 0),
-      avgOrderValue: Number(avgOrderData._avg.montant_total || 0),
-    },
-    chartData: salesReport.map(item => ({
-      month: new Date(item.mois).toLocaleDateString('fr-FR', { month: 'short' }),
-      revenue: Number(item.ca),
-      orders: Number(item.volume_ventes)
-    })).reverse()
-  };
+    let salesReport: any[] = [];
+    try {
+      salesReport = await prisma.$queryRaw`SELECT * FROM vue_analyse_ventes ORDER BY mois DESC` as any[];
+    } catch (e) {
+      console.warn("View vue_analyse_ventes missing, using empty report.");
+    }
+    
+    return {
+      stats: {
+        totalOrders,
+        totalRevenue: Number(totalRevenueData._sum.montant_total || 0),
+        avgOrderValue: Number(avgOrderData._avg.montant_total || 0),
+      },
+      chartData: salesReport.map(item => ({
+        month: new Date(item.mois).toLocaleDateString('fr-FR', { month: 'short' }),
+        revenue: Number(item.ca),
+        orders: Number(item.volume_ventes)
+      })).reverse()
+    };
+  } catch (error) {
+    console.error("Analytics Error:", error);
+    return {
+      stats: { totalOrders: 0, totalRevenue: 0, avgOrderValue: 0 },
+      chartData: []
+    };
+  }
 }
 
 export async function getVendorAnalytics(brandId: string) {

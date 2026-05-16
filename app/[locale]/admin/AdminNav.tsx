@@ -1,6 +1,6 @@
 'use client';
 
-import { LayoutDashboard, ShoppingCart, Tags, Users, BarChart3, ShieldAlert, Settings, Sparkles, Box } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, Tags, Users, BarChart3, ShieldAlert, Settings, Sparkles, Box, ArrowRight } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';

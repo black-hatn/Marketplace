@@ -6,6 +6,7 @@ import { WebsiteJsonLd } from '@/components/JsonLd';
 import { Toaster } from 'react-hot-toast';
 import { Providers } from '@/components/Providers';
 import { Footer } from '@/components/Footer';
+import { FloatingSupport } from '@/components/FloatingSupport';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
@@ -83,6 +84,7 @@ export default async function RootLayout({
             />
             <SiteHeader />
             {children}
+            <FloatingSupport />
             <Footer />
           </Providers>
         </NextIntlClientProvider>
