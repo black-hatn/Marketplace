@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { Search, X, Package, Tags, ArrowRight, Loader2 } from 'lucide-react';
+import { Search, X, Package, Tags, ArrowRight, Loader2, Sparkles } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
 import { globalSearch } from '@/lib/actions';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 
 type SearchResult = {
   products: Array<{
@@ -24,8 +25,6 @@ type SearchResult = {
     image: string;
   }>;
 };
-
-import Image from 'next/image';
 
 export function GlobalSearch() {
   const t = useTranslations('Header');
@@ -67,40 +66,51 @@ export function GlobalSearch() {
   const noResults = results && results.products.length === 0 && results.brands.length === 0;
   const showDropdown = focused && query.length >= 2;
 
-  // Close on ESC
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') { setFocused(false); setQuery(''); setResults(null); }
+      if (e.key === 'Escape') { setFocused(false); }
     };
     document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
   }, []);
 
   return (
-    <div className="relative w-full max-w-2xl">
-      {/* Search Input */}
-      <div className={`flex items-center gap-3 rounded-2xl border transition-all duration-300 px-4 py-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-lg ${
-        focused
-          ? 'border-cyan-500 ring-4 ring-cyan-500/10 shadow-cyan-500/10'
-          : 'border-black/10 dark:border-white/10 hover:border-black/20 dark:hover:border-white/20'
+    <div className="relative w-full max-w-xl">
+      {/* Search Input Container */}
+      <div className={`relative flex items-center gap-3 px-5 py-3 rounded-2xl glass transition-all duration-500 border ${
+        focused ? 'border-blue-500/50 ring-4 ring-blue-500/10' : 'border-white/5 hover:border-white/10'
       }`}>
-        {loading
-          ? <Loader2 className="h-5 w-5 text-cyan-500 animate-spin flex-shrink-0" />
-          : <Search className="h-5 w-5 text-slate-400 flex-shrink-0" />
-        }
+        {loading ? (
+          <Loader2 className="w-5 h-5 text-blue-400 animate-spin" />
+        ) : (
+          <Search className={`w-5 h-5 transition-colors ${focused ? 'text-blue-400' : 'text-white/20'}`} />
+        )}
+        
         <input
           ref={inputRef}
           value={query}
           onChange={handleChange}
           onFocus={() => setFocused(true)}
           onBlur={() => setTimeout(() => setFocused(false), 200)}
-          placeholder={t('search_placeholder')}
-          className="flex-1 bg-transparent text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none"
+          placeholder="Rechercher une pièce rare..."
+          className="flex-1 bg-transparent text-sm text-white placeholder-white/20 outline-none"
         />
+
         {query && (
-          <button onClick={clear} className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-            <X className="h-4 w-4 text-slate-400" />
+          <button 
+            onClick={clear}
+            className="w-6 h-6 rounded-full glass flex items-center justify-center text-white/40 hover:text-white transition-all"
+          >
+            <X className="w-3 h-3" />
           </button>
+        )}
+
+        {/* Shortcut hint */}
+        {!focused && !query && (
+          <div className="hidden sm:flex items-center gap-1 px-1.5 py-0.5 rounded border border-white/10 bg-white/5 text-[10px] font-bold text-white/30 tracking-tighter">
+            <span>⌘</span>
+            <span>K</span>
+          </div>
         )}
       </div>
 
@@ -108,96 +118,101 @@ export function GlobalSearch() {
       <AnimatePresence>
         {showDropdown && (
           <motion.div
-            initial={{ opacity: 0, y: 8, scale: 0.97 }}
+            initial={{ opacity: 0, y: 10, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 8, scale: 0.97 }}
-            transition={{ duration: 0.15 }}
-            className="absolute top-full left-0 right-0 mt-2 z-50 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-black/5 dark:border-white/10 overflow-hidden"
+            exit={{ opacity: 0, y: 10, scale: 0.98 }}
+            className="absolute top-full left-0 right-0 mt-3 z-[100] glass rounded-3xl border border-white/10 shadow-2xl overflow-hidden max-h-[80vh] flex flex-col"
           >
-            {loading && !results && (
-              <div className="p-6 text-center text-sm text-slate-500">
-                <Loader2 className="h-5 w-5 animate-spin mx-auto mb-2 text-cyan-500" />
-                {t('searching')}
-              </div>
-            )}
-
-            {noResults && (
-              <div className="p-6 text-center text-sm text-slate-500">
-                <Search className="h-6 w-6 mx-auto mb-2 text-slate-300 dark:text-slate-700" />
-                {t('no_results')} &quot;<strong>{query}</strong>&quot;
-              </div>
-            )}
-
-            {hasResults && (
-              <div className="divide-y divide-slate-100 dark:divide-slate-800 max-h-[70vh] overflow-y-auto">
-                {/* Products */}
-                {results.products.length > 0 && (
-                  <div>
-                    <div className="px-4 py-2 flex items-center gap-2">
-                      <Package className="h-3.5 w-3.5 text-slate-400" />
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{t('products')}</span>
-                    </div>
-                    {results.products.map((p) => (
-                      <Link
-                        key={p.id}
-                        href={`/produit/${p.id}`}
-                        className="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group"
-                      >
-                        <div className="relative h-10 w-10 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 flex-shrink-0 ring-1 ring-black/5">
-                          <Image src={p.image} alt={p.title} fill className="object-cover" sizes="40px" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors truncate">
-                            {p.title}
-                          </p>
-                          <p className="text-xs text-slate-500">{p.brand.name} · {p.category.name}</p>
-                        </div>
-                        <span className="text-sm font-bold text-slate-900 dark:text-white flex-shrink-0">{p.price.toLocaleString()} FCFA</span>
-                        <ArrowRight className="h-4 w-4 text-slate-300 group-hover:text-cyan-500 transition-all group-hover:translate-x-0.5" />
-                      </Link>
-                    ))}
-                  </div>
-                )}
-
-                {/* Brands */}
-                {results.brands.length > 0 && (
-                  <div>
-                    <div className="px-4 py-2 flex items-center gap-2">
-                      <Tags className="h-3.5 w-3.5 text-slate-400" />
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{t('brands')}</span>
-                    </div>
-                    {results.brands.map((b) => (
-                      <Link
-                        key={b.id}
-                        href={`/marques/${b.slug}`}
-                        className="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group"
-                      >
-                        <div className="relative h-10 w-10 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 flex-shrink-0 ring-1 ring-black/5">
-                          <Image src={b.image} alt={b.name} fill className="object-cover" sizes="40px" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">{b.name}</p>
-                          <p className="text-xs text-slate-500 italic truncate">{b.tagline}</p>
-                        </div>
-                        <ArrowRight className="h-4 w-4 text-slate-300 group-hover:text-cyan-500 transition-all group-hover:translate-x-0.5" />
-                      </Link>
-                    ))}
-                  </div>
-                )}
-
-                {/* Footer */}
-                <div className="px-4 py-3 bg-slate-50 dark:bg-slate-900/50 flex justify-between items-center">
-                  <span className="text-xs text-slate-400">
-                    {(results.products.length + results.brands.length)} résultat{(results.products.length + results.brands.length) > 1 ? 's' : ''}
-                  </span>
-                  <Link
-                    href={`/produits?search=${encodeURIComponent(query)}`}
-                    className="text-xs font-semibold text-cyan-600 dark:text-cyan-400 hover:underline flex items-center gap-1"
-                  >
-                    {t('view_all')} <ArrowRight className="h-3 w-3" />
-                  </Link>
+            <div className="overflow-y-auto custom-scrollbar">
+              {loading && !results && (
+                <div className="p-12 text-center">
+                  <Loader2 className="w-8 h-8 animate-spin text-blue-400 mx-auto mb-4" />
+                  <p className="text-sm text-muted-foreground font-light">Exploration de la base de données...</p>
                 </div>
-              </div>
+              )}
+
+              {noResults && (
+                <div className="p-12 text-center">
+                  <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-4">
+                    <Search className="w-8 h-8 text-white/10" />
+                  </div>
+                  <h3 className="text-white font-bold mb-1">Aucun résultat</h3>
+                  <p className="text-xs text-muted-foreground font-light">Nous n&apos;avons rien trouvé pour &quot;{query}&quot;</p>
+                </div>
+              )}
+
+              {hasResults && (
+                <div className="p-2 space-y-1">
+                  {/* Products Section */}
+                  {results.products.length > 0 && (
+                    <div className="p-2">
+                      <div className="px-3 py-2 flex items-center gap-2 mb-2">
+                        <Package className="w-3 h-3 text-blue-400" />
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30">Produits d&apos;exception</span>
+                      </div>
+                      <div className="space-y-1">
+                        {results.products.map((p) => (
+                          <Link
+                            key={p.id}
+                            href={`/produit/${p.id}`}
+                            className="flex items-center gap-4 p-3 rounded-2xl hover:bg-white/5 transition-all group"
+                          >
+                            <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-surface-light border border-white/5 flex-shrink-0">
+                              <Image src={p.image} alt={p.title} fill unoptimized={true} className="object-cover" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="text-sm font-bold text-white group-hover:text-blue-400 transition-colors truncate">{p.title}</h4>
+                              <p className="text-[10px] text-muted-foreground uppercase tracking-widest">{p.brand.name} · {p.category.name}</p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-sm font-black text-white">{p.price.toLocaleString()} <span className="text-[10px] text-white/30">FCFA</span></p>
+                              <ArrowRight className="w-4 h-4 text-white/10 group-hover:text-white group-hover:translate-x-1 transition-all ml-auto mt-1" />
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Brands Section */}
+                  {results.brands.length > 0 && (
+                    <div className="p-2 border-t border-white/5">
+                      <div className="px-3 py-2 flex items-center gap-2 mb-2">
+                        <Tags className="w-3 h-3 text-purple-400" />
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30">Maisons & Créateurs</span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-1">
+                        {results.brands.map((b) => (
+                          <Link
+                            key={b.id}
+                            href={`/marques/${b.slug}`}
+                            className="flex items-center gap-3 p-3 rounded-2xl hover:bg-white/5 transition-all group"
+                          >
+                            <div className="relative w-10 h-10 rounded-full overflow-hidden border border-white/10 flex-shrink-0">
+                              <Image src={b.image} alt={b.name} fill unoptimized={true} className="object-cover" />
+                            </div>
+                            <div className="min-w-0">
+                              <h4 className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors truncate">{b.name}</h4>
+                              <p className="text-[9px] text-muted-foreground truncate">{b.tagline}</p>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Footer */}
+            {hasResults && (
+              <Link 
+                href={`/produits?search=${encodeURIComponent(query)}`}
+                className="px-6 py-4 bg-white/5 flex items-center justify-center gap-2 text-xs font-bold text-white hover:bg-white hover:text-black transition-all group"
+              >
+                Voir tous les résultats
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
             )}
           </motion.div>
         )}

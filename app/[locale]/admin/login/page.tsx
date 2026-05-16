@@ -3,10 +3,10 @@
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter, Link } from '@/i18n/routing';
-import { Lock } from 'lucide-react';
+import { Lock, User, Key, ArrowRight, Loader2, Sparkles } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
-import { ShinyButton } from '@/components/ShinyButton';
+import PageTransition from '@/components/PageTransition';
 
 export default function AdminLogin() {
   const [username, setUsername] = useState('');
@@ -24,14 +24,11 @@ export default function AdminLogin() {
       password,
     });
 
-    setLoading(false);
-
     if (res?.error) {
       toast.error('Identifiants incorrects');
+      setLoading(false);
     } else {
       toast.success('Connexion réussie');
-      
-      // Get session to check role
       const { getSession } = await import('next-auth/react');
       const session = await getSession() as any;
       
@@ -47,90 +44,96 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] h-[50%] w-[50%] rounded-full bg-cyan-500/[0.05] blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] h-[50%] w-[50%] rounded-full bg-blue-500/[0.05] blur-[120px]" />
-      </div>
+    <PageTransition>
+      <div className="relative w-full min-h-screen bg-background overflow-hidden selection:bg-white/20 selection:text-white flex items-center justify-center p-6">
+        {/* Background glow effects */}
+        <div className="fixed top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-blue-600/10 blur-[120px] pointer-events-none" />
+        <div className="fixed bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-purple-600/10 blur-[120px] pointer-events-none" />
 
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="sm:mx-auto sm:w-full sm:max-w-md relative z-10"
-      >
-        <div className="flex justify-center">
-          <div className="rounded-full bg-slate-900 dark:bg-white p-4">
-            <Lock className="h-8 w-8 text-white dark:text-slate-900" />
-          </div>
-        </div>
-        <h2 className="mt-6 text-center text-3xl font-black tracking-tight text-slate-900 dark:text-white uppercase italic">
-          Espace <span className="text-cyan-500">Partenaire</span>
-        </h2>
-        <p className="mt-2 text-center text-sm font-medium text-slate-600 dark:text-slate-400">
-          Connectez-vous à votre interface de gestion (Admin & Vendeur)
-        </p>
-      </motion.div>
-
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.1 }}
-        className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10"
-      >
-        <div className="glass-card py-8 px-4 shadow sm:rounded-3xl sm:px-10 border border-slate-200 dark:border-white/10">
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
-                Nom d'utilisateur
-              </label>
-              <div className="mt-1">
-                <input
-                  type="text"
-                  required
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="block w-full appearance-none rounded-xl border border-slate-300 dark:border-slate-700 px-4 py-3 placeholder-slate-400 focus:border-cyan-500 focus:outline-none focus:ring-cyan-500 sm:text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-white transition-colors"
-                />
-              </div>
+        <div className="relative z-10 w-full max-w-md">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-12"
+          >
+            <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center mx-auto mb-6 shadow-2xl">
+              <Sparkles className="w-8 h-8 text-black" />
             </div>
+            <h1 className="text-4xl font-bold text-white tracking-tight mb-3">Espace Partenaire</h1>
+            <p className="text-muted-foreground font-light text-sm">
+              Gérez votre boutique et vos commandes premium.
+            </p>
+          </motion.div>
 
-            <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
-                Mot de passe
-              </label>
-              <div className="mt-1">
-                <input
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full appearance-none rounded-xl border border-slate-300 dark:border-slate-700 px-4 py-3 placeholder-slate-400 focus:border-cyan-500 focus:outline-none focus:ring-cyan-500 sm:text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-white transition-colors"
-                />
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.1 }}
+            className="p-8 sm:p-10 glass-card rounded-[2.5rem] border border-white/5"
+          >
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 ml-1">Utilisateur</label>
+                <div className="relative">
+                  <User className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
+                  <input
+                    type="text"
+                    required
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="votre_pseudo"
+                    className="w-full pl-14 pr-6 py-4 rounded-2xl glass text-white placeholder-white/10 outline-none focus:border-white/20 transition-all text-sm"
+                  />
+                </div>
               </div>
-            </div>
 
-            <div>
-              <ShinyButton
-                variant="primary"
-                disabled={loading}
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 ml-1">Mot de passe</label>
+                <div className="relative">
+                  <Key className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
+                  <input
+                    type="password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className="w-full pl-14 pr-6 py-4 rounded-2xl glass text-white placeholder-white/10 outline-none focus:border-white/20 transition-all text-sm"
+                  />
+                </div>
+              </div>
+
+              <button
                 type="submit"
-                className="w-full !py-4"
+                disabled={loading}
+                className="w-full py-5 rounded-2xl bg-white text-black font-bold tracking-wide hover:bg-white/90 transition-all shadow-xl flex items-center justify-center gap-3 disabled:opacity-50"
               >
-                {loading ? 'Connexion...' : 'Se connecter'}
-              </ShinyButton>
-            </div>
+                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Accéder au Dashboard'}
+                {!loading && <ArrowRight className="w-4 h-4" />}
+              </button>
 
-            <div className="text-center pt-4">
-              <p className="text-sm text-slate-500 dark:text-slate-400">
-                Pas encore de compte ?{' '}
-                <Link href="/register" className="text-cyan-600 dark:text-cyan-400 font-bold hover:underline">
-                  Créer un compte
-                </Link>
-              </p>
-            </div>
-          </form>
+              <div className="pt-6 text-center border-t border-white/5">
+                <p className="text-xs text-muted-foreground font-light">
+                  Nouveau partenaire ?{' '}
+                  <Link href="/register" className="text-white font-bold hover:underline">
+                    Rejoindre l&apos;écosystème
+                  </Link>
+                </p>
+              </div>
+            </form>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="mt-12 text-center"
+          >
+            <Link href="/" className="text-[10px] font-black uppercase tracking-[0.3em] text-white/20 hover:text-white transition-colors">
+              Retour à la boutique
+            </Link>
+          </motion.div>
         </div>
-      </motion.div>
-    </div>
+      </div>
+    </PageTransition>
   );
 }

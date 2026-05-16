@@ -28,159 +28,144 @@ export function MegaMenu({ open, onClose }: MegaMenuProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 z-[55] bg-slate-950/50 backdrop-blur-sm"
+            className="fixed inset-0 z-[150] bg-black/60 backdrop-blur-md"
           />
 
-          {/* Panel — slides from top on mobile, dropdown on desktop */}
+          {/* Panel */}
           <motion.div
-            initial={{ opacity: 0, y: -12 }}
+            initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -12 }}
-            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed top-0 sm:top-auto sm:left-0 sm:right-0 left-0 right-0 bottom-0 sm:bottom-auto z-[60] overflow-y-auto bg-white dark:bg-[#0B1222] sm:bg-white/95 sm:dark:bg-[#0B1222]/95 backdrop-blur-3xl shadow-2xl border-b border-black/5 dark:border-white/10 sm:max-h-[90vh]"
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            className="fixed inset-x-0 top-0 z-[151] glass border-b border-white/10 max-h-[90vh] overflow-y-auto custom-scrollbar"
           >
-            {/* ── MOBILE HEADER ── */}
-            <div className="sm:hidden flex items-center justify-between px-5 py-4 border-b border-black/5 dark:border-white/10 bg-slate-50 dark:bg-white/5">
-              <div className="flex items-center gap-2.5">
-                <div className="h-7 w-7 rounded-lg bg-slate-900 dark:bg-white flex items-center justify-center">
-                  <Sparkles className="h-4 w-4 text-white dark:text-slate-900" />
-                </div>
-                <span className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest">Immersive.</span>
-              </div>
-              <button
-                onClick={onClose}
-                className="p-2 rounded-xl bg-black/5 dark:bg-white/10 text-slate-700 dark:text-slate-300 hover:bg-black/10 transition-colors"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-
-            <div className="mx-auto w-full max-w-[1800px] px-4 sm:px-6 py-5 sm:py-10">
-
-              {/* ── DESKTOP TOP BANNER ── */}
-              <div className="hidden sm:flex items-center justify-between rounded-[2rem] border border-black/5 dark:border-white/10 bg-slate-50 dark:bg-white/5 px-6 py-4 mb-8">
-                <div className="flex items-center gap-3 text-sm">
-                  <span className="rounded-full bg-cyan-500/10 px-4 py-1.5 font-semibold text-cyan-700 dark:text-cyan-300 text-xs uppercase tracking-widest">Collection 2025</span>
-                  <span className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
-                    <Sparkles className="h-3.5 w-3.5 text-cyan-500" /> Exploration multi-sectorielle
-                  </span>
-                </div>
-                <Link href="/marques" onClick={onClose} className="group inline-flex items-center gap-2 text-sm font-bold text-slate-700 dark:text-slate-200 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
-                  Toutes nos marques <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </Link>
-              </div>
-
-              {/* ── MOBILE: ACCOUNT SECTION ── */}
-              <div className="sm:hidden mb-5">
-                {!session ? (
-                  <div className="grid grid-cols-2 gap-3">
-                    <Link
-                      href="/admin/login"
-                      onClick={onClose}
-                      className="flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-black uppercase tracking-wider shadow-lg hover:opacity-90 active:scale-[0.98] transition-all"
-                    >
-                      <LogIn className="h-4 w-4" /> Connexion
-                    </Link>
-                    <Link
-                      href="/register"
-                      onClick={onClose}
-                      className="flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-cyan-500 text-slate-950 text-sm font-black uppercase tracking-wider shadow-lg shadow-cyan-500/20 hover:bg-cyan-400 active:scale-[0.98] transition-all"
-                    >
-                      <UserPlus className="h-4 w-4" /> S&apos;inscrire
-                    </Link>
+            <div className="mx-auto max-w-[1600px] px-8 py-12">
+              <div className="flex items-center justify-between mb-12">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center">
+                    <Sparkles className="w-6 h-6 text-black" />
                   </div>
-                ) : (
-                  <div className="flex items-center gap-3 p-4 rounded-2xl bg-slate-50 dark:bg-white/5 border border-black/5 dark:border-white/10">
-                    <div className="h-10 w-10 rounded-xl bg-cyan-500/10 flex items-center justify-center flex-shrink-0">
-                      <span className="text-sm font-black text-cyan-600 dark:text-cyan-400">
-                        {session.user?.name?.charAt(0)?.toUpperCase() || 'U'}
-                      </span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-bold text-slate-900 dark:text-white truncate">{session.user?.name}</p>
-                      <p className="text-[10px] text-slate-500 truncate">{session.user?.email}</p>
-                    </div>
-                    <button
-                      onClick={() => { signOut({ callbackUrl: '/' }); onClose(); }}
-                      className="p-2 rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors"
-                    >
-                      <LogOut className="h-4 w-4" />
-                    </button>
-                  </div>
-                )}
+                  <h2 className="text-xl font-bold text-white tracking-tight uppercase">Exploration</h2>
+                </div>
+                <button
+                  onClick={onClose}
+                  className="w-12 h-12 rounded-full glass flex items-center justify-center text-white/40 hover:text-white transition-all"
+                >
+                  <X className="w-6 h-6" />
+                </button>
               </div>
 
-              {/* ── MOBILE: QUICK NAV LINKS ── */}
-              <div className="sm:hidden mb-5">
-                <p className="text-[9px] font-black uppercase tracking-[0.25em] text-slate-400 px-1 mb-2">Navigation rapide</p>
-                <div className="grid grid-cols-2 gap-2">
-                  {[
-                    { icon: ShoppingBag, label: 'Catalogue', href: '/produits', color: 'text-cyan-600 bg-cyan-500/10' },
-                    { icon: Store, label: 'Marques', href: '/marques', color: 'text-violet-600 bg-violet-500/10' },
-                    { icon: Package, label: 'Mes commandes', href: '/mes-commandes', color: 'text-emerald-600 bg-emerald-500/10' },
-                    { icon: Heart, label: 'Favoris', href: '/favoris', color: 'text-red-500 bg-red-500/10' },
-                    ...(session?.user?.role === 'VENDOR' ? [{ icon: LayoutDashboard, label: 'Dashboard', href: '/vendeur/dashboard', color: 'text-emerald-600 bg-emerald-500/10' }] : []),
-                    ...(session?.user?.role === 'ADMIN' ? [{ icon: ShieldAlert, label: 'Admin Panel', href: '/admin', color: 'text-violet-600 bg-violet-500/10' }] : []),
-                    ...(!session ? [{ icon: Rocket, label: 'Vendre ici', href: '/vendre', color: 'text-amber-600 bg-amber-500/10' }] : []),
-                  ].map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href as any}
-                      onClick={onClose}
-                      className="flex items-center gap-3 p-3.5 rounded-2xl border border-black/5 dark:border-white/5 bg-black/[0.02] dark:bg-white/[0.02] hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+              <div className="grid lg:grid-cols-[1.5fr_1fr] gap-16">
+                {/* Left: Categories Grid */}
+                <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-8">
+                  {navigationSections.map((section, idx) => (
+                    <motion.div
+                      key={section.title}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: idx * 0.05 }}
+                      className="space-y-6 group"
                     >
-                      <div className={`h-8 w-8 rounded-xl flex items-center justify-center flex-shrink-0 ${item.color}`}>
-                        <item.icon className="h-4 w-4" />
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400 group-hover:bg-blue-400 group-hover:text-black transition-all">
+                          <Package className="w-5 h-5" />
+                        </div>
+                        <h3 className="text-lg font-bold text-white">{section.title}</h3>
                       </div>
-                      <span className="text-sm font-bold text-slate-800 dark:text-slate-200 leading-tight">{item.label}</span>
-                    </Link>
+                      
+                      <ul className="space-y-2">
+                        {section.links.map((link) => (
+                          <li key={link.label}>
+                            <Link
+                              href={link.href}
+                              onClick={onClose}
+                              className="flex items-center justify-between px-4 py-3 rounded-2xl glass hover:bg-white hover:text-black transition-all group/item"
+                            >
+                              <span className="text-sm font-bold uppercase tracking-widest">{link.label}</span>
+                              <ArrowRight className="w-4 h-4 opacity-0 group-hover/item:opacity-100 -translate-x-2 group-hover/item:translate-x-0 transition-all" />
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </motion.div>
                   ))}
                 </div>
-              </div>
 
-              {/* ── CATEGORY GRID (shared mobile+desktop) ── */}
-              <div className="sm:hidden mb-2">
-                <p className="text-[9px] font-black uppercase tracking-[0.25em] text-slate-400 px-1 mb-2">Catégories</p>
-              </div>
-              <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
-                {navigationSections.map((section, idx) => (
-                  <motion.article
-                    key={section.title}
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: idx * 0.04 }}
-                    className="group flex flex-col rounded-[1.25rem] sm:rounded-[1.75rem] border border-black/5 dark:border-white/5 bg-black/[0.015] dark:bg-white/[0.015] p-4 sm:p-6 transition-all hover:border-cyan-500/20 hover:bg-black/[0.03] dark:hover:bg-white/[0.03]"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 transition-all group-hover:bg-cyan-500 group-hover:text-white flex-shrink-0">
-                        <ShieldCheck className="h-4 w-4 sm:h-5 sm:w-5" />
-                      </div>
-                      <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">{section.title}</h2>
-                    </div>
-
-                    <p className="hidden sm:block mt-3 text-xs leading-5 text-slate-500 dark:text-slate-400">
-                      {section.description}
-                    </p>
-
-                    <div className="mt-3 sm:mt-5 space-y-1">
-                      {section.links.map((link) => (
+                {/* Right: Brand & Account Section */}
+                <div className="space-y-12">
+                  <div className="p-8 rounded-[2.5rem] bg-white/[0.03] border border-white/5 space-y-8">
+                    <h3 className="text-sm font-black uppercase tracking-[0.2em] text-white/20">Votre Compte</h3>
+                    
+                    {!session ? (
+                      <div className="space-y-4">
                         <Link
-                          key={link.label}
-                          href={link.href}
+                          href="/admin/login"
                           onClick={onClose}
-                          className="flex items-center justify-between rounded-xl px-3 py-2 text-xs font-medium text-slate-500 dark:text-slate-400 hover:bg-black/5 dark:hover:bg-white/5 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
+                          className="flex items-center justify-center w-full py-4 rounded-2xl bg-white text-black font-bold tracking-wide hover:bg-white/90 transition-all"
                         >
-                          <span>{link.label}</span>
-                          <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity -translate-x-1 group-hover:translate-x-0 transition-transform" />
+                          <LogIn className="w-4 h-4 mr-2" /> Connexion
                         </Link>
-                      ))}
-                    </div>
-                  </motion.article>
-                ))}
-              </div>
+                        <Link
+                          href="/register"
+                          onClick={onClose}
+                          className="flex items-center justify-center w-full py-4 rounded-2xl glass text-white font-bold tracking-wide hover:bg-white/10 transition-all"
+                        >
+                          <UserPlus className="w-4 h-4 mr-2" /> Créer un compte
+                        </Link>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col gap-6">
+                        <div className="flex items-center gap-4">
+                          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-xl font-bold text-white">
+                            {session.user?.name?.charAt(0).toUpperCase()}
+                          </div>
+                          <div>
+                            <p className="font-bold text-white text-lg leading-none">{session.user?.name}</p>
+                            <p className="text-xs text-white/40 mt-1">{session.user?.email}</p>
+                          </div>
+                        </div>
+                        
+                        <div className="grid grid-cols-2 gap-3">
+                          <Link href="/mes-commandes" onClick={onClose} className="flex flex-col items-center justify-center p-4 rounded-2xl glass hover:bg-white/5 transition-all text-center">
+                            <Package className="w-5 h-5 text-blue-400 mb-2" />
+                            <span className="text-[10px] font-bold uppercase tracking-widest">Commandes</span>
+                          </Link>
+                          <Link href="/favoris" onClick={onClose} className="flex flex-col items-center justify-center p-4 rounded-2xl glass hover:bg-white/5 transition-all text-center">
+                            <Heart className="w-5 h-5 text-red-400 mb-2" />
+                            <span className="text-[10px] font-bold uppercase tracking-widest">Favoris</span>
+                          </Link>
+                        </div>
 
-              {/* ── MOBILE BOTTOM SPACER ── */}
-              <div className="sm:hidden h-6" />
+                        <button
+                          onClick={() => { signOut({ callbackUrl: '/' }); onClose(); }}
+                          className="flex items-center justify-center gap-2 text-xs font-bold text-red-400 hover:text-red-300 transition-colors"
+                        >
+                          <LogOut className="w-4 h-4" /> Se déconnecter
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Promo Banner */}
+                  <div className="relative aspect-[16/9] rounded-[2.5rem] overflow-hidden group">
+                    <img 
+                      src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80" 
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                      alt="Promo"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                    <div className="absolute bottom-8 left-8 right-8">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass text-[10px] font-bold text-white mb-3">
+                        <Rocket className="w-3 h-3 text-blue-400" /> Nouveauté Tech
+                      </div>
+                      <h4 className="text-2xl font-bold text-white mb-4">Découvrez la Collection 2025</h4>
+                      <Link href="/produits?category=Tech" onClick={onClose} className="text-sm font-bold text-white flex items-center gap-2 hover:underline">
+                        En savoir plus <ArrowRight className="w-4 h-4" />
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </motion.div>
         </>
