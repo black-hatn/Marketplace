@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { SiteHeader } from '@/components/SiteHeader';
@@ -13,6 +13,14 @@ import { routing } from '@/i18n/routing';
 
 const inter = Inter({ subsets: ['latin'] });
 
+export const viewport: Viewport = {
+  themeColor: '#030303',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
 export const metadata: Metadata = {
   title: {
     default: 'Marketplace Premium | L’excellence au Tchad',
@@ -21,6 +29,15 @@ export const metadata: Metadata = {
   description: 'Découvrez l’avenir du e-commerce au Tchad. Une sélection exclusive de produits premium et une expérience immersive inédite.',
   keywords: ['e-commerce', 'luxe', 'Tchad', 'N’Djaména', 'premium'],
   authors: [{ name: 'Immersive Team' }],
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Immersive',
+  },
+  formatDetection: {
+    telephone: false,
+  },
   openGraph: {
     type: 'website',
     locale: 'fr_FR',
@@ -48,6 +65,11 @@ export default async function RootLayout({
     <html lang={locale} suppressHydrationWarning className="scroll-smooth dark">
       <head>
         <WebsiteJsonLd />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="Immersive" />
+        <link rel="apple-touch-icon" href="/app_icon_512.png" />
       </head>
       <body className={`${inter.className} min-h-screen bg-background text-foreground transition-colors duration-500`}>
         <NextIntlClientProvider messages={messages} locale={locale}>

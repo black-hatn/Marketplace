@@ -97,7 +97,36 @@ export async function getProduitsByCategory(category: string) {
     where: {
       categories: { has: category },
       actif: true
-    }
+    },
+    include: { brand: true }
+  });
+}
+
+export async function getRecommendedProducts(productId: string) {
+  const currentProduct = await prisma.produit.findUnique({
+    where: { id: productId },
+    select: { categories: true, brandId: true }
+  });
+
+  if (!currentProduct) return [];
+
+  // Fetch products from same category or brand
+  const recommended = await prisma.produit.findMany({
+    where: {
+      OR: [
+        { categories: { hasSome: currentProduct.categories } },
+        { brandId: currentProduct.brandId }
+      ],
+      NOT: { id: productId },
+      actif: true
+    },
+    take: 6,
+    include: { brand: true, category: true }
+  });
+
+  // Shuffle simple
+  return recommended.sort(() => Math.random() - 0.5);
+}
   });
 }
 

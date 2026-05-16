@@ -7,8 +7,9 @@ import { WishlistButton } from '@/components/WishlistButton';
 import { isWishlisted } from '@/lib/actions';
 import { Metadata } from 'next';
 import { AddToCartButton } from '@/components/AddToCartButton';
-import { Recommendations } from '@/components/Recommendations';
+import { SmartRecommendations } from '@/components/SmartRecommendations';
 import { ReviewSection } from '@/components/ReviewSection';
+import { ThreeDButton } from '@/components/ThreeDButton';
 import PageTransition from '@/components/PageTransition';
 
 type Props = { params: { id: string, locale: string } };
@@ -95,9 +96,12 @@ export default async function ProductPage({ params }: Props) {
                   )}
                 </div>
 
-                <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-white">
-                  {product.nom}
-                </h1>
+                <div className="flex items-center justify-between gap-4">
+                  <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-white">
+                    {product.nom}
+                  </h1>
+                  <ThreeDButton title={product.nom} />
+                </div>
 
                 <div className="flex items-center gap-4">
                   <div className="flex items-center gap-1 text-amber-400">
@@ -177,13 +181,7 @@ export default async function ProductPage({ params }: Props) {
               />
             </section>
 
-            <section className="space-y-12">
-              <div className="flex items-center gap-4">
-                <h2 className="text-3xl font-bold text-white">Sélectionné pour vous</h2>
-                <div className="h-px flex-1 bg-white/5"></div>
-              </div>
-              <Recommendations productId={product.id} />
-            </section>
+            <SmartRecommendations productId={product.id} />
           </div>
         </main>
       </div>
