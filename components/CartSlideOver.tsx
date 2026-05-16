@@ -20,12 +20,11 @@ export function CartSlideOver() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="group relative inline-flex items-center gap-3 rounded-full bg-slate-900 dark:bg-white px-5 py-3 text-sm font-bold text-white dark:text-slate-900 shadow-xl transition-all hover:scale-105 active:scale-95"
+        className="group relative flex items-center justify-center w-12 h-12 rounded-full glass text-white hover:bg-white hover:text-black transition-all"
       >
         <ShoppingBag className="h-5 w-5" />
-        <span className="hidden sm:inline">Panier</span>
         {totalItems > 0 && (
-          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-cyan-500 text-[10px] font-bold text-white ring-2 ring-white dark:ring-slate-900">
+          <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-blue-500 text-[10px] font-bold text-white ring-2 ring-background">
             {totalItems}
           </span>
         )}
@@ -39,45 +38,49 @@ export function CartSlideOver() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setOpen(false)}
-              className="fixed inset-0 z-50 bg-slate-950/40 backdrop-blur-sm"
+              className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm"
             />
             <motion.aside
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col border-l border-black/5 dark:border-white/10 bg-white/95 dark:bg-slate-950/95 shadow-2xl backdrop-blur-2xl"
+              transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+              className="fixed inset-y-0 right-0 z-[101] flex w-full max-w-md flex-col bg-background/80 backdrop-blur-2xl border-l border-white/5"
             >
-              <div className="flex items-center justify-between border-b border-black/5 dark:border-white/10 px-8 py-6">
+              {/* Header */}
+              <div className="flex items-center justify-between px-8 py-8 border-b border-white/5">
                 <div>
-                  <div className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-cyan-600 dark:text-cyan-400">
-                    <ShoppingBag className="h-3 w-3" /> Votre Sélection
-                  </div>
-                  <h2 className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">Panier unifié</h2>
+                  <h2 className="text-2xl font-bold text-white">Votre Panier</h2>
+                  <p className="text-xs text-muted-foreground uppercase tracking-widest mt-1">
+                    {totalItems} article{totalItems > 1 ? 's' : ''} sélectionné{totalItems > 1 ? 's' : ''}
+                  </p>
                 </div>
                 <button
                   onClick={() => setOpen(false)}
-                  className="rounded-full bg-black/5 dark:bg-white/5 p-3 text-slate-500 transition hover:bg-black/10 dark:hover:bg-white/10"
+                  className="w-10 h-10 rounded-full glass flex items-center justify-center text-white/60 hover:text-white transition-colors"
                 >
                   <X className="h-5 w-5" />
                 </button>
               </div>
 
-              <div className="flex-1 overflow-y-auto px-8 py-8">
+              {/* Items List */}
+              <div className="flex-1 overflow-y-auto px-8 py-8 custom-scrollbar">
                 {items.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-full text-center space-y-6">
-                    <div className="rounded-full bg-slate-100 dark:bg-slate-900 p-8">
-                      <ShoppingBag className="h-12 w-12 text-slate-300" />
+                    <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center">
+                      <ShoppingBag className="h-10 w-10 text-white/20" />
                     </div>
                     <div className="space-y-2">
-                      <p className="text-xl font-bold text-slate-900 dark:text-white">Votre panier est vide</p>
-                      <p className="text-sm text-slate-500">Commencez à explorer nos secteurs pour ajouter des articles d'exception.</p>
+                      <p className="text-xl font-bold text-white">Panier vide</p>
+                      <p className="text-sm text-muted-foreground max-w-[200px] mx-auto font-light">
+                        Votre sélection d'exception apparaîtra ici.
+                      </p>
                     </div>
                     <button
                       onClick={() => setOpen(false)}
-                      className="inline-flex items-center gap-2 text-sm font-bold text-cyan-600 dark:text-cyan-400 hover:underline"
+                      className="text-sm font-bold text-blue-400 hover:text-blue-300 transition-colors"
                     >
-                      Continuer mes achats <ArrowRight className="h-4 w-4" />
+                      Continuer mes achats
                     </button>
                   </div>
                 ) : (
@@ -86,41 +89,49 @@ export function CartSlideOver() {
                       <motion.li
                         key={item.id}
                         layout
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="glass-card flex items-center gap-4 rounded-3xl p-4"
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        className="flex gap-4 group"
                       >
-                        <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-2xl bg-slate-100 dark:bg-slate-900 ring-1 ring-black/5">
-                          <Image src={item.image} alt={item.title} fill className="object-cover" />
+                        <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-2xl bg-surface-light border border-white/5">
+                          <Image src={item.image} alt={item.title} fill unoptimized={true} className="object-cover" />
                         </div>
-                        <div className="flex-1 space-y-1">
-                          <div className="flex items-center justify-between">
-                            <h3 className="text-sm font-bold text-slate-900 dark:text-white line-clamp-1">{item.title}</h3>
+                        
+                        <div className="flex-1 flex flex-col py-1">
+                          <div className="flex items-start justify-between gap-2">
+                            <div>
+                              <h3 className="text-sm font-bold text-white line-clamp-1">{item.title}</h3>
+                              <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest mt-0.5">
+                                {item.vendor}
+                              </p>
+                            </div>
                             <button
                               onClick={() => removeItem(item.id)}
-                              className="text-slate-400 hover:text-red-500 transition-colors"
+                              className="text-white/20 hover:text-red-400 transition-colors"
                             >
                               <Trash2 className="h-4 w-4" />
                             </button>
                           </div>
-                          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{item.vendor}</p>
-                          <div className="flex items-center justify-between pt-2">
-                            <div className="flex items-center gap-3 rounded-full bg-black/5 dark:bg-white/5 px-2 py-1">
+
+                          <div className="mt-auto flex items-center justify-between">
+                            <div className="flex items-center gap-3 glass rounded-full px-2 py-1">
                               <button
                                 onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                                className="p-1 text-slate-500 hover:text-cyan-600 dark:hover:text-cyan-400"
+                                className="p-1 text-white/40 hover:text-white transition-colors"
                               >
                                 <Minus className="h-3 w-3" />
                               </button>
-                              <span className="text-xs font-bold text-slate-900 dark:text-white w-4 text-center">{item.quantity}</span>
+                              <span className="text-xs font-bold text-white w-4 text-center">{item.quantity}</span>
                               <button
                                 onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                className="p-1 text-slate-500 hover:text-cyan-600 dark:hover:text-cyan-400"
+                                className="p-1 text-white/40 hover:text-white transition-colors"
                               >
                                 <Plus className="h-3 w-3" />
                               </button>
                             </div>
-                            <p className="text-sm font-bold text-slate-900 dark:text-white">{(item.price * item.quantity).toLocaleString()} FCFA</p>
+                            <p className="text-sm font-bold text-white">
+                              {(item.price * item.quantity).toLocaleString()} <span className="text-[10px] text-white/40">FCFA</span>
+                            </p>
                           </div>
                         </div>
                       </motion.li>
@@ -129,24 +140,24 @@ export function CartSlideOver() {
                 )}
               </div>
 
+              {/* Footer */}
               {items.length > 0 && (
-                <div className="border-t border-black/5 dark:border-white/10 bg-slate-50/50 dark:bg-white/[0.02] px-8 py-8 space-y-6">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-bold text-slate-500 uppercase tracking-widest">Sous-total</span>
-                    <span className="text-2xl font-bold text-slate-900 dark:text-white">{total.toLocaleString()} FCFA</span>
+                <div className="px-8 py-8 border-t border-white/5 bg-white/[0.02]">
+                  <div className="flex items-center justify-between mb-8">
+                    <span className="text-xs font-bold text-muted-foreground uppercase tracking-[0.2em]">Sous-total</span>
+                    <span className="text-2xl font-black text-white">{total.toLocaleString()} <span className="text-sm font-medium text-white/40">FCFA</span></span>
                   </div>
-                  <div className="space-y-3">
-                    <Link 
-                      href="/checkout"
-                      onClick={() => setOpen(false)}
-                      className="block w-full text-center rounded-full bg-cyan-500 py-4 text-sm font-bold text-white shadow-lg shadow-cyan-500/20 transition hover:bg-cyan-400"
-                    >
-                      Passer la commande unifiée
-                    </Link>
-                    <p className="text-center text-[10px] text-slate-400 uppercase tracking-widest">
-                      Paiement sécurisé • Expédition multi-vendeurs
-                    </p>
-                  </div>
+                  <Link 
+                    href="/checkout"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center justify-center w-full py-5 rounded-2xl bg-white text-black font-bold tracking-wide hover:bg-white/90 transition-all group"
+                  >
+                    Procéder au paiement
+                    <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                  <p className="text-center text-[10px] text-white/30 uppercase tracking-[0.2em] mt-6">
+                    Paiement 100% sécurisé via Stripe
+                  </p>
                 </div>
               )}
             </motion.aside>

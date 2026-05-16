@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ZoomIn, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export function ProductGallery({ images, title }: { images: string[]; title: string }) {
@@ -15,71 +15,106 @@ export function ProductGallery({ images, title }: { images: string[]; title: str
   const next = () => setCurrent((c) => (c === allImages.length - 1 ? 0 : c + 1));
 
   return (
-    <>
-      <div className="space-y-4">
-        {/* Main Image */}
-        <div className="relative h-[420px] sm:h-[500px] w-full rounded-[2rem] overflow-hidden bg-slate-100 dark:bg-slate-900 group cursor-zoom-in" onClick={() => setLightbox(true)}>
-          <AnimatePresence mode="wait">
-            <motion.div key={current} initial={{ opacity: 0, scale: 1.02 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }} className="absolute inset-0">
-              <Image src={allImages[current]} alt={`${title} ${current + 1}`} fill className="object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
-            </motion.div>
-          </AnimatePresence>
+    <div className="space-y-6">
+      {/* Main Image View */}
+      <div 
+        className="relative aspect-square w-full rounded-[2.5rem] overflow-hidden bg-surface-light group cursor-zoom-in border border-white/5"
+        onClick={() => setLightbox(true)}
+      >
+        <AnimatePresence mode="wait">
+          <motion.div 
+            key={current} 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            exit={{ opacity: 0 }} 
+            transition={{ duration: 0.4 }} 
+            className="absolute inset-0"
+          >
+            <Image 
+              src={allImages[current]} 
+              alt={`${title} ${current + 1}`} 
+              fill 
+              unoptimized={true}
+              className="object-cover transition-transform duration-700 group-hover:scale-105" 
+            />
+          </motion.div>
+        </AnimatePresence>
 
-          {/* Overlay Zoom */}
-          <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/10 transition-colors">
-            <ZoomIn className="h-8 w-8 text-white opacity-0 group-hover:opacity-100 transition-all drop-shadow-xl" />
+        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+          <div className="w-12 h-12 rounded-full glass flex items-center justify-center text-white">
+            <ZoomIn className="w-6 h-6" />
           </div>
-
-          {/* Nav Arrows */}
-          {allImages.length > 1 && (
-            <>
-              <button onClick={(e) => { e.stopPropagation(); prev(); }} className="absolute left-3 top-1/2 -translate-y-1/2 h-10 w-10 rounded-xl bg-white/90 dark:bg-slate-900/90 shadow-lg flex items-center justify-center hover:bg-white dark:hover:bg-slate-800 transition-all opacity-0 group-hover:opacity-100">
-                <ChevronLeft className="h-5 w-5 text-slate-700 dark:text-white" />
-              </button>
-              <button onClick={(e) => { e.stopPropagation(); next(); }} className="absolute right-3 top-1/2 -translate-y-1/2 h-10 w-10 rounded-xl bg-white/90 dark:bg-slate-900/90 shadow-lg flex items-center justify-center hover:bg-white dark:hover:bg-slate-800 transition-all opacity-0 group-hover:opacity-100">
-                <ChevronRight className="h-5 w-5 text-slate-700 dark:text-white" />
-              </button>
-            </>
-          )}
-
-          {/* Dots */}
-          {allImages.length > 1 && (
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5">
-              {allImages.map((_, i) => (
-                <button key={i} onClick={(e) => { e.stopPropagation(); setCurrent(i); }} className={`h-1.5 rounded-full transition-all ${i === current ? 'w-6 bg-white' : 'w-1.5 bg-white/50'}`} />
-              ))}
-            </div>
-          )}
         </div>
 
-        {/* Thumbnails */}
+        {/* Floating Nav */}
         {allImages.length > 1 && (
-          <div className="grid grid-cols-4 gap-3">
-            {allImages.map((img, i) => (
-              <button key={i} onClick={() => setCurrent(i)} className={`relative h-20 rounded-xl overflow-hidden ring-2 transition-all ${i === current ? 'ring-cyan-500 ring-offset-2 dark:ring-offset-slate-950' : 'ring-transparent hover:ring-slate-300 dark:hover:ring-slate-600'}`}>
-                <Image src={img} alt={`${title} ${i + 1}`} fill className="object-cover" />
-              </button>
-            ))}
+          <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 flex justify-between pointer-events-none">
+            <button 
+              onClick={(e) => { e.stopPropagation(); prev(); }} 
+              className="h-12 w-12 rounded-full glass flex items-center justify-center text-white hover:bg-white hover:text-black transition-all pointer-events-auto opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0"
+            >
+              <ChevronLeft className="h-6 w-6" />
+            </button>
+            <button 
+              onClick={(e) => { e.stopPropagation(); next(); }} 
+              className="h-12 w-12 rounded-full glass flex items-center justify-center text-white hover:bg-white hover:text-black transition-all pointer-events-auto opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0"
+            >
+              <ChevronRight className="h-6 w-6" />
+            </button>
           </div>
         )}
       </div>
 
-      {/* Lightbox */}
+      {/* Thumbnails Grid */}
+      {allImages.length > 1 && (
+        <div className="grid grid-cols-4 sm:grid-cols-5 gap-4">
+          {allImages.map((img, i) => (
+            <button 
+              key={i} 
+              onClick={() => setCurrent(i)} 
+              className={`relative aspect-square rounded-2xl overflow-hidden border-2 transition-all ${
+                i === current ? 'border-blue-500 scale-95' : 'border-transparent opacity-60 hover:opacity-100'
+              }`}
+            >
+              <Image src={img} alt={`${title} ${i + 1}`} fill unoptimized={true} className="object-cover" />
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Lightbox Overlay */}
       <AnimatePresence>
         {lightbox && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm" onClick={() => setLightbox(false)}>
-            <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }} className="relative max-h-[90vh] max-w-[90vw] w-full h-full" onClick={(e) => e.stopPropagation()}>
-              <Image src={allImages[current]} alt={title} fill className="object-contain" />
-            </motion.div>
-            <button onClick={prev} className="absolute left-4 top-1/2 -translate-y-1/2 h-12 w-12 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center">
-              <ChevronLeft className="h-6 w-6" />
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            exit={{ opacity: 0 }} 
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-xl"
+            onClick={() => setLightbox(false)}
+          >
+            <button className="absolute top-8 right-8 text-white/60 hover:text-white p-4">
+              <X className="w-8 h-8" />
             </button>
-            <button onClick={next} className="absolute right-4 top-1/2 -translate-y-1/2 h-12 w-12 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center">
-              <ChevronRight className="h-6 w-6" />
-            </button>
+            
+            <div className="relative w-full h-[80vh] flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+              <div className="relative w-full h-full max-w-[90vw]">
+                <Image src={allImages[current]} alt={title} fill unoptimized={true} className="object-contain" />
+              </div>
+              
+              {allImages.length > 1 && (
+                <>
+                  <button onClick={prev} className="absolute left-8 h-16 w-16 rounded-full glass flex items-center justify-center text-white hover:bg-white hover:text-black transition-all">
+                    <ChevronLeft className="h-8 w-8" />
+                  </button>
+                  <button onClick={next} className="absolute right-8 h-16 w-16 rounded-full glass flex items-center justify-center text-white hover:bg-white hover:text-black transition-all">
+                    <ChevronRight className="h-8 w-8" />
+                  </button>
+                </>
+              )}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </div>
   );
 }

@@ -30,13 +30,13 @@ export function SiteHeader() {
 
   const linkClass = (href: string) => `text-[11px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${
     isLinkActive(href) 
-      ? 'text-cyan-600 dark:text-cyan-400' 
-      : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+      ? 'text-blue-400' 
+      : 'text-white/60 hover:text-white'
   }`;
 
   return (
     <header className="sticky top-0 z-50 w-full transition-all duration-500">
-      <div className="absolute inset-0 bg-white/60 dark:bg-slate-950/60 backdrop-blur-2xl border-b border-black/5 dark:border-white/10" />
+      <div className="absolute inset-0 glass border-b border-white/5" />
       
       {/* Upper Navigation */}
       <div className="relative mx-auto max-w-[1600px] px-3 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-2">
@@ -47,10 +47,10 @@ export function SiteHeader() {
               <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-white dark:text-slate-900" />
             </div>
             <div className="flex flex-col">
-              <h1 className="text-base sm:text-xl font-black tracking-tighter text-slate-900 dark:text-white leading-tight uppercase">
-                Immersive<span className="text-cyan-500">.</span>
+              <h1 className="text-base sm:text-xl font-black tracking-tighter text-white leading-tight uppercase">
+                Immersive<span className="text-blue-500">.</span>
               </h1>
-              <p className="hidden sm:block text-[8px] font-bold uppercase tracking-[0.3em] text-slate-400">Marketplace Pro</p>
+              <p className="hidden sm:block text-[8px] font-bold uppercase tracking-[0.3em] text-white/50">Marketplace Pro</p>
             </div>
           </Link>
         </div>
@@ -139,7 +139,7 @@ export function SiteHeader() {
             <Link href="/produits" className={linkClass('/produits')}>{t('shop')}</Link>
             <Link href="/marques" className={linkClass('/marques')}>{t('brands')}</Link>
             <div className="h-3 w-px bg-black/10 dark:bg-white/10 mx-2" />
-            <Link href="/produits?badge=Nouveauté" className="text-[10px] font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-widest animate-pulse hover:underline">{t('news')}</Link>
+            <Link href="/produits?badge=Nouveauté" className="text-[10px] font-bold text-blue-400 uppercase tracking-widest animate-pulse hover:underline">{t('news')}</Link>
           </nav>
         </div>
       </div>

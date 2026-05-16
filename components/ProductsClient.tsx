@@ -7,7 +7,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, Search, FilterX, Sparkles, Plus, Scale, X, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import { ProductCard } from '@/components/ProductCard';
-import PageTransition from '@/components/PageTransition';
 
 type ProductProps = {
   id: string;
@@ -26,38 +25,26 @@ type ProductProps = {
   stock?: number;
 };
 
-const ITEMS_PER_PAGE = 8;
+const ITEMS_PER_PAGE = 12;
 
 export default function ProductsClient({ initialProducts }: { initialProducts: ProductProps[] }) {
   const searchParams = useSearchParams();
   const [category, setCategory] = useState('Tous');
-  const [city, setCity] = useState('Tout le Tchad');
   const [search, setSearch] = useState('');
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000000]);
-  const [sortBy, setSortBy] = useState<'newest' | 'price-asc' | 'price-desc' | 'rating'>('newest');
+  const [sortBy, setSortBy] = useState<'newest' | 'price-asc' | 'price-desc'>('newest');
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
-  const [compareList, setCompareList] = useState<ProductProps[]>([]);
-  const [showCompare, setShowCompare] = useState(false);
 
   const categories = useMemo(
     () => ['Tous', ...Array.from(new Set((initialProducts || []).map((p) => p.category))).sort()],
     [initialProducts]
   );
 
-  const cities = useMemo(
-    () => ['Tout le Tchad', ...Array.from(new Set((initialProducts || []).map((p) => p.city || "N'Djaména"))).sort()],
-    [initialProducts]
-  );
-
-  // Sync with URL search params
   useEffect(() => {
     if (!searchParams) return;
     const s = searchParams.get('search');
-    const b = searchParams.get('badge');
     const c = searchParams.get('category');
     
     if (s) setSearch(s);
-    if (b) setSearch(b);
     if (c && categories.length > 0) {
       const found = categories.find(cat => cat.toLowerCase() === c.toLowerCase());
       if (found) setCategory(found);
@@ -69,302 +56,133 @@ export default function ProductsClient({ initialProducts }: { initialProducts: P
     
     let result = initialProducts.filter((product) => {
       const matchesCategory = category === 'Tous' || product.category === category;
-      const matchesCity = city === 'Tout le Tchad' || (product.city || "N'Djaména") === city;
       const matchesSearch =
         search.trim() === '' ||
         product.title.toLowerCase().includes(search.toLowerCase()) ||
         product.vendor.toLowerCase().includes(search.toLowerCase());
-      const matchesPrice = product.price >= priceRange[0] && product.price <= priceRange[1];
-      
-      return matchesCategory && matchesCity && matchesSearch && matchesPrice;
+      return matchesCategory && matchesSearch;
     });
 
-    // Sorting
     return result.sort((a, b) => {
       if (sortBy === 'price-asc') return a.price - b.price;
       if (sortBy === 'price-desc') return b.price - a.price;
-      if (sortBy === 'rating') return b.rating - a.rating;
-      return 0;
+      return 0; // newest as default if no date
     });
-  }, [category, city, search, priceRange, sortBy, initialProducts]);
+  }, [category, search, sortBy, initialProducts]);
 
   const displayedProducts = filteredProducts.slice(0, visibleCount);
   const hasMore = visibleCount < filteredProducts.length;
 
-  const toggleCompare = (product: ProductProps) => {
-    if (compareList.find(p => p.id === product.id)) {
-      setCompareList(prev => prev.filter(p => p.id !== product.id));
-    } else {
-      if (compareList.length >= 3) return;
-      setCompareList(prev => [...prev, product]);
-    }
-  };
-
   return (
-    <PageTransition>
-      <main className="relative min-h-screen overflow-x-hidden bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-500 pb-24">
-        <div className="fixed inset-0 z-0 pointer-events-none">
-          <div className="absolute top-[-10%] left-[-10%] h-[50%] w-[50%] rounded-full bg-cyan-500/[0.03] dark:bg-cyan-500/[0.07] blur-[120px]" />
-          <div className="absolute bottom-[-10%] right-[-10%] h-[50%] w-[50%] rounded-full bg-blue-500/[0.03] dark:bg-blue-500/[0.07] blur-[120px]" />
-        </div>
+    <div className="relative w-full min-h-screen bg-background overflow-hidden selection:bg-white/20 selection:text-white pb-24">
+      {/* Background glow effects */}
+      <div className="fixed top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-blue-600/10 blur-[120px] pointer-events-none" />
+      <div className="fixed bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-purple-600/10 blur-[120px] pointer-events-none" />
 
-        <div className="relative z-10 mx-auto w-full max-w-[1800px] px-3 sm:px-6 py-6 sm:py-10 lg:py-20 space-y-8 sm:space-y-12">
-          <div className="glass-card relative overflow-hidden rounded-[1.5rem] sm:rounded-[2.5rem] p-5 sm:p-10 lg:p-16">
-            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/[0.05] dark:from-cyan-500/[0.1] via-transparent to-transparent" />
-            <div className="relative z-10 flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between">
-              <div className="max-w-2xl">
-                <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.3em] text-cyan-600 dark:text-cyan-400">
-                  <ShoppingBag className="h-3 w-3 sm:h-4 sm:w-4" /> Catalogue Immersif
-                </div>
-                <h1 className="mt-3 sm:mt-6 text-xl sm:text-4xl lg:text-6xl font-bold tracking-tight text-slate-900 dark:text-white leading-tight">
-                  L&apos;Excellence à portée de <span className="text-cyan-600 dark:text-cyan-400">découverte</span>.
-                </h1>
-                <p className="mt-3 sm:mt-8 text-sm sm:text-xl leading-relaxed text-slate-600 dark:text-slate-300 hidden sm:block">
-                  Découvrez des produits premium qui redéfinissent votre quotidien.
-                </p>
-              </div>
-              
-              <div className="relative w-full max-w-md">
-                <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                  <Search className="h-4 w-4 text-slate-400" />
-                </div>
-                <input
-                  type="text"
-                  placeholder="Rechercher..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="w-full rounded-full bg-white dark:bg-slate-900 border border-black/5 dark:border-white/10 px-10 py-3 sm:py-5 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 shadow-xl transition-all"
-                />
-              </div>
-            </div>
+      {/* Navigation spacer */}
+      <div className="h-24 sm:h-32"></div>
+
+      <main className="relative z-10 max-w-[1600px] mx-auto px-6 sm:px-12 lg:px-24 space-y-12">
+        {/* Header Section */}
+        <section className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-8 border-b border-white/10">
+          <div className="max-w-2xl">
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-white mb-4">La Boutique</h1>
+            <p className="text-lg text-muted-foreground">L'intégralité de notre catalogue premium, soigneusement sélectionné pour vous.</p>
+          </div>
+          <div className="w-full lg:w-96 relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Rechercher une pièce rare..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-12 pr-4 py-4 rounded-2xl glass text-white placeholder-white/40 outline-none focus:border-white/30 transition-all"
+            />
+          </div>
+        </section>
+
+        {/* Filters */}
+        <section className="flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => { setCategory(cat); setVisibleCount(ITEMS_PER_PAGE); }}
+                className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all ${
+                  category === cat
+                    ? 'bg-white text-black'
+                    : 'glass text-white/70 hover:text-white hover:bg-white/10'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
           </div>
 
-          <div className="grid gap-10">
-            <div className="flex flex-col gap-6">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-xs font-bold uppercase tracking-widest text-slate-400 mr-1">Catégories :</span>
-                {categories.map((cat) => (
-                  <button
-                    key={cat}
-                    onClick={() => { setCategory(cat); setVisibleCount(ITEMS_PER_PAGE); }}
-                    className={`rounded-full px-3 py-1.5 sm:px-6 sm:py-3 text-xs font-bold uppercase tracking-widest transition-all ${
-                      category === cat
-                        ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/20'
-                        : 'bg-black/5 dark:bg-white/5 text-slate-600 dark:text-slate-400 hover:bg-cyan-500/10 hover:text-cyan-600'
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                ))}
-              </div>
-
-              <div className="flex flex-wrap items-center gap-3">
-                <span className="text-xs font-bold uppercase tracking-widest text-slate-400 mr-2">Ville :</span>
-                {cities.map((c) => (
-                  <button
-                    key={c}
-                    onClick={() => { setCity(c); setVisibleCount(ITEMS_PER_PAGE); }}
-                    className={`rounded-full px-6 py-3 text-xs font-bold uppercase tracking-widest transition-all ${
-                      city === c
-                        ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20'
-                        : 'bg-black/5 dark:bg-white/5 text-slate-600 dark:text-slate-400 hover:bg-blue-500/10 hover:text-blue-600'
-                    }`}
-                  >
-                    {c}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row items-center justify-between border-b border-black/5 dark:border-white/10 pb-6 gap-4">
-              <p className="text-sm font-bold text-slate-500">
-                <span className="text-slate-900 dark:text-white">{filteredProducts.length}</span> produits correspondent
-              </p>
-              
-              <div className="flex items-center gap-4 w-full sm:w-auto">
-                <select 
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as any)}
-                  className="flex-1 sm:flex-none bg-white dark:bg-slate-900 border border-black/5 dark:border-white/10 rounded-xl px-4 py-2 text-xs font-bold uppercase tracking-widest outline-none focus:ring-2 focus:ring-cyan-500/20"
-                >
-                  <option value="newest">Nouveautés</option>
-                  <option value="price-asc">Prix croissant</option>
-                  <option value="price-desc">Prix décroissant</option>
-                  <option value="rating">Mieux notés</option>
-                </select>
-                
-                <div className="hidden lg:flex items-center gap-2 bg-black/5 dark:bg-white/5 rounded-xl px-4 py-2">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Budget max :</span>
-                  <input 
-                    type="range" 
-                    min="0" 
-                    max="1000000" 
-                    step="10000"
-                    value={priceRange[1]}
-                    onChange={(e) => setPriceRange([0, parseInt(e.target.value)])}
-                    className="accent-cyan-500"
-                  />
-                  <span className="text-xs font-bold text-slate-900 dark:text-white">{priceRange[1].toLocaleString()} F</span>
-                </div>
-              </div>
-            </div>
-
-            <AnimatePresence mode="popLayout">
-              {displayedProducts.length ? (
-                <div className="space-y-12">
-                  <motion.div 
-                    layout
-                    className="grid gap-3 sm:gap-6 grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-                  >
-                    {displayedProducts.map((product) => (
-                      <motion.div
-                        layout
-                        key={product.id}
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
-                        transition={{ duration: 0.3 }}
-                        className="group relative"
-                      >
-                        <ProductCard product={product} />
-                        <button 
-                          onClick={() => toggleCompare(product)}
-                          className={`absolute top-4 left-4 p-2 rounded-xl backdrop-blur-md transition-all ${
-                            compareList.find(p => p.id === product.id)
-                              ? 'bg-cyan-500 text-white scale-110'
-                              : 'bg-black/20 text-white opacity-0 group-hover:opacity-100 hover:bg-black/40'
-                          }`}
-                          title="Comparer ce produit"
-                        >
-                          <Scale className="h-4 w-4" />
-                        </button>
-                      </motion.div>
-                    ))}
-                  </motion.div>
-                  
-                  {hasMore && (
-                    <div className="flex justify-center pt-8">
-                      <button
-                        onClick={() => setVisibleCount(prev => prev + ITEMS_PER_PAGE)}
-                        className="rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-10 py-4 text-sm font-bold shadow-xl hover:opacity-90 transition-all flex items-center gap-2"
-                      >
-                        Charger plus de produits
-                        <Plus className="h-4 w-4" />
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="glass-card flex flex-col items-center justify-center py-32 text-center"
-                >
-                  <div className="rounded-full bg-slate-100 dark:bg-slate-900 p-6 mb-6">
-                    <FilterX className="h-12 w-12 text-slate-400" />
-                  </div>
-                  <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Aucun résultat trouvé</h2>
-                  <button
-                    onClick={() => { setCategory('Tous'); setSearch(''); setPriceRange([0, 1000000]); }}
-                    className="mt-8 rounded-full bg-cyan-500 px-8 py-4 text-sm font-bold text-white transition-all hover:bg-cyan-400"
-                  >
-                    Réinitialiser les filtres
-                  </button>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
-
-        {/* Comparison Bar */}
-        <AnimatePresence>
-          {compareList.length > 0 && (
-            <motion.div
-              initial={{ y: 100 }}
-              animate={{ y: 0 }}
-              exit={{ y: 100 }}
-              className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-4xl"
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            <span className="text-sm font-medium text-muted-foreground hidden sm:block">Trier par:</span>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as any)}
+              className="glass px-4 py-2.5 rounded-xl text-sm font-medium text-white outline-none w-full sm:w-auto"
             >
-              <div className="glass-card rounded-3xl border border-cyan-500/30 bg-white/95 dark:bg-slate-900/95 shadow-2xl p-4 flex items-center gap-4">
-                <div className="flex-1 flex items-center gap-3 overflow-x-auto">
-                  {compareList.map(p => (
-                    <div key={p.id} className="relative group flex-shrink-0 w-14 h-14">
-                      <Image src={p.image} fill className="rounded-xl object-cover ring-1 ring-black/10" alt={p.title} sizes="56px" />
-                      <button 
-                        onClick={() => toggleCompare(p)}
-                        className="absolute -top-1 -right-1 z-10 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </div>
-                  ))}
-                  {compareList.length < 3 && (
-                    <div className="h-14 w-14 rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400">
-                      <Plus className="h-4 w-4" />
-                    </div>
-                  )}
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-xs font-bold text-slate-500 hidden sm:block">{compareList.length}/3 sélectionnés</span>
-                  <button 
-                    disabled={compareList.length < 2}
-                    onClick={() => setShowCompare(true)}
-                    className="rounded-xl bg-cyan-600 text-white px-6 py-3 text-xs font-bold uppercase tracking-widest disabled:opacity-50 hover:bg-cyan-700 transition-colors"
-                  >
-                    Comparer
-                  </button>
-                  <button onClick={() => setCompareList([])} className="text-slate-400 hover:text-red-500 transition-colors">
-                    <X className="h-5 w-5" />
-                  </button>
-                </div>
-              </div>
+              <option value="newest" className="bg-background text-white">Nouveautés</option>
+              <option value="price-asc" className="bg-background text-white">Prix croissant</option>
+              <option value="price-desc" className="bg-background text-white">Prix décroissant</option>
+            </select>
+          </div>
+        </section>
+
+        <div className="text-sm font-medium text-muted-foreground">
+          {filteredProducts.length} résultat{filteredProducts.length > 1 ? 's' : ''} trouvé{filteredProducts.length > 1 ? 's' : ''}
+        </div>
+
+        {/* Product Grid */}
+        <AnimatePresence mode="wait">
+          {displayedProducts.length > 0 ? (
+            <motion.div
+              key="grid"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+            >
+              {displayedProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </motion.div>
+          ) : (
+            <motion.div
+              key="empty"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="py-32 flex flex-col items-center justify-center text-center glass-card rounded-3xl"
+            >
+              <FilterX className="w-16 h-16 text-white/20 mb-6" />
+              <h2 className="text-2xl font-bold text-white mb-2">Aucune pièce trouvée</h2>
+              <p className="text-muted-foreground max-w-md mx-auto mb-8">Nous n'avons pas trouvé de produit correspondant à vos critères actuels. Essayez de modifier vos filtres.</p>
+              <button
+                onClick={() => { setCategory('Tous'); setSearch(''); }}
+                className="px-8 py-4 rounded-full bg-white text-black font-semibold hover:bg-white/90 transition-colors"
+              >
+                Réinitialiser la recherche
+              </button>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Comparison Modal */}
-        <AnimatePresence>
-          {showCompare && (
-            <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-              <motion.div 
-                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                className="absolute inset-0 bg-black/60 backdrop-blur-md" 
-                onClick={() => setShowCompare(false)} 
-              />
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
-                className="relative glass-card rounded-[2.5rem] w-full max-w-6xl max-h-[90vh] overflow-hidden flex flex-col"
-              >
-                <div className="p-8 border-b border-black/5 dark:border-white/10 flex items-center justify-between">
-                  <h2 className="text-2xl font-bold flex items-center gap-3"><Scale className="h-6 w-6 text-cyan-500" /> Comparatif Produits</h2>
-                  <button onClick={() => setShowCompare(false)} className="p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors"><X className="h-6 w-6" /></button>
-                </div>
-                <div className="flex-1 overflow-auto p-8">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 min-w-[300px]">
-                    {compareList.map(p => (
-                      <div key={p.id} className="space-y-8">
-                        <div className="relative aspect-[4/5] rounded-[2rem] overflow-hidden shadow-xl">
-                          <Image src={p.image} fill className="object-cover" alt={p.title} sizes="(max-width: 768px) 100vw, 400px" />
-                        </div>
-                        <div className="space-y-4">
-                          <h3 className="text-xl font-bold">{p.title}</h3>
-                          <p className="text-2xl font-black text-cyan-600 dark:text-cyan-400">{p.price.toLocaleString()} FCFA</p>
-                          <div className="space-y-2 text-sm text-slate-500">
-                            <p><strong>Marque :</strong> {p.vendor}</p>
-                            <p><strong>Catégorie :</strong> {p.category}</p>
-                            <p><strong>Note :</strong> {p.rating}/5 ({p.reviews} avis)</p>
-                          </div>
-                          <Link href={`/produit/${p.id}`} className="flex items-center gap-2 text-cyan-500 font-bold hover:underline">Voir le produit <ArrowRight className="h-4 w-4" /></Link>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-          )}
-        </AnimatePresence>
+        {hasMore && (
+          <div className="flex justify-center pt-12">
+            <button
+              onClick={() => setVisibleCount(prev => prev + ITEMS_PER_PAGE)}
+              className="px-10 py-4 rounded-full glass text-white font-medium hover:bg-white/10 transition-colors flex items-center gap-2"
+            >
+              Charger la suite <Plus className="w-4 h-4" />
+            </button>
+          </div>
+        )}
       </main>
-    </PageTransition>
+    </div>
   );
 }

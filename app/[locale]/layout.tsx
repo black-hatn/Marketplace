@@ -5,40 +5,31 @@ import { SiteHeader } from '@/components/SiteHeader';
 import { WebsiteJsonLd } from '@/components/JsonLd';
 import { Toaster } from 'react-hot-toast';
 import { Providers } from '@/components/Providers';
-
-const inter = Inter({ subsets: ['latin'] });
-
-export const metadata: Metadata = {
-  title: {
-    default: 'Plateforme Immersive | Mode, Tech & Design',
-    template: '%s | Plateforme Immersive'
-  },
-  description: 'L’avenir du e-commerce multi-sectoriel. Une expérience immersive, des marques engagées et une navigation visuelle de pointe.',
-  keywords: ['e-commerce', 'luxe', 'tech', 'mode durable', 'design immersif'],
-  authors: [{ name: 'Plateforme Immersive' }],
-  openGraph: {
-    type: 'website',
-    locale: 'fr_FR',
-    url: 'https://marketplace-immersive.com',
-    siteName: 'Plateforme Immersive',
-    title: 'Plateforme Immersive | L’expérience shopping du futur',
-    description: 'Découvrez une sélection exclusive de produits premium dans un environnement digital immersif.',
-    images: [
-      {
-        url: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1200&q=80',
-        width: 1200,
-        height: 630,
-        alt: 'Plateforme Immersive',
-      },
-    ],
-  },
-};
-
 import { Footer } from '@/components/Footer';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
+
+const inter = Inter({ subsets: ['latin'] });
+
+export const metadata: Metadata = {
+  title: {
+    default: 'Marketplace Premium | L’excellence au Tchad',
+    template: '%s | Marketplace Premium'
+  },
+  description: 'Découvrez l’avenir du e-commerce au Tchad. Une sélection exclusive de produits premium et une expérience immersive inédite.',
+  keywords: ['e-commerce', 'luxe', 'Tchad', 'N’Djaména', 'premium'],
+  authors: [{ name: 'Immersive Team' }],
+  openGraph: {
+    type: 'website',
+    locale: 'fr_FR',
+    url: 'https://marketplace-immersive.com',
+    siteName: 'Marketplace Premium',
+    title: 'Marketplace Premium | L’expérience shopping du futur',
+    description: 'Une sélection exclusive de produits premium dans un environnement digital immersif.',
+  },
+};
 
 export default async function RootLayout({
   children,
@@ -47,44 +38,25 @@ export default async function RootLayout({
   children: React.ReactNode;
   params: { locale: string };
 }>) {
-  // Ensure that the incoming `locale` is valid
   if (!routing.locales.includes(locale as any)) {
     notFound();
   }
 
-  // Providing all messages to the client
-  // side is the easiest way to get started
   const messages = await getMessages();
 
   return (
-    <html lang={locale} suppressHydrationWarning className="scroll-smooth">
+    <html lang={locale} suppressHydrationWarning className="scroll-smooth dark">
       <head>
         <WebsiteJsonLd />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-                  if (theme === 'dark') {
-                    document.documentElement.classList.add('dark');
-                  } else {
-                    document.documentElement.classList.remove('dark');
-                  }
-                } catch (e) {}
-              })()
-            `,
-          }}
-        />
       </head>
-      <body className={`${inter.className} min-h-screen overflow-x-hidden bg-white dark:bg-slate-950 transition-colors duration-500`}>
+      <body className={`${inter.className} min-h-screen bg-background text-foreground transition-colors duration-500`}>
         <NextIntlClientProvider messages={messages} locale={locale}>
           <Providers>
             <Toaster 
               position="bottom-right"
               toastOptions={{
                 duration: 4000,
-                className: 'glass-card !bg-white/80 dark:!bg-slate-900/80 !text-slate-900 dark:!text-white border border-black/5 dark:border-white/10 !rounded-2xl !px-6 !py-4 shadow-xl',
+                className: 'glass !bg-black/80 !text-white !border-white/5 !rounded-2xl !px-6 !py-4 shadow-2xl backdrop-blur-xl',
               }}
             />
             <SiteHeader />

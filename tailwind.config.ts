@@ -8,18 +8,37 @@ const config: Config = {
   darkMode: 'class',
   theme: {
     extend: {
-      boxShadow: {
-        glow: '0 20px 80px rgba(59,130,246,0.18)'
-      },
-      backgroundImage: {
-        'radial-glow': 'radial-gradient(circle at top, rgba(59,130,246,0.25), transparent 45%)'
-      },
       colors: {
-        surface: 'rgba(var(--surface-rgb) / <alpha-value>)',
-        border: 'rgba(var(--border-rgb) / <alpha-value>)'
+        background: '#030303',
+        foreground: '#ffffff',
+        surface: '#0a0a0a',
+        'surface-light': '#171717',
+        border: '#262626',
+        primary: {
+          DEFAULT: '#ffffff',
+          foreground: '#000000',
+        },
+        muted: {
+          DEFAULT: '#262626',
+          foreground: '#a3a3a3',
+        },
+        accent: {
+          DEFAULT: '#3b82f6',
+          foreground: '#ffffff',
+        }
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif']
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+      },
+      animation: {
+        'float': 'float 6s ease-in-out infinite',
+        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      },
+      keyframes: {
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-20px)' },
+        }
       }
     }
   },

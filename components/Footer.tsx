@@ -45,7 +45,7 @@ export function Footer() {
   ];
 
   return (
-    <footer className="border-t border-black/5 dark:border-white/10 bg-white/50 dark:bg-slate-950/50 backdrop-blur-xl">
+    <footer className="border-t border-white/5 glass">
       {/* Trust badges bar */}
       <div className="border-b border-black/5 dark:border-white/10 py-4 sm:py-6">
         <div className="mx-auto max-w-[1600px] px-4 sm:px-6">
