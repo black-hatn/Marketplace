@@ -1,10 +1,11 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { ArrowRight, ShoppingBag, Zap, Shield, Star, Search } from 'lucide-react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { ArrowRight, ShoppingBag, Zap, Shield, Star, Search, LayoutGrid, Sparkles, Box, ArrowUpRight } from 'lucide-react';
 import Image from 'next/image';
 import { Link } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
+import { useRef } from 'react';
 
 interface Product {
   id: string;
@@ -22,187 +23,244 @@ interface HomePageClientProps {
   produitsCount: number;
 }
 
-const fadeIn = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
-};
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.15
-    }
-  }
-};
-
 export default function HomePageClient({ products, clientsCount, produitsCount }: HomePageClientProps) {
   const t = useTranslations('Home');
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"]
+  });
+
+  const heroY = useTransform(scrollYProgress, [0, 0.2], [0, -50]);
+  const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
 
   return (
-    <div className="relative w-full min-h-screen bg-background overflow-hidden selection:bg-white/20 selection:text-white">
-      {/* Background glow effects */}
-      <div className="fixed top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-blue-600/10 blur-[120px] pointer-events-none" />
-      <div className="fixed bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-purple-600/10 blur-[120px] pointer-events-none" />
+    <div ref={containerRef} className="relative w-full bg-[#030303] overflow-hidden selection:bg-blue-500/30 selection:text-white">
+      
+      {/* 1. IMMERSIVE HERO SECTION */}
+      <section className="relative h-screen flex flex-col items-center justify-center overflow-hidden">
+        {/* Background Image with Parallax */}
+        <motion.div 
+          style={{ y: heroY }}
+          className="absolute inset-0 z-0"
+        >
+          <Image 
+            src="/hero_abstract_bg_1778938363957.png" 
+            alt="Hero Background" 
+            fill 
+            priority
+            className="object-cover opacity-60 scale-110"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#030303]/20 via-transparent to-[#030303]" />
+        </motion.div>
 
-      {/* Navigation spacer */}
-      <div className="h-24 sm:h-32"></div>
+        {/* Content */}
+        <motion.div 
+          style={{ opacity }}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          className="relative z-10 text-center px-6 max-w-5xl"
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border-white/5 mb-8">
+            <Sparkles className="w-4 h-4 text-blue-400" />
+            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/60">L&apos;expérience Ultime au Tchad</span>
+          </div>
+          
+          <h1 className="text-6xl sm:text-8xl lg:text-[10rem] font-black tracking-tighter text-white leading-[0.8] mb-8 italic">
+            IMMER<span className="text-transparent stroke-text">SIVE</span>
+          </h1>
 
-      <main className="relative z-10 max-w-[1600px] mx-auto px-6 sm:px-12 lg:px-24">
-        
-        {/* HERO SECTION */}
-        <section className="relative pt-12 pb-24 lg:pt-24 lg:pb-40 flex flex-col items-center justify-center text-center">
-          <motion.div 
-            initial="hidden" 
-            animate="visible" 
-            variants={staggerContainer}
-            className="flex flex-col items-center max-w-4xl mx-auto space-y-8"
-          >
-            <motion.div variants={fadeIn} className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass text-sm font-medium tracking-wide text-white/80">
-              <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-              {t('hero_badge') || 'Le futur du commerce est là'}
-            </motion.div>
-            
-            <motion.h1 variants={fadeIn} className="text-5xl sm:text-7xl lg:text-8xl font-bold tracking-tighter text-white leading-[1.1]">
-              L&apos;excellence <br className="hidden sm:block"/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">
-                sans compromis.
+          <p className="text-lg sm:text-xl text-white/40 max-w-2xl mx-auto font-light leading-relaxed mb-12 tracking-wide">
+            Définir les standards de l&apos;élégance digitale. <br/> 
+            Une curation exclusive des objets les plus convoités.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+            <Link href="/produits" className="group relative px-12 py-5 rounded-full bg-white text-black font-black uppercase tracking-widest text-xs overflow-hidden transition-all hover:scale-105 active:scale-95">
+              <span className="relative z-10 flex items-center gap-2">
+                Explorer <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </span>
-            </motion.h1>
-
-            <motion.p variants={fadeIn} className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto font-light">
-              Découvrez une sélection exclusive de produits premium. Un design épuré, des performances inégalées et une expérience d&apos;achat repensée.
-            </motion.p>
-
-            <motion.div variants={fadeIn} className="flex flex-col sm:flex-row items-center gap-4 pt-8 w-full max-w-md mx-auto sm:max-w-none justify-center">
-              <Link href="/produits" className="w-full sm:w-auto px-8 py-4 rounded-full bg-white text-black font-semibold tracking-wide hover:bg-white/90 transition-all flex items-center justify-center gap-2 text-sm">
-                Explorer la collection <ArrowRight className="w-4 h-4" />
-              </Link>
-              <div className="relative w-full sm:w-auto group">
-                <div className="absolute inset-0 rounded-full bg-white/20 blur transition-all group-hover:bg-white/30"></div>
-                <button className="relative w-full sm:w-auto px-8 py-4 rounded-full glass text-white font-medium hover:bg-white/5 transition-all flex items-center justify-center gap-2 text-sm">
-                  <Search className="w-4 h-4 text-white/60" /> Rechercher
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        </section>
-
-        {/* METRICS SECTION */}
-        <section className="py-12 border-y border-white/5">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {[
-              { label: 'Membres Actifs', value: clientsCount > 0 ? `+${clientsCount}` : '10k+' },
-              { label: 'Produits Premium', value: produitsCount > 0 ? `+${produitsCount}` : '500+' },
-              { label: 'Villes Couvertes', value: '12+' },
-              { label: 'Support Client', value: '24/7' },
-            ].map((stat, i) => (
-              <div key={i} className="flex flex-col items-center justify-center text-center space-y-2">
-                <span className="text-4xl md:text-5xl font-bold text-white tracking-tighter">{stat.value}</span>
-                <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{stat.label}</span>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* FEATURED PRODUCTS SECTION */}
-        <section className="py-32">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 space-y-4 md:space-y-0">
-            <div>
-              <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white mb-4">Sélection Premium</h2>
-              <p className="text-muted-foreground text-lg max-w-xl">Une curation minutieuse des pièces les plus exceptionnelles de notre catalogue, pensée pour vous.</p>
-            </div>
-            <Link href="/produits" className="group inline-flex items-center gap-2 text-white/70 hover:text-white transition-colors text-sm font-bold">
-              Voir tout le catalogue <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
+            <button className="px-12 py-5 rounded-full glass border-white/5 text-white font-black uppercase tracking-widest text-xs hover:bg-white/5 transition-all">
+              Visions 2026
+            </button>
           </div>
+        </motion.div>
 
-          {products.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-              {products.map((product, i) => (
-                <motion.div 
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.5, delay: i * 0.1 }}
-                  key={product.id} 
-                  className="group relative flex flex-col gap-4 rounded-[2.5rem] p-4 glass-card hover:border-white/20 transition-all duration-500"
-                >
-                  <Link href={`/produit/${product.id}`} className="relative w-full aspect-[4/5] rounded-[2rem] overflow-hidden bg-white/5 border border-white/5 block">
-                    <Image 
-                      src={product.image || '/placeholder.png'} 
-                      alt={product.title}
-                      fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-110"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                    />
-                    <div className="absolute top-4 left-4">
-                      <span className="px-3 py-1 rounded-full glass text-[10px] font-black uppercase tracking-widest text-white shadow-sm">
-                        {product.category}
-                      </span>
-                    </div>
-                  </Link>
-                  <div className="px-4 pb-4 space-y-2">
-                    <h3 className="text-lg font-bold text-white truncate">{product.title}</h3>
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-white/30">{product.vendor}</span>
-                      <span className="text-lg font-black text-blue-400">{product.price.toLocaleString()} F</span>
-                    </div>
+        {/* Scroll Indicator */}
+        <motion.div 
+          animate={{ y: [0, 10, 0] }}
+          transition={{ repeat: Infinity, duration: 2 }}
+          className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4"
+        >
+          <div className="w-px h-12 bg-gradient-to-b from-transparent via-white/20 to-white/40" />
+          <span className="text-[8px] font-black uppercase tracking-[0.5em] text-white/20">Scroll</span>
+        </motion.div>
+      </section>
+
+      {/* 2. UNIVERSES (BENTO CATEGORIES) */}
+      <section className="relative z-10 max-w-[1600px] mx-auto px-6 sm:px-12 lg:px-24 py-32">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-20">
+          <div className="space-y-4">
+            <h2 className="text-4xl md:text-6xl font-bold tracking-tighter text-white">Nos Univers</h2>
+            <p className="text-white/30 text-lg max-w-md font-light">Naviguez à travers des mondes conçus pour l&apos;excellence.</p>
+          </div>
+          <Link href="/produits" className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-400 hover:text-white transition-colors flex items-center gap-2">
+            Tout parcourir <ArrowUpRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 h-[800px]">
+          {/* Main Universe: Tech */}
+          <motion.div 
+            whileHover={{ scale: 0.98 }}
+            className="md:col-span-8 relative rounded-[3rem] overflow-hidden group border border-white/5"
+          >
+            <Image src="/universe_tech_1778938607086.png" alt="Tech" fill className="object-cover transition-transform duration-1000 group-hover:scale-110" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+            <div className="absolute bottom-12 left-12 space-y-4">
+              <span className="px-4 py-1 rounded-full glass text-[10px] font-black uppercase tracking-widest text-blue-400">Innovation</span>
+              <h3 className="text-4xl font-bold text-white">Tech Immersive</h3>
+              <p className="text-white/40 max-w-xs text-sm font-light">Le futur à portée de main. Des dispositifs qui redéfinissent le possible.</p>
+            </div>
+          </motion.div>
+
+          {/* Secondary Universe: Style */}
+          <motion.div 
+            whileHover={{ scale: 0.98 }}
+            className="md:col-span-4 relative rounded-[3rem] overflow-hidden group border border-white/5"
+          >
+            <div className="absolute inset-0 bg-[#111]" />
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent" />
+            <div className="absolute bottom-12 left-12 space-y-4">
+              <span className="px-4 py-1 rounded-full glass text-[10px] font-black uppercase tracking-widest text-purple-400">Signature</span>
+              <h3 className="text-3xl font-bold text-white">Style & Mode</h3>
+              <p className="text-white/40 text-sm font-light italic">L&apos;expression de soi par le design.</p>
+            </div>
+          </motion.div>
+
+          {/* Third Universe: Lifestyle */}
+          <motion.div 
+            whileHover={{ scale: 0.98 }}
+            className="md:col-span-12 relative rounded-[3rem] overflow-hidden group border border-white/5 h-[300px]"
+          >
+            <div className="absolute inset-0 bg-white/[0.02]" />
+            <div className="absolute inset-0 flex items-center justify-center">
+               <h3 className="text-[10rem] font-black text-white/[0.02] absolute left-0 uppercase tracking-tighter -translate-x-1/4">Lifestyle</h3>
+               <div className="relative z-10 text-center space-y-4">
+                 <h4 className="text-4xl font-bold text-white">Art de Vivre</h4>
+                 <Link href="/produits" className="inline-flex items-center gap-2 px-8 py-3 rounded-full glass border-white/10 text-[10px] font-black uppercase tracking-widest text-white hover:bg-white/5 transition-all">
+                   Découvrir <ArrowRight className="w-4 h-4" />
+                 </Link>
+               </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* 3. CURATED SELECTION (HORIZONTAL SCROLL) */}
+      <section className="py-32 bg-[#050505]">
+        <div className="max-w-[1600px] mx-auto px-6 sm:px-12 lg:px-24 mb-20">
+          <div className="flex items-center gap-6">
+             <h2 className="text-4xl md:text-6xl font-bold tracking-tighter text-white italic">Curated <span className="font-light text-white/20">List</span></h2>
+             <div className="flex-1 h-px bg-white/5" />
+             <div className="flex gap-2">
+                <div className="w-10 h-10 rounded-full border border-white/5 flex items-center justify-center text-white/20 hover:text-white transition-colors cursor-pointer">
+                  <ArrowRight className="w-4 h-4 rotate-180" />
+                </div>
+                <div className="w-10 h-10 rounded-full border border-white/5 flex items-center justify-center text-white/20 hover:text-white transition-colors cursor-pointer">
+                  <ArrowRight className="w-4 h-4" />
+                </div>
+             </div>
+          </div>
+        </div>
+
+        <div className="flex gap-8 overflow-x-auto px-6 sm:px-12 lg:px-24 no-scrollbar pb-12">
+          {products.map((product, i) => (
+            <motion.div 
+              key={product.id}
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              className="min-w-[350px] md:min-w-[450px] group"
+            >
+              <Link href={`/produit/${product.id}`} className="block space-y-6">
+                <div className="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-white/5 border border-white/5">
+                  <Image src={product.image || '/placeholder.png'} alt={product.title} fill className="object-cover transition-transform duration-1000 group-hover:scale-105" />
+                  <div className="absolute top-6 left-6">
+                    <span className="px-4 py-1.5 rounded-full glass text-[9px] font-black uppercase tracking-[0.2em] text-white">
+                      {product.category}
+                    </span>
                   </div>
-                </motion.div>
-              ))}
-            </div>
-          ) : (
-            <div className="w-full py-24 flex items-center justify-center glass-card rounded-[3rem]">
-              <p className="text-muted-foreground">Aucun produit disponible pour le moment.</p>
-            </div>
-          )}
-        </section>
+                </div>
+                <div className="flex items-start justify-between px-2">
+                  <div className="space-y-1">
+                    <h3 className="text-xl font-bold text-white group-hover:text-blue-400 transition-colors">{product.title}</h3>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-white/20">{product.vendor}</p>
+                  </div>
+                  <span className="text-xl font-black text-white">{product.price.toLocaleString()} F</span>
+                </div>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+      </section>
 
-        {/* FEATURES BENTO GRID */}
-        <section className="py-24 mb-24">
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white mb-16 text-center">L&apos;expérience Immersive</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="glass-card rounded-[3rem] p-10 flex flex-col md:col-span-2 border border-white/5">
-              <div className="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-8">
-                <Shield className="w-7 h-7 text-blue-400" />
-              </div>
-              <h3 className="text-3xl font-bold text-white mb-4">Qualité Certifiée</h3>
-              <p className="text-muted-foreground text-lg mb-8 max-w-md font-light">Chaque produit de notre plateforme est rigoureusement vérifié par nos experts pour vous garantir une authenticité totale et une qualité irréprochable.</p>
-              <div className="mt-auto h-32 w-full rounded-2xl bg-gradient-to-r from-blue-500/10 to-transparent border border-white/5" />
-            </div>
-            
-            <div className="glass-card rounded-[3rem] p-10 flex flex-col border border-white/5">
-              <div className="w-14 h-14 rounded-2xl bg-purple-500/10 flex items-center justify-center mb-8">
-                <Zap className="w-7 h-7 text-purple-400" />
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-4">Livraison Éclair</h3>
-              <p className="text-muted-foreground font-light">Recevez vos commandes en un temps record grâce à notre réseau logistique optimisé.</p>
-            </div>
-
-            <div className="glass-card rounded-[3rem] p-10 flex flex-col border border-white/5">
-              <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-8">
-                <Star className="w-7 h-7 text-emerald-400" />
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-4">Service VIP</h3>
-              <p className="text-muted-foreground font-light">Un support client dédié disponible 24/7 pour répondre à toutes vos exigences.</p>
-            </div>
-            
-            <div className="glass-card rounded-[3rem] p-10 flex flex-col md:col-span-2 relative overflow-hidden group border border-white/5">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-[80px] group-hover:bg-white/10 transition-colors duration-700"></div>
-              <div className="relative z-10">
-                <h3 className="text-3xl font-bold text-white mb-4">Devenez Partenaire</h3>
-                <p className="text-muted-foreground text-lg mb-8 max-w-md font-light">Vous êtes un créateur ou une marque premium ? Rejoignez notre écosystème et proposez vos produits à une clientèle exclusive.</p>
-                <Link href="/vendre" className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-white text-black font-bold uppercase tracking-widest text-xs hover:bg-white/90 transition-all">
-                  Ouvrir ma boutique <ArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
+      {/* 4. METRICS / TRUST (MINIMAL) */}
+      <section className="py-40 max-w-[1600px] mx-auto px-6 sm:px-12 lg:px-24">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-20">
+          <div className="space-y-6">
+            <h5 className="text-[10px] font-black uppercase tracking-[0.4em] text-blue-500">Immersive Experience</h5>
+            <p className="text-3xl font-bold text-white leading-tight">La référence de l&apos;excellence au Tchad depuis 2024.</p>
+            <div className="flex items-center gap-4 text-white/40 text-sm">
+              <Shield className="w-5 h-5" /> Garanti 100% Authentique
             </div>
           </div>
-        </section>
+          
+          <div className="flex flex-col justify-center gap-12">
+            <div className="space-y-1">
+              <span className="text-5xl font-black text-white tracking-tighter">+{clientsCount}</span>
+              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/20">Clients Satisfaits</p>
+            </div>
+            <div className="space-y-1">
+              <span className="text-5xl font-black text-white tracking-tighter">+{produitsCount}</span>
+              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/20">Produits d&apos;Exceptions</p>
+            </div>
+          </div>
 
-      </main>
+          <div className="flex flex-col justify-end">
+            <p className="text-white/20 font-light leading-relaxed">
+              Nous ne vendons pas seulement des produits, nous proposons une vision. Chaque pièce est sélectionnée pour son histoire, sa qualité et son impact.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. FINAL CTA */}
+      <section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 bg-blue-600/10 blur-[200px]" />
+        <div className="relative z-10 text-center space-y-10">
+          <h2 className="text-5xl md:text-7xl font-bold text-white tracking-tighter">Prêt à élever vos standards ?</h2>
+          <Link href="/produits" className="inline-flex items-center gap-4 px-12 py-6 rounded-full bg-white text-black font-black uppercase tracking-widest text-xs hover:scale-105 active:scale-95 transition-all">
+            Découvrir la collection <ArrowRight className="w-5 h-5" />
+          </Link>
+        </div>
+      </section>
+
+      <style jsx global>{`
+        .stroke-text {
+          -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
+        }
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .no-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
     </div>
   );
 }
