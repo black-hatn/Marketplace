@@ -4,7 +4,7 @@ import HomePageClient from '@/components/HomePageClient';
 export const dynamic = 'force-dynamic';
 
 export default async function HomePage() {
-  let produits = [];
+  let produits: any[] = [];
   let produitsCount = 0;
   let clientsCount = 0;
 
