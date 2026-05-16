@@ -102,33 +102,6 @@ export async function getProduitsByCategory(category: string) {
   });
 }
 
-export async function getRecommendedProducts(productId: string) {
-  const currentProduct = await prisma.produit.findUnique({
-    where: { id: productId },
-    select: { categories: true, brandId: true }
-  });
-
-  if (!currentProduct) return [];
-
-  // Fetch products from same category or brand
-  const recommended = await prisma.produit.findMany({
-    where: {
-      OR: [
-        { categories: { hasSome: currentProduct.categories } },
-        { brandId: currentProduct.brandId }
-      ],
-      NOT: { id: productId },
-      actif: true
-    },
-    take: 6,
-    include: { brand: true, category: true }
-  });
-
-  // Shuffle simple
-  return recommended.sort(() => Math.random() - 0.5);
-}
-  });
-}
 
 export async function getVendorProducts(brandId: string) {
   const produits = await prisma.produit.findMany({
@@ -607,30 +580,32 @@ export async function getWishlist(sessionId: string) {
 
 export async function getRecommendedProducts(productId: string) {
   try {
-    const results = await prisma.$queryRaw`
-      SELECT p.* FROM "Produit" p
-      JOIN vue_recommandations vr ON p.id = vr.recommended_product_id
-      WHERE vr.source_product_id = ${productId}
-      ORDER BY vr.strength DESC
-      LIMIT 4
-    ` as any[];
+    const product = await prisma.produit.findUnique({
+      where: { id: productId },
+      select: { categories: true, brandId: true }
+    });
 
-    if (results && results.length > 0) return results;
-    
-    // Fallback: produits de la même catégorie
-    const product = await prisma.produit.findUnique({ where: { id: productId } });
     if (!product) return [];
 
     return prisma.produit.findMany({
       where: {
-        categories: { hasSome: product.categories },
-        id: { not: productId }
+        OR: [
+          { categories: { hasSome: product.categories } },
+          { brandId: product.brandId }
+        ],
+        id: { not: productId },
+        actif: true
       },
-      take: 4
+      take: 6,
+      include: { brand: true, category: true }
     });
-  } catch (e) {
-    // Si la vue n'existe pas encore ou erreur SQL
-    return prisma.produit.findMany({ take: 4 });
+  } catch (error) {
+    console.error("Error fetching recommendations:", error);
+    return prisma.produit.findMany({
+      where: { actif: true },
+      take: 6,
+      include: { brand: true, category: true }
+    });
   }
 }
 
