@@ -1,11 +1,28 @@
 'use client';
 
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { ArrowRight, Sparkles, Box, ShieldCheck, Star, MapPin } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { 
+  ArrowRight, 
+  ShoppingBag, 
+  Zap, 
+  Shield, 
+  Star, 
+  Search, 
+  Smartphone, 
+  Watch, 
+  Home as HomeIcon, 
+  Heart, 
+  CheckCircle2, 
+  Truck, 
+  RotateCcw, 
+  ChevronRight,
+  Monitor,
+  Gamepad,
+  Shirt
+} from 'lucide-react';
 import Image from 'next/image';
 import { Link } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
-import { useRef } from 'react';
 
 interface Product {
   id: string;
@@ -23,198 +40,214 @@ interface HomePageClientProps {
   produitsCount: number;
 }
 
+const categories = [
+  { name: 'Mode', icon: Shirt, color: 'bg-pink-100 text-pink-600' },
+  { name: 'Électronique', icon: Smartphone, color: 'bg-blue-100 text-blue-600' },
+  { name: 'Maison', icon: HomeIcon, color: 'bg-amber-100 text-amber-600' },
+  { name: 'Santé & Beauté', icon: Heart, color: 'bg-rose-100 text-rose-600' },
+  { name: 'Sports', icon: Gamepad, color: 'bg-emerald-100 text-emerald-600' },
+  { name: 'Informatique', icon: Monitor, color: 'bg-purple-100 text-purple-600' },
+];
+
 export default function HomePageClient({ products, clientsCount, produitsCount }: HomePageClientProps) {
   const t = useTranslations('Home');
-  const containerRef = useRef(null);
-  
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"]
-  });
-
-  const heroScale = useTransform(scrollYProgress, [0, 0.3], [1, 1.1]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
-  const textY = useTransform(scrollYProgress, [0, 0.3], [0, 100]);
 
   return (
-    <div ref={containerRef} className="relative w-full bg-black overflow-hidden selection:bg-white/20 selection:text-white font-sans">
+    <div className="bg-zinc-50 min-h-screen pb-20">
       
-      {/* 1. CINEMATIC HERO (The Watch) */}
-      <section className="relative h-screen flex flex-col items-center justify-center overflow-hidden bg-black">
-        <motion.div 
-          style={{ scale: heroScale, opacity: heroOpacity }}
-          className="absolute inset-0 z-0"
-        >
-          <Image 
-            src="/luxury_product_hero_1778939746461.png" 
-            alt="Luxury Watch" 
-            fill 
-            priority
-            className="object-cover opacity-80"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black" />
-        </motion.div>
+      {/* 1. HERO BANNER - Univers Market Style */}
+      <section className="relative bg-[#1e40af] text-white overflow-hidden">
+        {/* Abstract background elements */}
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-[#1d4ed8] -skew-x-12 translate-x-1/4" />
+        
+        <div className="max-w-7xl mx-auto px-6 sm:px-12 lg:px-24 relative z-10 py-16 lg:py-28 flex flex-col lg:flex-row items-center justify-between gap-12">
+          <motion.div 
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex-1 space-y-8 text-center lg:text-left"
+          >
+            <div className="inline-block px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-xs font-bold uppercase tracking-widest">
+              Bienvenue chez Univers Market
+            </div>
+            <h1 className="text-4xl sm:text-6xl font-black leading-tight tracking-tight">
+              TOUT CE DONT VOUS AVEZ <br/>
+              <span className="text-secondary italic underline decoration-white/20 underline-offset-8">BESOIN</span>, EN UN SEUL ENDROIT.
+            </h1>
+            <p className="text-blue-100 text-lg max-w-xl font-medium leading-relaxed">
+              Découvrez notre vaste collection de produits de haute qualité aux meilleurs prix du marché.
+            </p>
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4">
+              <Link href="/produits" className="btn-secondary text-sm">
+                ACHETER MAINTENANT <ArrowRight className="w-5 h-5" />
+              </Link>
+              <Link href="/produits" className="px-8 py-3 rounded-xl bg-white/10 border border-white/20 text-white font-bold hover:bg-white/20 transition-all text-sm">
+                DÉCOUVRIR LES OFFRES
+              </Link>
+            </div>
+          </motion.div>
 
-        <motion.div 
-          style={{ y: textY }}
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.5, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="relative z-10 text-center px-6"
-        >
-          <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full border border-white/10 glass mb-12">
-            <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-            <span className="text-[10px] font-black uppercase tracking-[0.6em] text-white/80">Immersive Excellence</span>
-          </div>
-          
-          <h1 className="text-7xl sm:text-9xl lg:text-[12rem] font-light tracking-tighter text-white leading-none mb-12">
-            L&apos;ÉLÉGANCE <br/>
-            <span className="font-serif italic font-normal text-white/30">Absolue.</span>
-          </h1>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-10 mt-20">
-            <Link href="/produits" className="group flex items-center gap-4 text-white text-sm font-black uppercase tracking-[0.4em] hover:tracking-[0.6em] transition-all">
-              Explorer le catalogue <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
-            </Link>
-          </div>
-        </motion.div>
-
-        <div className="absolute bottom-12 left-12 flex items-center gap-6">
-           <div className="w-12 h-px bg-white/20" />
-           <span className="text-[9px] font-black uppercase tracking-[0.4em] text-white/40">N&apos;Djaména / Tchad</span>
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="flex-1 relative w-full aspect-square max-w-lg hidden lg:block"
+          >
+             <div className="absolute inset-0 bg-white/5 rounded-full blur-3xl animate-pulse" />
+             <div className="relative glass p-6 rounded-[3rem] border border-white/10 shadow-2xl overflow-hidden group">
+                <Image 
+                  src="/universe_tech_1778938607086.png" 
+                  alt="Feature" 
+                  fill 
+                  className="object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" 
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1e40af]/80 to-transparent" />
+                <div className="absolute bottom-8 left-8 right-8">
+                  <div className="px-3 py-1 bg-secondary rounded-full text-[10px] font-black uppercase inline-block mb-3 shadow-lg">Instantané</div>
+                  <h3 className="text-2xl font-bold">Écouteurs Immersifs haut de gamme</h3>
+                  <p className="text-sm text-blue-100 mt-1">Visualisez les tendances avec une interface fluide.</p>
+                </div>
+             </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* 2. THE CURATION (Minimalist Horizontal Scroll) */}
-      <section className="py-40 bg-black">
-        <div className="max-w-[1800px] mx-auto px-6 sm:px-12 lg:px-24 mb-24">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-10">
-            <div className="space-y-6">
-              <h2 className="text-5xl md:text-7xl font-light text-white tracking-tighter">La Sélection <br/> <span className="text-white/20">du mois.</span></h2>
-              <p className="text-white/40 text-lg max-w-sm font-light leading-relaxed">Chaque pièce est une promesse de perfection, rigoureusement authentifiée.</p>
-            </div>
-            <Link href="/produits" className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40 hover:text-white transition-colors">Voir Tout</Link>
-          </div>
-        </div>
-
-        <div className="flex gap-12 overflow-x-auto px-6 sm:px-12 lg:px-24 no-scrollbar pb-20">
-          {products.map((product, i) => (
+      {/* 2. CATEGORIES CIRCLES */}
+      <section className="max-w-7xl mx-auto px-6 sm:px-12 lg:px-24 py-12">
+        <div className="bg-white rounded-3xl p-8 shadow-sm flex flex-wrap items-center justify-center gap-12 lg:gap-20">
+          {categories.map((cat, i) => (
             <motion.div 
-              key={product.id}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              className="min-w-[300px] md:min-w-[500px] group cursor-pointer"
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1 }}
+              className="flex flex-col items-center gap-4 group cursor-pointer"
             >
-              <Link href={`/produit/${product.id}`} className="block space-y-8">
-                <div className="relative aspect-[3/4] overflow-hidden bg-[#0a0a0a] border border-white/5 grayscale group-hover:grayscale-0 transition-all duration-1000">
-                  <Image src={product.image || '/placeholder.png'} alt={product.title} fill className="object-cover transition-transform duration-1000 group-hover:scale-110" />
-                  <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors" />
-                </div>
-                <div className="space-y-3 px-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[9px] font-black uppercase tracking-[0.4em] text-white/30">{product.category}</span>
-                    <span className="text-lg font-light text-white">{product.price.toLocaleString()} F</span>
-                  </div>
-                  <h3 className="text-2xl font-light text-white tracking-tight">{product.title}</h3>
-                </div>
-              </Link>
+              <div className={`w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 shadow-lg ${cat.color}`}>
+                <cat.icon className="w-7 h-7" />
+              </div>
+              <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 group-hover:text-primary transition-colors">
+                {cat.name}
+              </span>
             </motion.div>
           ))}
         </div>
       </section>
 
-      {/* 3. THE PHILOSOPHY (Typography Section) */}
-      <section className="py-60 relative overflow-hidden flex flex-col items-center justify-center text-center px-6">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-60 bg-gradient-to-b from-white/20 to-transparent" />
+      {/* 3. FEATURED PRODUCTS & BEST SELLERS */}
+      <section className="max-w-7xl mx-auto px-6 sm:px-12 lg:px-24 py-12 space-y-24">
         
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 2 }}
-          className="max-w-4xl space-y-16"
-        >
-          <h3 className="text-4xl md:text-6xl font-light text-white leading-tight tracking-tight">
-            &quot;L&apos;innovation n&apos;est pas seulement technologique, <br/> 
-            elle est aussi <span className="font-serif italic text-white/40">visuelle et sensorielle.</span>&quot;
-          </h3>
-          <div className="w-12 h-12 rounded-full border border-white/20 mx-auto flex items-center justify-center">
-            <Sparkles className="w-4 h-4 text-white/40" />
+        {/* Vedettes */}
+        <div className="space-y-12">
+          <div className="flex items-end justify-between border-b border-zinc-200 pb-6">
+            <div className="space-y-2">
+              <h2 className="text-2xl font-black tracking-tight text-zinc-900 uppercase">Nos Catégories Vedettes</h2>
+              <div className="w-20 h-1 bg-primary rounded-full" />
+            </div>
+            <Link href="/produits" className="text-xs font-bold text-primary hover:underline flex items-center gap-1">
+              Tout voir <ChevronRight className="w-4 h-4" />
+            </Link>
           </div>
-        </motion.div>
-      </section>
 
-      {/* 4. THE UNIVERSES (Full Width Visuals) */}
-      <section className="grid grid-cols-1 md:grid-cols-2">
-        {/* Universe 1 */}
-        <div className="relative h-[80vh] group overflow-hidden border-r border-white/5">
-          <Image src="/universe_tech_1778938607086.png" alt="Tech" fill className="object-cover opacity-50 group-hover:scale-105 transition-transform duration-1000" />
-          <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors" />
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-12 space-y-8">
-            <h4 className="text-5xl font-light text-white tracking-tighter">Technology</h4>
-            <p className="text-white/40 text-sm font-light max-w-xs leading-relaxed uppercase tracking-widest">Le futur est un art de vivre.</p>
-            <Link href="/produits" className="px-10 py-4 rounded-full border border-white/20 text-[10px] font-black uppercase tracking-[0.4em] text-white hover:bg-white hover:text-black transition-all">Découvrir</Link>
-          </div>
-        </div>
-
-        {/* Universe 2 */}
-        <div className="relative h-[80vh] group overflow-hidden">
-          <Image src="/hero_abstract_bg_1778938363957.png" alt="Abstract" fill className="object-cover opacity-50 group-hover:scale-105 transition-transform duration-1000" />
-          <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors" />
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-12 space-y-8">
-            <h4 className="text-5xl font-light text-white tracking-tighter">Art & Style</h4>
-            <p className="text-white/40 text-sm font-light max-w-xs leading-relaxed uppercase tracking-widest">L&apos;expression sans limite.</p>
-            <Link href="/produits" className="px-10 py-4 rounded-full border border-white/20 text-[10px] font-black uppercase tracking-[0.4em] text-white hover:bg-white hover:text-black transition-all">Découvrir</Link>
-          </div>
-        </div>
-      </section>
-
-      {/* 5. TRUST / STATS (Extreme Minimalism) */}
-      <section className="py-40 bg-black border-y border-white/5">
-        <div className="max-w-[1600px] mx-auto px-6 sm:px-12 lg:px-24">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
-            <div className="space-y-4">
-              <span className="text-5xl font-light text-white">+{clientsCount}</span>
-              <p className="text-[9px] font-black uppercase tracking-[0.5em] text-white/20">Membres Actifs</p>
-            </div>
-            <div className="space-y-4">
-              <span className="text-5xl font-light text-white">+{produitsCount}</span>
-              <p className="text-[9px] font-black uppercase tracking-[0.5em] text-white/20">Pièces Uniques</p>
-            </div>
-            <div className="space-y-4">
-              <span className="text-5xl font-light text-white">12</span>
-              <p className="text-[9px] font-black uppercase tracking-[0.5em] text-white/20">Points de Relais</p>
-            </div>
-            <div className="space-y-4">
-              <span className="text-5xl font-light text-white">24/7</span>
-              <p className="text-[9px] font-black uppercase tracking-[0.5em] text-white/20">Conciergerie</p>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {products.slice(0, 3).map((product, i) => (
+              <motion.div 
+                key={product.id}
+                className="card-premium group relative flex flex-col p-6 h-[400px]"
+              >
+                <div className="relative flex-1 rounded-xl overflow-hidden bg-zinc-50 mb-6">
+                  <Image src={product.image || '/placeholder.png'} alt={product.title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+                </div>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <div className="flex gap-0.5 text-secondary">
+                      {[...Array(5)].map((_, i) => <Star key={i} className="w-3 h-3 fill-secondary" />)}
+                    </div>
+                    <span className="text-[10px] font-bold text-zinc-400">(45)</span>
+                  </div>
+                  <h3 className="font-bold text-zinc-900 group-hover:text-primary transition-colors">{product.title}</h3>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xl font-black text-zinc-900">{product.price.toLocaleString()} F</span>
+                    <button className="w-10 h-10 rounded-lg bg-primary text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
+                      <ShoppingBag className="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
+
+        {/* Meilleures Ventes */}
+        <div className="space-y-12">
+          <div className="flex items-end justify-between border-b border-zinc-200 pb-6">
+            <div className="space-y-2">
+              <h2 className="text-2xl font-black tracking-tight text-zinc-900 uppercase">Meilleures Ventes</h2>
+              <div className="w-20 h-1 bg-secondary rounded-full" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            {products.slice(0, 8).map((product, i) => (
+              <motion.div 
+                key={product.id}
+                className="bg-white rounded-2xl p-4 border border-zinc-100 hover:shadow-lg transition-all group"
+              >
+                <div className="relative aspect-square rounded-xl overflow-hidden bg-zinc-50 mb-4">
+                  <Image src={product.image || '/placeholder.png'} alt={product.title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+                  <button className="absolute top-3 right-3 p-2 bg-white/80 backdrop-blur rounded-full text-zinc-400 hover:text-rose-500 transition-colors opacity-0 group-hover:opacity-100">
+                    <Heart className="w-4 h-4" />
+                  </button>
+                </div>
+                <div className="space-y-2">
+                  <span className="text-[9px] font-black uppercase tracking-widest text-zinc-400">{product.category}</span>
+                  <h4 className="text-sm font-bold text-zinc-900 truncate">{product.title}</h4>
+                  <div className="flex items-center justify-between pt-2">
+                    <span className="text-base font-black text-primary">{product.price.toLocaleString()} F</span>
+                    <div className="flex items-center gap-1 text-[10px] font-bold text-secondary">
+                      <Star className="w-3 h-3 fill-secondary" /> 4.8
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
       </section>
 
-      {/* 6. FINAL CTA */}
-      <section className="py-60 flex flex-col items-center text-center px-6 bg-white text-black">
-        <h2 className="text-6xl md:text-8xl font-light tracking-tighter mb-16 leading-tight">Rejoignez le cercle <br/> <span className="italic font-serif">Immersive.</span></h2>
-        <Link href="/produits" className="group flex items-center gap-6 text-xs font-black uppercase tracking-[0.6em] hover:tracking-[0.8em] transition-all">
-          Accéder à la collection <ArrowRight className="w-6 h-6 group-hover:translate-x-4 transition-transform" />
-        </Link>
+      {/* 4. TRUST FEATURES */}
+      <section className="bg-white border-y border-zinc-200 py-16">
+        <div className="max-w-7xl mx-auto px-6 sm:px-12 lg:px-24">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+             <div className="flex items-center gap-6 p-6 rounded-2xl bg-zinc-50 border border-zinc-100">
+                <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Truck className="w-7 h-7 text-primary" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-zinc-900">Livraison Gratuite</h4>
+                  <p className="text-xs text-zinc-500">Pour toutes les commandes de +50k F</p>
+                </div>
+             </div>
+             <div className="flex items-center gap-6 p-6 rounded-2xl bg-zinc-50 border border-zinc-100">
+                <div className="w-14 h-14 rounded-full bg-secondary/10 flex items-center justify-center">
+                  <RotateCcw className="w-7 h-7 text-secondary" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-zinc-900">Retour Sous 7 Jours</h4>
+                  <p className="text-xs text-zinc-500">Garantie satisfait ou remboursé</p>
+                </div>
+             </div>
+             <div className="flex items-center gap-6 p-6 rounded-2xl bg-zinc-50 border border-zinc-100">
+                <div className="w-14 h-14 rounded-full bg-emerald-100 flex items-center justify-center">
+                  <CheckCircle2 className="w-7 h-7 text-emerald-600" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-zinc-900">Paiement Sécurisé</h4>
+                  <p className="text-xs text-zinc-500">Transactions 100% sécurisées</p>
+                </div>
+             </div>
+          </div>
+        </div>
       </section>
 
-      <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,900;1,400&display=swap');
-        
-        .font-serif {
-          font-family: 'Playfair Display', serif;
-        }
-        .no-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-        .no-scrollbar {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-      `}</style>
     </div>
   );
 }

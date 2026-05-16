@@ -9,18 +9,20 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: '#030303',
-        foreground: '#ffffff',
-        surface: '#0a0a0a',
-        'surface-light': '#171717',
-        border: '#262626',
+        background: 'var(--background)',
+        foreground: 'var(--foreground)',
+        border: 'var(--border)',
         primary: {
-          DEFAULT: '#ffffff',
-          foreground: '#000000',
+          DEFAULT: '#2563eb', // Blue from the reference image
+          foreground: '#ffffff',
+        },
+        secondary: {
+          DEFAULT: '#f97316', // Orange from the reference image
+          foreground: '#ffffff',
         },
         muted: {
-          DEFAULT: '#262626',
-          foreground: '#a3a3a3',
+          DEFAULT: '#f4f4f5',
+          foreground: '#71717a',
         },
         accent: {
           DEFAULT: '#3b82f6',
@@ -30,16 +32,6 @@ const config: Config = {
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
       },
-      animation: {
-        'float': 'float 6s ease-in-out infinite',
-        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-      },
-      keyframes: {
-        float: {
-          '0%, 100%': { transform: 'translateY(0)' },
-          '50%': { transform: 'translateY(-20px)' },
-        }
-      }
     }
   },
   plugins: []

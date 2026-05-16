@@ -63,7 +63,7 @@ export default async function RootLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} suppressHydrationWarning className="scroll-smooth dark">
+    <html lang={locale} suppressHydrationWarning className="scroll-smooth">
       <head>
         <WebsiteJsonLd />
         <meta name="mobile-web-app-capable" content="yes" />
