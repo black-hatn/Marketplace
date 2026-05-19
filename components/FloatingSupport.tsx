@@ -48,8 +48,8 @@ export function FloatingSupport() {
                 transition={{ delay: option.delay, type: 'spring', damping: 15 }}
                 className="group flex items-center gap-4"
               >
-                <div className="glass px-4 py-2 rounded-2xl border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-2xl">
-                  <span className="text-xs font-black text-white uppercase tracking-widest">{option.label}</span>
+                <div className="glass-premium px-4 py-2 rounded-2xl border border-black/5 dark:border-white/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-2xl">
+                  <span className="text-xs font-black text-slate-950 dark:text-white uppercase tracking-widest">{option.label}</span>
                 </div>
                 <div className={`${option.color} w-14 h-14 rounded-2xl flex items-center justify-center text-white shadow-2xl group-hover:scale-110 transition-transform`}>
                   <option.icon className="w-6 h-6" />
@@ -95,8 +95,8 @@ export function FloatingSupport() {
       {/* Tooltip for the main button */}
       {!isOpen && (
         <div className="absolute top-1/2 -left-32 -translate-y-1/2 hidden md:block">
-          <div className="glass px-4 py-2 rounded-xl border border-white/10 shadow-2xl animate-bounce-x">
-             <p className="text-[10px] font-black text-white uppercase tracking-widest whitespace-nowrap">Besoin d&apos;aide ?</p>
+          <div className="glass-premium px-4 py-2 rounded-xl border border-black/5 dark:border-white/10 shadow-2xl animate-bounce-x">
+             <p className="text-[10px] font-black text-slate-950 dark:text-white uppercase tracking-widest whitespace-nowrap">Besoin d&apos;aide ?</p>
           </div>
         </div>
       )}

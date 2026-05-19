@@ -267,11 +267,22 @@ export async function registerVendor(formData: FormData) {
   const name = formData.get('name') as string;
   const email = formData.get('email') as string;
   const password = formData.get('password') as string;
+  const tagline = formData.get('tagline') as string;
+  const logoFile = formData.get('logoFile') as File | null;
   
   const existing = await prisma.brand.findUnique({ where: { email } });
   if (existing) throw new Error('Email déjà utilisé');
 
   const hashedPassword = await bcrypt.hash(password, 10);
+
+  let imageUrl = 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=800&q=80';
+  if (logoFile && logoFile.size > 0) {
+    try {
+      imageUrl = await uploadImage(logoFile);
+    } catch (e) {
+      console.error("Upload failed in registerVendor:", e);
+    }
+  }
 
   return prisma.brand.create({
     data: {
@@ -280,12 +291,12 @@ export async function registerVendor(formData: FormData) {
       email,
       password: hashedPassword,
       title: name,
-      tagline: 'Luxe & Innovation',
+      tagline: tagline || 'Luxe & Innovation',
       description: 'Partenaire Immersive',
       story: '...',
       values: '...',
       impact: '...',
-      image: 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=800&q=80',
+      image: imageUrl,
     }
   });
 }
@@ -491,19 +502,30 @@ export async function markAsRead(notificationId: string) {
   });
 }
 
-export async function toggleBrandVerification(id: string) {
-  const brand = await prisma.brand.findUnique({ where: { id } });
-  if (!brand) return;
+export async function toggleBrandVerification(brandId: string, currentStatus: boolean) {
+  const session = await getServerSession(authOptions) as any;
+  if (!session || session.user.role !== 'ADMIN') throw new Error("Unauthorized");
+  
   await prisma.brand.update({
-    where: { id },
-    data: { isVerified: !brand.isVerified }
+    where: { id: brandId },
+    data: { isVerified: !currentStatus }
   });
+  
+  revalidatePath('/admin/vendeurs');
   revalidatePath('/admin');
+  return { success: true };
 }
 
-export async function deleteBrand(id: string) {
-  await prisma.brand.delete({ where: { id } });
+export async function deleteBrand(brandId: string) {
+  const session = await getServerSession(authOptions) as any;
+  if (!session || session.user.role !== 'ADMIN') throw new Error("Unauthorized");
+  
+  await prisma.produit.deleteMany({ where: { brandId } });
+  await prisma.brand.delete({ where: { id: brandId } });
+  
+  revalidatePath('/admin/vendeurs');
   revalidatePath('/admin');
+  return { success: true };
 }
 
 export async function incrementBrandViews(id: string) {
@@ -698,4 +720,6 @@ export async function createNotification(brandId: string, type: string, title: s
     data: { brandId, type, title, message }
   });
 }
+
+
 

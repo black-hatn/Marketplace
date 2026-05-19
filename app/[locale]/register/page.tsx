@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ShinyButton } from '@/components/ShinyButton';
 import { registerUser } from '@/lib/actions';
-import { User, Mail, Lock, Sparkles, ArrowRight, Phone, MapPin } from 'lucide-react';
+import { User, Mail, Lock, Sparkles, ArrowRight, Phone, ArrowLeft, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useRouter, Link } from '@/i18n/routing';
+import PageTransition from '@/components/PageTransition';
 
 export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
@@ -28,89 +28,133 @@ export default function RegisterPage() {
     }
   };
 
-  const inputClass = "w-full pl-12 pr-4 py-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 transition-all outline-none text-slate-900 dark:text-white placeholder-slate-400";
-
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-32 pb-20 px-6 relative overflow-hidden">
-      {/* Background Decor */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-0">
-        <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-cyan-500/5 blur-[120px] rounded-full" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-500/5 blur-[120px] rounded-full" />
+    <PageTransition>
+      <div className="relative w-full min-h-screen bg-[#030303] overflow-hidden selection:bg-cyan-500/30 selection:text-white flex items-center justify-center p-6">
+        {/* Background glow effects */}
+        <div className="fixed top-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-cyan-600/10 blur-[120px] pointer-events-none" />
+        <div className="fixed bottom-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-blue-600/10 blur-[120px] pointer-events-none" />
+
+        <div className="relative z-10 w-full max-w-md">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-10"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-widest text-cyan-400 mb-6 shadow-sm">
+              <Sparkles className="h-4 w-4" /> Rejoignez l'élite
+            </div>
+            <h1 className="text-4xl font-black text-white tracking-tighter mb-3">
+              Créer un <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Compte</span>
+            </h1>
+            <p className="text-white/40 text-sm font-medium">
+              Rejoignez notre plateforme premium et profitez d'une expérience d'achat inégalée.
+            </p>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.1 }}
+            className="p-8 sm:p-10 glass-card bg-white/[0.02] rounded-[2.5rem] border border-white/5"
+          >
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 ml-1">Nom complet</label>
+                <div className="relative group">
+                  <User className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-cyan-400 transition-colors" />
+                  <input
+                    name="name"
+                    type="text"
+                    required
+                    placeholder="Jean-Luc Maloum"
+                    className="w-full pl-12 pr-6 py-4 rounded-2xl bg-white/5 text-white placeholder-white/20 border border-white/5 outline-none focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/10 transition-all text-sm"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 ml-1">Email</label>
+                <div className="relative group">
+                  <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-cyan-400 transition-colors" />
+                  <input
+                    name="email"
+                    type="email"
+                    required
+                    placeholder="votre@email.com"
+                    className="w-full pl-12 pr-6 py-4 rounded-2xl bg-white/5 text-white placeholder-white/20 border border-white/5 outline-none focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/10 transition-all text-sm"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 ml-1">Téléphone</label>
+                <div className="relative group">
+                  <Phone className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-cyan-400 transition-colors" />
+                  <input
+                    name="phone"
+                    type="tel"
+                    placeholder="Ex: 60 00 00 00"
+                    className="w-full pl-12 pr-6 py-4 rounded-2xl bg-white/5 text-white placeholder-white/20 border border-white/5 outline-none focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/10 transition-all text-sm"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 ml-1">Mot de passe</label>
+                <div className="relative group">
+                  <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-cyan-400 transition-colors" />
+                  <input
+                    name="password"
+                    type="password"
+                    required
+                    placeholder="••••••••"
+                    className="w-full pl-12 pr-6 py-4 rounded-2xl bg-white/5 text-white placeholder-white/20 border border-white/5 outline-none focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/10 transition-all text-sm"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-5 mt-4 rounded-2xl bg-white text-black font-black tracking-widest uppercase text-xs hover:bg-white/90 transition-all shadow-xl flex items-center justify-center gap-3 disabled:opacity-50"
+              >
+                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Créer mon compte'}
+                {!loading && <ArrowRight className="w-4 h-4" />}
+              </button>
+
+              <div className="pt-6 text-center border-t border-white/5">
+                <p className="text-xs text-white/40 font-medium">
+                  Déjà membre ?{' '}
+                  <Link href="/admin/login" className="text-white font-bold hover:text-cyan-400 transition-colors">
+                    Connectez-vous ici
+                  </Link>
+                </p>
+              </div>
+              
+              <div className="text-center pt-2">
+                <p className="text-[10px] text-white/30 font-bold uppercase tracking-widest">
+                  Vous êtes un professionnel ?{' '}
+                  <Link href="/vendre" className="text-cyan-400 hover:text-cyan-300 transition-colors">
+                    Devenir Partenaire
+                  </Link>
+                </p>
+              </div>
+            </form>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="mt-12 text-center"
+          >
+            <Link href="/" className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-white/20 hover:text-white transition-colors">
+              <ArrowLeft className="w-3 h-3" /> Retour à la boutique
+            </Link>
+          </motion.div>
+        </div>
       </div>
-
-      <div className="max-w-md mx-auto relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-10"
-        >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 text-xs font-bold uppercase tracking-widest mb-6">
-            <Sparkles className="h-4 w-4" /> Rejoignez l'aventure
-          </div>
-          <h1 className="text-4xl font-black text-slate-900 dark:text-white uppercase italic">
-            Créer un <span className="text-cyan-500">Compte</span>
-          </h1>
-          <p className="mt-4 text-slate-500 dark:text-slate-400">
-            Profitez d'une expérience d'achat personnalisée et suivez vos commandes en temps réel.
-          </p>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.1 }}
-          className="glass-card rounded-[2.5rem] border border-black/5 dark:border-white/10 p-8 lg:p-10 shadow-2xl"
-        >
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="relative group">
-              <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-cyan-500 transition-colors" />
-              <input name="name" required placeholder="Nom complet" className={inputClass} />
-            </div>
-
-            <div className="relative group">
-              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-cyan-500 transition-colors" />
-              <input name="email" type="email" required placeholder="Email" className={inputClass} />
-            </div>
-
-            <div className="relative group">
-              <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-cyan-500 transition-colors" />
-              <input name="phone" type="tel" placeholder="Téléphone (Optionnel)" className={inputClass} />
-            </div>
-
-            <div className="relative group">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-cyan-500 transition-colors" />
-              <input name="password" type="password" required placeholder="Mot de passe" className={inputClass} />
-            </div>
-
-            <ShinyButton
-              variant="primary"
-              disabled={loading}
-              type="submit"
-              className="w-full !py-5 text-base mt-4"
-            >
-              {loading ? "Création en cours..." : "Créer mon compte"}
-            </ShinyButton>
-
-            <div className="text-center pt-6 border-t border-black/5 dark:border-white/5">
-              <p className="text-sm text-slate-500">
-                Déjà un compte ?{" "}
-                <Link href="/admin/login" className="text-cyan-600 font-bold hover:underline">
-                  Connectez-vous ici
-                </Link>
-              </p>
-            </div>
-            
-            <div className="text-center pt-2">
-              <p className="text-[11px] text-slate-400 font-medium">
-                Vous voulez vendre sur Immersive ?{" "}
-                <Link href="/vendre" className="text-slate-900 dark:text-white font-bold hover:underline">
-                  Devenir Partenaire
-                </Link>
-              </p>
-            </div>
-          </form>
-        </motion.div>
-      </div>
-    </div>
+    </PageTransition>
   );
 }

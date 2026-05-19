@@ -1,9 +1,8 @@
-import { Search, Bell, LogOut, ShieldCheck, Sparkles } from 'lucide-react';
+import { Search, Bell, LogOut, Sparkles } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import { AdminNav } from './AdminNav';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
-import { redirect } from "next/navigation";
 
 export default async function AdminDashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions) as any;
@@ -13,55 +12,62 @@ export default async function AdminDashboardLayout({ children }: { children: Rea
   }
 
   return (
-    <div className="flex min-h-screen bg-background text-foreground selection:bg-blue-500/30">
-      {/* Sidebar Overlay for Background */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] h-[50%] w-[50%] rounded-full bg-blue-600/5 blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] h-[50%] w-[50%] rounded-full bg-purple-600/5 blur-[120px]" />
+    <div className="flex min-h-screen bg-[#050505] text-white selection:bg-blue-500/30">
+      {/* Background ambiance */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[-20%] left-[-10%] h-[60%] w-[50%] rounded-full bg-blue-600/5 blur-[150px]" />
+        <div className="absolute bottom-[-20%] right-[-10%] h-[60%] w-[50%] rounded-full bg-indigo-600/5 blur-[150px]" />
       </div>
 
-      <AdminNav />
+      <AdminNav userName={session.user?.name ?? 'Administrateur'} />
 
-      <main className="flex-1 lg:ml-72 flex flex-col min-h-screen w-full relative z-10">
+      <main className="flex-1 lg:ml-64 flex flex-col min-h-screen w-full relative z-10">
         {/* Top Header */}
-        <header className="h-20 glass border-b border-white/5 flex items-center justify-between px-8 sticky top-0 z-40">
-          <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center lg:hidden">
-              <Sparkles className="w-6 h-6 text-black" />
+        <header className="h-16 bg-[#050505]/80 backdrop-blur-xl border-b border-white/5 flex items-center justify-between px-6 sticky top-0 z-40">
+          {/* Left: Brand (mobile) */}
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-xl bg-white flex items-center justify-center lg:hidden">
+              <Sparkles className="w-4 h-4 text-black" />
             </div>
-            <div>
-              <h2 className="text-lg font-bold text-white leading-none">Administration</h2>
-              <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em] mt-1">Plateforme Premium</p>
+            <div className="hidden lg:block">
+              <h2 className="text-sm font-black text-white leading-none">Administration</h2>
+              <p className="text-[9px] font-black text-white/20 uppercase tracking-[0.25em] mt-0.5">Plateforme Premium</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-6">
+          {/* Right: Search + Actions */}
+          <div className="flex items-center gap-4">
+            {/* Search */}
             <div className="relative hidden md:block">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/20" />
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-white/20" />
               <input 
                 type="text" 
-                placeholder="Rechercher une donnée..." 
-                className="pl-12 pr-4 py-2.5 glass border-white/5 rounded-2xl text-xs font-medium text-white placeholder-white/20 outline-none focus:border-white/20 w-72" 
+                placeholder="Rechercher..." 
+                className="pl-10 pr-4 py-2 bg-white/5 border border-white/5 rounded-xl text-xs font-medium text-white placeholder-white/20 outline-none focus:border-white/10 focus:bg-white/8 transition-all w-56" 
               />
             </div>
 
-            <div className="flex items-center gap-3 border-l border-white/5 pl-6">
-              <button className="w-10 h-10 rounded-full glass flex items-center justify-center text-white/40 hover:text-white transition-all">
-                <Bell className="h-5 w-5" />
-              </button>
-              <Link 
-                href="/api/auth/signout" 
-                className="flex items-center gap-2 px-4 py-2.5 rounded-2xl glass border-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition-all text-xs font-bold"
-              >
-                <LogOut className="h-4 w-4" /> 
-                <span className="hidden sm:inline">Quitter</span>
-              </Link>
-            </div>
+            <div className="h-6 w-px bg-white/5" />
+
+            {/* Notifications */}
+            <button className="relative w-9 h-9 rounded-xl bg-white/5 border border-white/5 flex items-center justify-center text-white/30 hover:text-white hover:bg-white/10 transition-all">
+              <Bell className="h-4 w-4" />
+              <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-red-500" />
+            </button>
+
+            {/* Sign out */}
+            <Link 
+              href="/api/auth/signout" 
+              className="flex items-center gap-2 px-4 py-2 rounded-xl border border-red-500/20 text-red-400 hover:bg-red-500 hover:text-white hover:border-transparent transition-all text-xs font-bold"
+            >
+              <LogOut className="h-3.5 w-3.5" /> 
+              <span className="hidden sm:inline">Quitter</span>
+            </Link>
           </div>
         </header>
 
-        {/* Content Area */}
-        <div className="p-8 lg:p-12 flex-1 overflow-x-hidden">
+        {/* Content */}
+        <div className="p-6 lg:p-10 flex-1 overflow-x-hidden">
           {children}
         </div>
       </main>

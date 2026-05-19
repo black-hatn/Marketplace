@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { ShoppingBag, Star, MapPin, Scale, Zap, ShoppingCart, ArrowRight } from 'lucide-react';
 import { useCartStore } from '@/lib/store';
 import toast from 'react-hot-toast';
+import { WishlistButton } from './WishlistButton';
 
 export function ProductCard({ product, className = "", onQuickView }: { product: any; className?: string; onQuickView?: (product: any) => void }) {
   const addItem = useCartStore((state) => state.addItem);
@@ -37,6 +38,7 @@ export function ProductCard({ product, className = "", onQuickView }: { product:
       viewport={{ once: true }}
       className={`group relative flex flex-col h-full rounded-3xl p-4 glass-card hover:border-white/20 transition-all duration-500 cursor-pointer ${className}`}
     >
+      {/* Primary Navigation Link */}
       <Link href={href} className="absolute inset-0 z-10" aria-label={title} />
 
       <div className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden bg-surface-light mb-4">
@@ -81,28 +83,44 @@ export function ProductCard({ product, className = "", onQuickView }: { product:
             </span>
           )}
         </div>
+
+        {/* Top Right Wishlist Button (stops propagation to prevent click navigation) */}
+        <div 
+          className="absolute top-3 right-3 z-30" 
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+        >
+          <WishlistButton productId={product.id} size="sm" />
+        </div>
       </div>
 
       <div className="flex flex-col flex-1 px-2 pb-2">
         <div className="flex items-center justify-between mb-1">
-          <span className="text-xs font-medium text-muted-foreground">{category}</span>
+          <span className="text-[10px] font-black uppercase tracking-widest text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded-md">{category}</span>
           <div className="flex items-center gap-1 text-[10px] font-medium text-amber-400">
             <Star className="h-3 w-3 fill-amber-400" /> {rating.toFixed(1)}
           </div>
         </div>
 
-        <h3 className="text-base font-semibold text-white truncate mb-1">
+        <h3 className="text-base font-bold text-white truncate mb-1">
           {title}
         </h3>
-        <p className="text-xs text-muted-foreground truncate mb-4">{vendor}</p>
+        <p className="text-xs text-white/40 truncate mb-3">{vendor}</p>
+
+        {/* Location & Time tag like Annoncena */}
+        <div className="flex items-center gap-1.5 text-[10px] text-white/30 mb-4">
+          <MapPin className="h-3.5 w-3.5 text-cyan-500/50" />
+          <span>{product.city || "N'Djaména"}</span>
+          <span className="w-1 h-1 rounded-full bg-white/20" />
+          <span>Récemment</span>
+        </div>
 
         <div className="mt-auto flex items-center justify-between">
-          <span className="text-lg font-bold text-white">
+          <span className="text-lg font-black text-white">
             {price.toLocaleString('fr-FR')} <span className="text-xs text-white/60">FCFA</span>
           </span>
           <button
             onClick={handleAddToCart}
-            className="relative z-20 w-8 h-8 flex items-center justify-center rounded-full bg-white/10 text-white hover:bg-white hover:text-black transition-colors"
+            className="relative z-20 w-9 h-9 flex items-center justify-center rounded-xl bg-white/10 text-white hover:bg-white hover:text-black transition-all group-hover:scale-105"
           >
             <PlusIcon />
           </button>

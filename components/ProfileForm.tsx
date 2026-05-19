@@ -45,12 +45,12 @@ export function ProfileForm({ user, role }: ProfileFormProps) {
     }
   };
 
-  const inputClass = "w-full pl-12 pr-4 py-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 transition-all outline-none text-slate-900 dark:text-white";
+  const inputClass = "w-full pl-12 pr-4 py-3 rounded-2xl bg-white/5 border border-black/10 dark:border-white/10 focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 transition-all outline-none text-slate-900 dark:text-white admin:text-white admin:bg-white/5";
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8 max-w-2xl">
       {/* Profile Image Upload */}
-      <div className="flex flex-col items-center sm:flex-row gap-8 bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-black/5 dark:border-white/10 shadow-xl shadow-black/5">
+      <div className={`flex flex-col items-center sm:flex-row gap-8 p-8 rounded-[2.5rem] border shadow-xl ${role === 'ADMIN' ? 'glass-card border-white/5' : 'bg-white dark:bg-slate-900 border-black/5 dark:border-white/10'}`}>
         <div className="relative group">
           <div className="h-32 w-32 rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800 ring-4 ring-white dark:ring-slate-900 shadow-xl">
             {preview ? (
@@ -110,7 +110,7 @@ export function ProfileForm({ user, role }: ProfileFormProps) {
       )}
 
       {/* Main Info */}
-      <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-black/5 dark:border-white/10 shadow-xl shadow-black/5 space-y-6">
+      <div className={`p-8 rounded-[2.5rem] border shadow-xl space-y-6 ${role === 'ADMIN' ? 'glass-card border-white/5' : 'bg-white dark:bg-slate-900 border-black/5 dark:border-white/10'}`}>
         <div className="grid sm:grid-cols-2 gap-6">
           <div className="space-y-2">
             <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Nom complet</label>

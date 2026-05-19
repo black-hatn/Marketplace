@@ -83,7 +83,7 @@ export function GlobalSearch() {
         {loading ? (
           <Loader2 className="w-5 h-5 text-blue-400 animate-spin" />
         ) : (
-          <Search className={`w-5 h-5 transition-colors ${focused ? 'text-blue-400' : 'text-white/20'}`} />
+          <Search className={`w-5 h-5 transition-colors ${focused ? 'text-blue-500 dark:text-blue-400' : 'text-slate-400 dark:text-white/20'}`} />
         )}
         
         <input
@@ -93,7 +93,7 @@ export function GlobalSearch() {
           onFocus={() => setFocused(true)}
           onBlur={() => setTimeout(() => setFocused(false), 200)}
           placeholder="Rechercher une pièce rare..."
-          className="flex-1 bg-transparent text-sm text-white placeholder-white/20 outline-none"
+          className="flex-1 bg-transparent text-sm text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-white/40 outline-none"
         />
 
         {query && (

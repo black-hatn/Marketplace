@@ -11,7 +11,7 @@ export function VerifyButton({ brandId, isVerified }: { brandId: string, isVerif
   const handleToggle = () => {
     startTransition(async () => {
       try {
-        await toggleBrandVerification(brandId);
+        await toggleBrandVerification(brandId, isVerified);
         toast.success(isVerified ? "Vendeur retiré de la liste certifiée" : "Vendeur certifié avec succès !");
       } catch (e) {
         toast.error("Une erreur est survenue");

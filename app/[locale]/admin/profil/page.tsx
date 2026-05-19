@@ -3,7 +3,7 @@ import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { getUserProfile } from "@/lib/actions";
 import { ProfileForm } from "@/components/ProfileForm";
-import { ChevronRight, ShieldCheck } from "lucide-react";
+import { ShieldCheck, UserCircle } from "lucide-react";
 
 export const dynamic = 'force-dynamic';
 
@@ -22,25 +22,27 @@ export default async function AdminProfilePage() {
 
   return (
     <div className="space-y-10">
-      <div>
-        <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">
-          <span>Panel Administration</span>
-          <ChevronRight className="h-3 w-3" />
-          <span className="text-violet-600">Mon Profil Admin</span>
+      {/* ── Header ────────────────────────────────────────── */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div>
+          <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.4em] mb-2">Configuration</p>
+          <h1 className="text-3xl font-black text-white tracking-tighter flex items-center gap-3">
+            <UserCircle className="w-8 h-8 text-cyan-400" />
+            Profil Administrateur
+          </h1>
         </div>
-        <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tighter leading-tight flex items-center gap-4">
-          <ShieldCheck className="h-10 w-10 text-violet-600" /> Profil Administrateur
-        </h1>
-        <p className="text-slate-500 dark:text-slate-400 mt-2 text-lg font-medium">Mettez à jour vos identifiants de sécurité et votre avatar.</p>
       </div>
 
-      <div className="bg-violet-50 dark:bg-violet-500/5 p-6 rounded-3xl border border-violet-100 dark:border-violet-500/10 mb-8 max-w-2xl">
-         <p className="text-sm text-violet-700 dark:text-violet-300 font-medium flex items-center gap-2">
-           <ShieldCheck className="h-4 w-4" /> En tant qu'administrateur, vos modifications affectent les journaux système.
+      <div className="glass-card bg-violet-500/10 p-6 rounded-[2rem] border border-violet-500/20 mb-8 max-w-2xl">
+         <p className="text-sm text-violet-300 font-bold flex items-center gap-3">
+           <ShieldCheck className="h-5 w-5 text-violet-400" /> 
+           En tant qu'administrateur système, toutes vos modifications sont tracées dans les journaux d'audit.
          </p>
       </div>
 
-      <ProfileForm user={profile} role={session.user.role} />
+      <div className="max-w-2xl">
+        <ProfileForm user={profile} role={session.user.role} />
+      </div>
     </div>
   );
 }

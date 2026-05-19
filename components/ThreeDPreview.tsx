@@ -54,7 +54,7 @@ export function ThreeDPreview({ open, onClose, title }: { open: boolean, onClose
                   <color attach="background" args={['#000']} />
                   <fog attach="fog" args={['#000', 5, 15]} />
                   
-                  <Stage environment="city" intensity={0.6} contactShadow={false}>
+                  <Stage environment="city" intensity={0.6} adjustCamera={true}>
                     <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
                       <mesh castShadow receiveShadow>
                         <boxGeometry args={[1, 1, 1]} />

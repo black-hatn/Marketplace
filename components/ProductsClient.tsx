@@ -34,10 +34,12 @@ export default function ProductsClient({ initialProducts }: { initialProducts: P
   const [sortBy, setSortBy] = useState<'newest' | 'price-asc' | 'price-desc'>('newest');
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
 
-  const categories = useMemo(
-    () => ['Tous', ...Array.from(new Set((initialProducts || []).map((p) => p.category))).sort()],
-    [initialProducts]
-  );
+  const categories = useMemo(() => {
+    const predefined = ['Immobilier', 'Véhicules', 'Emploi', 'Services', 'Électronique', 'Mode', 'Maison', 'Divers'];
+    const fromProducts = Array.from(new Set((initialProducts || []).map((p) => p.category)));
+    const merged = Array.from(new Set([...predefined, ...fromProducts])).sort();
+    return ['Tous', ...merged];
+  }, [initialProducts]);
 
   useEffect(() => {
     if (!searchParams) return;
@@ -47,7 +49,12 @@ export default function ProductsClient({ initialProducts }: { initialProducts: P
     if (s) setSearch(s);
     if (c && categories.length > 0) {
       const found = categories.find(cat => cat.toLowerCase() === c.toLowerCase());
-      if (found) setCategory(found);
+      if (found) {
+        setCategory(found);
+      } else {
+        // Fallback for custom category not in list
+        setCategory(c);
+      }
     }
   }, [searchParams, categories]);
 
