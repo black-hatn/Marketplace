@@ -63,7 +63,7 @@ export function ProductCard({ product, className = "", onQuickView }: { product:
           )}
           <button
             onClick={handleAddToCart}
-            className="rounded-full bg-blue-500 p-2.5 text-white transition hover:bg-blue-400 shadow-xl"
+            className="rounded-full bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600 hover:from-amber-300 hover:to-amber-700 p-2.5 text-slate-950 transition shadow-xl"
             title="Ajouter au panier"
           >
             <ShoppingCart className="h-4 w-4" />
@@ -95,7 +95,7 @@ export function ProductCard({ product, className = "", onQuickView }: { product:
 
       <div className="flex flex-col flex-1 px-2 pb-2">
         <div className="flex items-center justify-between mb-1">
-          <span className="text-[10px] font-black uppercase tracking-widest text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded-md">{category}</span>
+          <span className="text-[10px] font-black uppercase tracking-widest text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/10">{category}</span>
           <div className="flex items-center gap-1 text-[10px] font-medium text-amber-400">
             <Star className="h-3 w-3 fill-amber-400" /> {rating.toFixed(1)}
           </div>
@@ -108,7 +108,7 @@ export function ProductCard({ product, className = "", onQuickView }: { product:
 
         {/* Location & Time tag like Annoncena */}
         <div className="flex items-center gap-1.5 text-[10px] text-white/30 mb-4">
-          <MapPin className="h-3.5 w-3.5 text-cyan-500/50" />
+          <MapPin className="h-3.5 w-3.5 text-amber-500/50" />
           <span>{product.city || "N'Djaména"}</span>
           <span className="w-1 h-1 rounded-full bg-white/20" />
           <span>Récemment</span>
@@ -120,7 +120,7 @@ export function ProductCard({ product, className = "", onQuickView }: { product:
           </span>
           <button
             onClick={handleAddToCart}
-            className="relative z-20 w-9 h-9 flex items-center justify-center rounded-xl bg-white/10 text-white hover:bg-white hover:text-black transition-all group-hover:scale-105"
+            className="relative z-20 w-9 h-9 flex items-center justify-center rounded-xl bg-white/10 text-white hover:bg-gradient-to-r hover:from-amber-200 hover:via-amber-400 hover:to-amber-600 hover:text-slate-950 transition-all hover:shadow-lg hover:shadow-amber-500/10 group-hover:scale-105"
           >
             <PlusIcon />
           </button>

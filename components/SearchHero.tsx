@@ -45,10 +45,10 @@ export function SearchHero() {
   };
 
   return (
-    <section className="relative overflow-hidden rounded-3xl bg-white dark:bg-slate-900/50 border border-black/5 dark:border-white/10 shadow-xl px-6 py-14 sm:px-12 sm:py-20 text-center">
+    <section className="relative overflow-hidden rounded-3xl bg-white dark:bg-black/40 border border-black/5 dark:border-white/[0.05] shadow-2xl px-6 py-14 sm:px-12 sm:py-20 text-center glass-premium">
       
       {/* Background glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(6,182,212,0.07),_transparent_60%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(212,175,55,0.05),_transparent_60%)] pointer-events-none" />
 
       {/* Overlay dimmer when focused */}
       <AnimatePresence>
@@ -57,7 +57,7 @@ export function SearchHero() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm"
+            className="fixed inset-0 z-40 bg-black/45 backdrop-blur-md"
             onClick={() => setIsFocused(false)}
           />
         )}
@@ -69,7 +69,7 @@ export function SearchHero() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-cyan-50 dark:bg-cyan-950/40 border border-cyan-100 dark:border-cyan-800/50 text-cyan-700 dark:text-cyan-400 text-[11px] font-black uppercase tracking-[0.3em]"
+          className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-[11px] font-black uppercase tracking-[0.3em] shimmer-effect"
         >
           <Sparkles className="w-3.5 h-3.5" />
           La Marketplace N°1 au Tchad
@@ -84,7 +84,7 @@ export function SearchHero() {
           <h1 className="text-5xl sm:text-7xl font-black text-slate-950 dark:text-white tracking-tighter leading-[0.9] italic">
             Trouvez tout
           </h1>
-          <h1 className="text-5xl sm:text-7xl font-black text-cyan-600 tracking-tighter leading-[0.9] italic mt-1">
+          <h1 className="text-5xl sm:text-7xl font-black text-gradient-gold tracking-tighter leading-[0.9] italic mt-2">
             Partout<span className="text-slate-950 dark:text-white">.</span>
           </h1>
         </motion.div>
@@ -106,7 +106,7 @@ export function SearchHero() {
           transition={{ delay: 0.15 }}
           className="relative z-50"
         >
-          <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-2 p-2 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl shadow-slate-200/60 dark:shadow-black/40 border border-black/5 dark:border-white/10">
+          <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-2 p-2 bg-white dark:bg-black/60 rounded-2xl shadow-2xl shadow-slate-200/60 dark:shadow-black/60 border border-black/5 dark:border-white/[0.08] backdrop-blur-xl">
 
             {/* Text input */}
             <div className="flex items-center gap-3 flex-[2] px-4 py-3">
@@ -152,7 +152,7 @@ export function SearchHero() {
             </div>
 
             {/* CTA button */}
-            <button type="submit" className="bg-slate-950 dark:bg-cyan-500 text-white dark:text-slate-950 font-black uppercase tracking-widest text-[11px] px-8 py-4 rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg whitespace-nowrap">
+            <button type="submit" className="bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600 hover:from-amber-300 hover:to-amber-700 text-slate-950 font-black uppercase tracking-widest text-[11px] px-8 py-4 rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-amber-500/10 whitespace-nowrap">
               Rechercher
             </button>
           </form>
@@ -164,7 +164,7 @@ export function SearchHero() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 10 }}
-                className="absolute left-0 right-0 top-full mt-3 bg-white dark:bg-slate-900 rounded-2xl border border-black/5 dark:border-white/10 shadow-2xl overflow-hidden text-left"
+                className="absolute left-0 right-0 top-full mt-3 bg-white dark:bg-slate-950 rounded-2xl border border-black/5 dark:border-white/10 shadow-2xl overflow-hidden text-left"
               >
                 {searchResults.map((r, i) => (
                   <Link
@@ -173,7 +173,7 @@ export function SearchHero() {
                     onClick={() => { setQuery(''); setIsFocused(false); }}
                     className="flex items-center gap-4 px-5 py-4 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors border-b border-black/5 dark:border-white/5 last:border-0"
                   >
-                    <div className="relative w-11 h-11 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 flex-shrink-0">
+                    <div className="relative w-11 h-11 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-900 flex-shrink-0">
                       <Image src={r.image} alt={r.label} fill className="object-cover" unoptimized />
                     </div>
                     <div className="min-w-0 flex-1">
@@ -199,7 +199,7 @@ export function SearchHero() {
             <Link
               key={tag}
               href={`/produits?category=${tag}` as any}
-              className="px-4 py-1.5 rounded-full bg-slate-100 dark:bg-white/5 border border-black/5 dark:border-white/5 text-[11px] font-bold text-slate-600 dark:text-slate-400 hover:bg-cyan-50 hover:text-cyan-700 hover:border-cyan-200 dark:hover:bg-cyan-950/40 dark:hover:text-cyan-400 transition-all"
+              className="px-4 py-1.5 rounded-full bg-slate-100 dark:bg-white/5 border border-black/5 dark:border-white/5 text-[11px] font-bold text-slate-600 dark:text-slate-400 hover:bg-amber-500/10 hover:text-primary dark:hover:bg-amber-500/10 dark:hover:text-primary transition-all"
             >
               {tag}
             </Link>

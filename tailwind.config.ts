@@ -9,28 +9,35 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: 'var(--background)',
-        foreground: 'var(--foreground)',
-        border: 'var(--border)',
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
+        border: 'hsl(var(--border))',
+        input: 'hsl(var(--input))',
+        ring: 'hsl(var(--ring))',
         primary: {
-          DEFAULT: '#2563eb', // Blue from the reference image
-          foreground: '#ffffff',
+          DEFAULT: 'hsl(var(--primary))',
+          foreground: 'hsl(var(--primary-foreground))',
         },
         secondary: {
-          DEFAULT: '#f97316', // Orange from the reference image
-          foreground: '#ffffff',
+          DEFAULT: 'hsl(var(--secondary))',
+          foreground: 'hsl(var(--secondary-foreground))',
         },
         muted: {
-          DEFAULT: '#f4f4f5',
+          DEFAULT: 'hsl(var(--secondary))',
           foreground: '#71717a',
         },
         accent: {
-          DEFAULT: '#3b82f6',
-          foreground: '#ffffff',
+          DEFAULT: 'hsl(var(--accent))',
+          foreground: 'hsl(var(--accent-foreground))',
         }
       },
+      keyframes: {
+        shimmer: {
+          '100%': { transform: 'translateX(100%)' },
+        },
+      },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Outfit', 'Inter', 'system-ui', 'sans-serif'],
       },
     }
   },

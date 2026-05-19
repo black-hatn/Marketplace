@@ -25,11 +25,11 @@ export function BentoGrid() {
         <div className="absolute inset-0 bg-gradient-to-t from-slate-50 dark:from-slate-950 via-transparent to-transparent" />
         <div className="relative z-10 flex h-full flex-col justify-between p-5 sm:p-8 lg:p-12">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full bg-cyan-500/10 px-3 py-1.5 text-xs font-bold uppercase tracking-widest text-cyan-600 dark:text-cyan-300 backdrop-blur-md border border-cyan-500/10">
+            <div className="inline-flex items-center gap-2 rounded-full bg-amber-500/10 px-3 py-1.5 text-xs font-bold uppercase tracking-widest text-amber-500 backdrop-blur-md border border-amber-500/10 shimmer-effect">
               <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" /> Découverte 2025
             </div>
             <h3 className="mt-4 sm:mt-6 text-2xl font-bold leading-tight text-slate-900 dark:text-white sm:text-3xl lg:text-5xl max-w-2xl">
-              Explorer les tendances <span className="text-cyan-600 dark:text-cyan-400">hybrides</span> par secteur.
+              Explorer les tendances <span className="text-gradient-gold">hybrides</span> par secteur.
             </h3>
             <p className="mt-3 sm:mt-4 max-w-xl text-sm sm:text-base leading-relaxed text-slate-600 dark:text-slate-300 hidden sm:block">
               Une sélection exclusive où l&apos;innovation technologique rencontre l&apos;élégance du design durable.
@@ -65,7 +65,7 @@ export function BentoGrid() {
           <div className="relative z-10 flex h-full flex-col justify-between">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-xs font-bold uppercase tracking-widest text-cyan-600 dark:text-cyan-400">{item.tag}</p>
+                <p className="text-xs font-bold uppercase tracking-widest text-amber-500">{item.tag}</p>
                 <h3 className="mt-1 sm:mt-2 text-lg sm:text-xl font-bold text-slate-900 dark:text-white leading-tight">{item.title}</h3>
               </div>
               <div className="rounded-full bg-white/50 dark:bg-white/10 p-1.5 sm:p-2 text-slate-900 dark:text-white opacity-0 group-hover:opacity-100 transition-all duration-300 flex-shrink-0">
