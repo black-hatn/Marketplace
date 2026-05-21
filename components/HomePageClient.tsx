@@ -10,7 +10,6 @@ import {
 import Image from 'next/image';
 import { Link } from '@/i18n/routing';
 import { SearchHero } from './SearchHero';
-import { ProductCard } from './ProductCard';
 
 interface Product {
   id: string;
@@ -122,6 +121,56 @@ const FADE_UP = {
   hidden: { opacity: 0, y: 24 },
   show: (i = 0) => ({ opacity: 1, y: 0, transition: { delay: i * 0.08, duration: 0.5 } }),
 };
+
+function HomeProductCard({ product }: { product: Product }) {
+  const title = product.title || 'Produit sans nom';
+  const price = Number(product.price || 0);
+  const image = product.image || '/placeholder.png';
+  const category = product.category || 'Général';
+
+  return (
+    <Link
+      href={`/produit/${product.id}` as any}
+      className="group flex flex-col rounded-2xl overflow-hidden bg-white dark:bg-white/[0.03] border border-slate-100 dark:border-white/[0.06] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+    >
+      {/* Image */}
+      <div className="relative w-full aspect-[4/3] overflow-hidden bg-slate-100 dark:bg-white/5">
+        <Image
+          src={(image.startsWith('http') || image.startsWith('/')) ? image : '/placeholder.png'}
+          alt={title}
+          fill
+          unoptimized
+          sizes="(max-width: 640px) 50vw, 25vw"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+        {/* Category pill */}
+        <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-white/90 dark:bg-black/60 backdrop-blur-sm text-[10px] font-black uppercase tracking-widest text-amber-600 dark:text-amber-400 shadow-sm">
+          {category}
+        </span>
+      </div>
+
+      {/* Info */}
+      <div className="flex flex-col gap-1.5 p-4">
+        <h3 className="text-sm font-bold text-slate-900 dark:text-white truncate leading-snug">
+          {title}
+        </h3>
+        <div className="flex items-center gap-1 text-[10px] text-slate-400 dark:text-white/30">
+          <MapPin className="w-3 h-3 text-amber-500" />
+          <span>{(product as any).city || "N'Djaména"}</span>
+        </div>
+        <div className="flex items-center justify-between mt-2">
+          <p className="text-base font-black text-slate-900 dark:text-white">
+            {price > 0 ? price.toLocaleString('fr-FR') : '—'}
+            <span className="text-[10px] font-semibold text-slate-400 dark:text-white/40 ml-1">FCFA</span>
+          </p>
+          <span className="flex items-center gap-1 text-[10px] font-bold text-amber-500">
+            <Star className="w-3 h-3 fill-amber-400" /> 4.5
+          </span>
+        </div>
+      </div>
+    </Link>
+  );
+}
 
 export default function HomePageClient({ products, clientsCount, produitsCount }: HomePageClientProps) {
   return (
@@ -253,7 +302,7 @@ export default function HomePageClient({ products, clientsCount, produitsCount }
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
             {products.slice(0, 8).map((product, i) => (
               <motion.div
                 key={product.id}
@@ -263,7 +312,7 @@ export default function HomePageClient({ products, clientsCount, produitsCount }
                 viewport={{ once: true }}
                 variants={FADE_UP}
               >
-                <ProductCard product={product} />
+                <HomeProductCard product={product} />
               </motion.div>
             ))}
           </div>
