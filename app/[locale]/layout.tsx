@@ -63,12 +63,13 @@ export default async function RootLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} suppressHydrationWarning className="scroll-smooth">
+    <html lang={locale} suppressHydrationWarning className="scroll-smooth dark">
       <head>
         <WebsiteJsonLd />
         <script dangerouslySetInnerHTML={{ __html: `
           (function() {
             const saved = localStorage.getItem('theme') || 'dark';
+            localStorage.setItem('theme', saved);
             document.documentElement.dataset.theme = saved;
             if (saved === 'dark') {
               document.documentElement.classList.add('dark');
