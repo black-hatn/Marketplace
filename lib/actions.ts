@@ -26,6 +26,20 @@ export async function createProduct(data: any) {
     throw new Error("Non autorisé");
   }
 
+  // Validate with Zod before touching the DB
+  const parsed = productSchema.safeParse({
+    nom: data.title || data.nom,
+    sku: data.sku,
+    prix_ht: data.price || data.prix_ht,
+    tva: data.tva ?? 18,
+    stock: data.stock,
+    description: data.description,
+    categories: data.categories,
+  });
+  if (!parsed.success) {
+    throw new Error(parsed.error.issues.map((e: { message: string }) => e.message).join(' | '));
+  }
+
   const brandId = session.user.role === "VENDOR" ? session.user.id : data.brandId;
 
   const product = await prisma.produit.create({
@@ -40,6 +54,7 @@ export async function createProduct(data: any) {
       images: data.images ? data.images.split(',').map((u: string) => u.trim()).filter(Boolean) : (data.image ? [data.image] : []),
       categories: [data.category || data.categories?.[0]],
       brandId: brandId,
+      threeDStyle: data.threeDStyle || "cube",
     }
   });
   revalidatePath('/admin');
@@ -53,6 +68,20 @@ export async function updateProduct(id: string, data: any) {
 
   const existingProduct = await prisma.produit.findUnique({ where: { id } });
   if (!existingProduct) throw new Error("Produit introuvable");
+
+  // Validate with Zod before touching the DB
+  const parsed = productSchema.safeParse({
+    nom: data.title || data.nom,
+    sku: data.sku || existingProduct.sku,
+    prix_ht: data.price || data.prix_ht,
+    tva: data.tva ?? 18,
+    stock: data.stock,
+    description: data.description,
+    categories: data.categories,
+  });
+  if (!parsed.success) {
+    throw new Error(parsed.error.issues.map((e: { message: string }) => e.message).join(' | '));
+  }
 
   // Si c'est un vendeur, il ne peut modifier que ses propres produits
   if (session.user.role === "VENDOR" && existingProduct.brandId !== session.user.id) {
@@ -68,6 +97,7 @@ export async function updateProduct(id: string, data: any) {
       prix_ttc: parseFloat(data.price || data.prix_ttc),
       stock: parseInt(data.stock),
       images: data.images ? data.images.split(',').map((u: string) => u.trim()).filter(Boolean) : (data.image ? [data.image] : undefined),
+      threeDStyle: data.threeDStyle,
     }
   });
   revalidatePath('/admin');
@@ -212,11 +242,92 @@ export async function createOrder(data: any) {
   return commande;
 }
 
-export async function updateOrderStatus(orderId: string, status: any) {
-  await prisma.commande.update({
-    where: { id: orderId },
-    data: { statut: status }
+export async function processOrderPayment(orderId: string) {
+  return await prisma.$transaction(async (tx) => {
+    const order = await tx.commande.findUnique({
+      where: { id: orderId },
+      include: {
+        lignes_commande: {
+          include: {
+            produit: true
+          }
+        }
+      }
+    });
+
+    if (!order) throw new Error("Commande introuvable");
+    
+    if (order.statut === 'PAYEE' || order.statut === 'VALIDEE' || order.statut === 'EXPEDIEE' || order.statut === 'LIVREE') {
+      return order;
+    }
+
+    const updatedOrder = await tx.commande.update({
+      where: { id: orderId },
+      data: { statut: 'PAYEE' }
+    });
+
+    const COMMISSION_RATE = 0.05;
+    const vendorIds = new Set<string>();
+
+    for (const line of order.lignes_commande) {
+      const product = line.produit;
+      if (product) {
+        const newStock = Math.max(0, product.stock - line.quantite);
+        await tx.produit.update({
+          where: { id: product.id },
+          data: { stock: newStock }
+        });
+
+        if (product.brandId) {
+          vendorIds.add(product.brandId);
+          const lineTotal = Number(line.prix_unitaire_ht) * line.quantite;
+          const netEarnings = lineTotal * (1 - COMMISSION_RATE);
+
+          const wallet = await tx.wallet.findUnique({
+            where: { brandId: product.brandId }
+          });
+
+          if (wallet) {
+            await tx.wallet.update({
+              where: { id: wallet.id },
+              data: { balance: { increment: netEarnings } }
+            });
+          } else {
+            await tx.wallet.create({
+              data: {
+                brandId: product.brandId,
+                balance: netEarnings
+              }
+            });
+          }
+        }
+      }
+    }
+
+    for (const brandId of vendorIds) {
+      await tx.notification.create({
+        data: {
+          brandId,
+          type: 'ORDER',
+          title: 'Commande Payée !',
+          message: `La commande (${order.numero_commande}) a été payée. Vos gains nets ont été crédités sur votre portefeuille.`
+        }
+      });
+    }
+
+    return updatedOrder;
   });
+}
+
+export async function updateOrderStatus(orderId: string, status: any) {
+  if (status === 'PAYEE' || status === 'VALIDEE') {
+    await processOrderPayment(orderId);
+  } else {
+    await prisma.commande.update({
+      where: { id: orderId },
+      data: { statut: status }
+    });
+  }
   revalidatePath('/admin');
 }
 
@@ -380,16 +491,6 @@ export async function getVendorAnalytics(brandId: string) {
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-  const dailyStats = await prisma.ligneCommande.groupBy({
-    by: ['id'], // This is tricky, better to fetch orders and group in JS
-    where: {
-      produit: { brandId },
-      commande: { date_commande: { gte: thirtyDaysAgo } }
-    },
-    _sum: { quantite: true },
-  });
-
-  // Let's fetch all orders for this vendor in the last 30 days
   const vendorOrders = await prisma.commande.findMany({
     where: {
       lignes_commande: { some: { produit: { brandId } } },
@@ -540,21 +641,20 @@ export async function globalSearch(query: string) {
     prisma.produit.findMany({
       where: {
         OR: [
-          { nom: { contains: query, mode: 'insensitive' } },
-          { description: { contains: query, mode: 'insensitive' } }
+          { nom: { contains: query } },
+          { description: { contains: query } }
         ]
       },
       include: {
         brand: true,
-        // Assuming category relation exists or we just map it
       },
       take: 6
     }),
     prisma.brand.findMany({
       where: {
         OR: [
-          { name: { contains: query, mode: 'insensitive' } },
-          { tagline: { contains: query, mode: 'insensitive' } }
+          { name: { contains: query } },
+          { tagline: { contains: query } }
         ]
       },
       take: 3
@@ -583,7 +683,8 @@ export async function globalSearch(query: string) {
 // --- ACTIONS WISHLIST ---
 
 export async function toggleWishlist(productId: string) {
-  const sessionId = "demo-session"; 
+  const session = await getServerSession(authOptions) as any;
+  const sessionId = session?.user?.id || "demo-session";
   const existing = await prisma.wishlist.findFirst({
     where: { sessionId, productId }
   });
@@ -598,16 +699,22 @@ export async function toggleWishlist(productId: string) {
 }
 
 export async function isWishlisted(productId: string) {
-  const sessionId = "demo-session";
+  const session = await getServerSession(authOptions) as any;
+  const sessionId = session?.user?.id || "demo-session";
   const existing = await prisma.wishlist.findFirst({
     where: { sessionId, productId }
   });
   return !!existing;
 }
 
-export async function getWishlist(sessionId: string) {
+export async function getWishlist(sessionId?: string) {
+  let idToUse = sessionId;
+  if (!idToUse) {
+    const session = await getServerSession(authOptions) as any;
+    idToUse = session?.user?.id || "demo-session";
+  }
   return prisma.wishlist.findMany({
-    where: { sessionId },
+    where: { sessionId: idToUse },
     include: { produit: { include: { brand: true, category: true } } }
   });
 }
@@ -719,6 +826,34 @@ export async function createNotification(brandId: string, type: string, title: s
   return (prisma as any).notification.create({
     data: { brandId, type, title, message }
   });
+}
+
+export async function validateCouponCode(code: string) {
+  const coupon = await prisma.coupon.findUnique({
+    where: { code: code.toUpperCase() },
+    include: { brand: true }
+  });
+
+  if (!coupon) {
+    throw new Error("Code promo introuvable");
+  }
+
+  if (!coupon.isActive) {
+    throw new Error("Ce code promo est inactif");
+  }
+
+  if (new Date(coupon.expiresAt) < new Date()) {
+    throw new Error("Ce code promo a expiré");
+  }
+
+  return {
+    id: coupon.id,
+    code: coupon.code,
+    discount: coupon.discount,
+    type: coupon.type,
+    brandId: coupon.brandId,
+    brandName: coupon.brand.name
+  };
 }
 
 

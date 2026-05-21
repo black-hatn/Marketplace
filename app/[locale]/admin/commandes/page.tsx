@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/db';
 import { ShoppingCart, Package, Clock, CheckCircle, XCircle, Truck } from 'lucide-react';
 import Link from 'next/link';
+import { OrderStatusChanger } from '@/components/OrderStatusChanger';
 
 export const dynamic = 'force-dynamic';
 
@@ -96,6 +97,7 @@ export default async function OrdersPage() {
                   <th className="px-8 py-5">Total</th>
                   <th className="px-8 py-5">Statut</th>
                   <th className="px-8 py-5 text-right hidden md:table-cell">Date</th>
+                  <th className="px-8 py-5 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
@@ -124,6 +126,9 @@ export default async function OrdersPage() {
                         <span className="text-[11px] font-medium uppercase tracking-wider text-white/40">
                           {new Date(order.date_commande).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })}
                         </span>
+                      </td>
+                      <td className="px-8 py-5 text-right">
+                        <OrderStatusChanger orderId={order.id} currentStatus={order.statut} />
                       </td>
                     </tr>
                   );

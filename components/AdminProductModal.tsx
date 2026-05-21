@@ -146,6 +146,16 @@ export function AdminProductModal({
               </div>
 
               <div>
+                <label className={labelClass}>Style de Visualisation 3D</label>
+                <select name="threeDStyle" defaultValue={product?.threeDStyle || "cube"} className={inputClass}>
+                  <option value="cube">Cube dynamique (Techno/Digital)</option>
+                  <option value="sphere">Sphère interactive (Art/Décoration)</option>
+                  <option value="torus">Torus de luxe (Joaillerie/Luxe)</option>
+                  <option value="cylinder">Cylindre lisse (Cosmétique/Bouteilles)</option>
+                </select>
+              </div>
+
+              <div>
                 <label className={labelClass}><ImageIcon className="inline h-3 w-3 mr-1" /> URLs des Photos (Galerie)</label>
                 <textarea 
                   name="images" 

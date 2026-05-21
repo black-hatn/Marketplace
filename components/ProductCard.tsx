@@ -43,7 +43,7 @@ export function ProductCard({ product, className = "", onQuickView }: { product:
 
       <div className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden bg-surface-light mb-4">
         <Image
-          src={image.startsWith('http') ? image : '/placeholder.png'}
+          src={(image.startsWith('http') || image.startsWith('/')) ? image : '/placeholder.png'}
           alt={title}
           fill
           unoptimized={true}

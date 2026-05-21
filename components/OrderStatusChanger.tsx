@@ -5,12 +5,14 @@ import { updateOrderStatus, deleteOrder } from '@/lib/actions';
 import toast from 'react-hot-toast';
 import { Trash2 } from 'lucide-react';
 
-const STATUSES = ['PENDING', 'PAID', 'SHIPPED', 'CANCELLED'];
+const STATUSES = ['EN_ATTENTE', 'PAYEE', 'VALIDEE', 'EXPEDIEE', 'LIVREE', 'ANNULEE'];
 const STATUS_LABELS: Record<string, string> = {
-  PENDING: 'En attente',
-  PAID: 'Payée',
-  SHIPPED: 'Expédiée',
-  CANCELLED: 'Annulée',
+  EN_ATTENTE: 'En attente',
+  PAYEE: 'Payée',
+  VALIDEE: 'Validée',
+  EXPEDIEE: 'Expédiée',
+  LIVREE: 'Livrée',
+  ANNULEE: 'Annulée',
 };
 
 export function OrderStatusChanger({

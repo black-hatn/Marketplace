@@ -6,7 +6,38 @@ import { Suspense, useRef } from 'react';
 import { X, Rotate3d, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export function ThreeDPreview({ open, onClose, title }: { open: boolean, onClose: () => void, title: string }) {
+type ThreeDStyle = 'cube' | 'sphere' | 'torus' | 'cylinder';
+
+const STYLE_CONFIG: Record<ThreeDStyle, { color: string; emissive: string; speed: number; distort: number }> = {
+  cube:     { color: '#3b82f6', emissive: '#1d4ed8', speed: 3,   distort: 0.4 },
+  sphere:   { color: '#ec4899', emissive: '#9d174d', speed: 4,   distort: 0.6 },
+  torus:    { color: '#f59e0b', emissive: '#92400e', speed: 2,   distort: 0.2 },
+  cylinder: { color: '#10b981', emissive: '#064e3b', speed: 3.5, distort: 0.35 },
+};
+
+function ThreeDShape({ style }: { style: ThreeDStyle }) {
+  const cfg = STYLE_CONFIG[style] ?? STYLE_CONFIG.cube;
+  return (
+    <mesh castShadow receiveShadow>
+      {style === 'sphere'   && <sphereGeometry   args={[0.7, 64, 64]} />}
+      {style === 'torus'    && <torusGeometry    args={[0.5, 0.2, 32, 64]} />}
+      {style === 'cylinder' && <cylinderGeometry args={[0.5, 0.5, 1.2, 32]} />}
+      {(style === 'cube' || !['sphere','torus','cylinder'].includes(style)) && <boxGeometry args={[1, 1, 1]} />}
+      <MeshDistortMaterial
+        color={cfg.color}
+        emissive={cfg.emissive}
+        emissiveIntensity={0.3}
+        speed={cfg.speed}
+        distort={cfg.distort}
+        radius={1}
+        metalness={style === 'torus' ? 0.9 : 0.2}
+        roughness={style === 'torus' ? 0.1 : 0.5}
+      />
+    </mesh>
+  );
+}
+
+export function ThreeDPreview({ open, onClose, title, style = 'cube' }: { open: boolean, onClose: () => void, title: string, style?: ThreeDStyle }) {
   return (
     <AnimatePresence>
       {open && (
@@ -56,15 +87,7 @@ export function ThreeDPreview({ open, onClose, title }: { open: boolean, onClose
                   
                   <Stage environment="city" intensity={0.6} adjustCamera={true}>
                     <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
-                      <mesh castShadow receiveShadow>
-                        <boxGeometry args={[1, 1, 1]} />
-                        <MeshDistortMaterial
-                          color="#3b82f6"
-                          speed={3}
-                          distort={0.4}
-                          radius={1}
-                        />
-                      </mesh>
+                      <ThreeDShape style={style} />
                     </Float>
                   </Stage>
 
@@ -96,7 +119,7 @@ export function ThreeDPreview({ open, onClose, title }: { open: boolean, onClose
                 </div>
               </div>
               <div className="hidden sm:block">
-                <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest">Technologie WebGL 2.0</p>
+                <p className="text-[10px] font-black uppercase tracking-widest" style={{ color: STYLE_CONFIG[style]?.color ?? '#3b82f6' }}>Technologie WebGL 2.0</p>
               </div>
             </div>
           </motion.div>

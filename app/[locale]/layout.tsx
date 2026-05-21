@@ -66,6 +66,17 @@ export default async function RootLayout({
     <html lang={locale} suppressHydrationWarning className="scroll-smooth">
       <head>
         <WebsiteJsonLd />
+        <script dangerouslySetInnerHTML={{ __html: `
+          (function() {
+            const saved = localStorage.getItem('theme') || 'dark';
+            document.documentElement.dataset.theme = saved;
+            if (saved === 'dark') {
+              document.documentElement.classList.add('dark');
+            } else {
+              document.documentElement.classList.remove('dark');
+            }
+          })()
+        `}} />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />

@@ -12,7 +12,8 @@ export default async function HomePage() {
     const results = await Promise.all([
       prisma.produit.findMany({
         take: 8,
-        where: { actif: true }
+        where: { actif: true },
+        include: { brand: true }
       }),
       prisma.produit.count(),
       prisma.client.count()
@@ -31,7 +32,7 @@ export default async function HomePage() {
     price: Number(p.prix_ttc),
     image: p.images && p.images.length > 0 ? p.images[0] : '/placeholder.png',
     category: p.categories && p.categories.length > 0 ? p.categories[0] : 'Général',
-    vendor: 'Boutique Premium',
+    vendor: p.brand?.name || 'Boutique Premium',
     stock: p.stock
   }));
 

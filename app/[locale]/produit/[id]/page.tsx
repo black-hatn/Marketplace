@@ -113,7 +113,7 @@ export default async function ProductPage({ params }: Props) {
                   <h1 className="text-4xl sm:text-5xl font-black tracking-tighter text-white leading-tight">
                     {product.nom}
                   </h1>
-                  <ThreeDButton title={product.nom} />
+                  <ThreeDButton title={product.nom} style={(product.threeDStyle as any) ?? 'cube'} />
                 </div>
 
                 <div className="flex items-center gap-4">

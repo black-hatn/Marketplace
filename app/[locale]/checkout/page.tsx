@@ -27,6 +27,7 @@ export default function CheckoutPage() {
     customerEmail: '',
     customerAddress: '',
     customerCity: "N'Djaména",
+    customerPhone: '',
   });
 
   const updateField = (field: string, value: string) =>
@@ -83,6 +84,7 @@ export default function CheckoutPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           items: items.map((i) => ({
+            id: i.id,
             title: i.title,
             image: i.image,
             price: i.price,
@@ -216,12 +218,27 @@ export default function CheckoutPage() {
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 ml-1">Ville</label>
+                        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 ml-1">Téléphone</label>
                         <input
-                          disabled
-                          value={formData.customerCity}
-                          className="w-full px-6 py-4 rounded-2xl bg-white/5 text-white opacity-50 outline-none cursor-not-allowed"
+                          required
+                          type="tel"
+                          value={formData.customerPhone}
+                          onChange={(e) => updateField('customerPhone', e.target.value)}
+                          placeholder="+235 60 XX XX XX"
+                          className="w-full px-6 py-4 rounded-2xl glass text-white placeholder-white/10 outline-none focus:border-white/20 transition-all"
                         />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 ml-1">Ville</label>
+                        <select
+                          value={formData.customerCity}
+                          onChange={(e) => updateField('customerCity', e.target.value)}
+                          className="w-full px-6 py-4 rounded-2xl glass text-white outline-none focus:border-white/20 transition-all bg-transparent"
+                        >
+                          {["N'Djaména","Moundou","Abéché","Sarh","Koumra","Pala","Bongor","Am Timan","Mongo","Doba"].map(v => (
+                            <option key={v} value={v} className="bg-slate-900 text-white">{v}</option>
+                          ))}
+                        </select>
                       </div>
                       <div className="flex items-end">
                         <button

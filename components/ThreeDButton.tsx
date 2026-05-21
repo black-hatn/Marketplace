@@ -4,7 +4,9 @@ import { useState } from 'react';
 import { Rotate3d } from 'lucide-react';
 import { ThreeDPreview } from './ThreeDPreview';
 
-export function ThreeDButton({ title }: { title: string }) {
+type ThreeDStyle = 'cube' | 'sphere' | 'torus' | 'cylinder';
+
+export function ThreeDButton({ title, style = 'cube' }: { title: string; style?: ThreeDStyle }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -17,7 +19,7 @@ export function ThreeDButton({ title }: { title: string }) {
         Visualisation 3D
       </button>
 
-      <ThreeDPreview open={open} onClose={() => setOpen(false)} title={title} />
+      <ThreeDPreview open={open} onClose={() => setOpen(false)} title={title} style={style} />
     </>
   );
 }

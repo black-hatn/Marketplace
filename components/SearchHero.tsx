@@ -1,10 +1,10 @@
 'use client';
 
 import { Link, useRouter } from '@/i18n/routing';
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Sparkles, ArrowRight, MapPin, Grid3X3 } from 'lucide-react';
-import { allProducts } from '@/lib/content';
+import { globalSearch } from '@/lib/actions';
 import Image from 'next/image';
 
 const VILLES = [
@@ -23,14 +23,31 @@ export function SearchHero() {
   const [ville, setVille]       = useState(VILLES[0]);
   const [category, setCategory] = useState(CATEGORIES[0]);
   const [isFocused, setIsFocused] = useState(false);
+  const [searchResults, setSearchResults] = useState<{ label: string; category: string; image: string; href: string }[]>([]);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const searchResults = useMemo(() => {
-    if (!query || query.length < 2) return [];
-    const q = query.toLowerCase();
-    return allProducts
-      .filter(p => p.title.toLowerCase().includes(q))
-      .slice(0, 4)
-      .map(p => ({ label: p.title, category: p.category, image: p.image, href: p.href }));
+  useEffect(() => {
+    if (!query || query.length < 2) {
+      setSearchResults([]);
+      return;
+    }
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(async () => {
+      try {
+        const results = await globalSearch(query);
+        setSearchResults(
+          results.products.map((p: any) => ({
+            label: p.title || p.nom,
+            category: p.category?.name || p.categories?.[0] || 'Général',
+            image: p.image || p.images?.[0] || '/placeholder.png',
+            href: `/produit/${p.id}`
+          }))
+        );
+      } catch {
+        setSearchResults([]);
+      }
+    }, 300);
+    return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
   }, [query]);
 
   const handleSearch = (e: React.FormEvent) => {
