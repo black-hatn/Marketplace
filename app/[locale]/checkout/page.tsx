@@ -108,7 +108,7 @@ export default function CheckoutPage() {
 
   if (items.length === 0) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 text-center">
+      <div className="min-h-screen bg-[#030303] flex flex-col items-center justify-center p-6 text-center">
         <div className="w-24 h-24 rounded-full bg-white/5 flex items-center justify-center mb-8">
           <ShoppingBagIcon className="w-10 h-10 text-white/20" />
         </div>
@@ -125,7 +125,7 @@ export default function CheckoutPage() {
 
   return (
     <PageTransition>
-      <div className="relative w-full min-h-screen bg-background overflow-hidden selection:bg-white/20 selection:text-white pb-24">
+      <div className="relative w-full min-h-screen bg-[#030303] overflow-hidden selection:bg-white/20 selection:text-white pb-24">
         {/* Background glow effects */}
         <div className="fixed top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-blue-600/10 blur-[120px] pointer-events-none" />
         <div className="fixed bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-purple-600/10 blur-[120px] pointer-events-none" />

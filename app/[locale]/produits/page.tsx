@@ -13,6 +13,9 @@ export const dynamic = 'force-dynamic';
 
 async function ProductsList() {
   const products = await prisma.produit.findMany({
+    where: { actif: true },
+    orderBy: { date_creation: 'desc' },
+    take: 100,
     include: {
       brand: true,
       category: true,

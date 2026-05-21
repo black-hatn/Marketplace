@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/db';
 import { notFound } from 'next/navigation';
 import { Link } from '@/i18n/routing';
-import { ArrowLeft, Star, ShieldCheck, Truck, MessageCircle, MapPin, ShieldAlert, BadgeCheck, Phone } from 'lucide-react';
+import { ArrowLeft, Star, ShieldCheck, Truck, MessageCircle, MapPin, ShieldAlert, BadgeCheck } from 'lucide-react';
 import { ProductGallery } from '@/components/ProductGallery';
 import { WishlistButton } from '@/components/WishlistButton';
 import { isWishlisted } from '@/lib/actions';
@@ -58,10 +58,9 @@ export default async function ProductPage({ params }: Props) {
   const lowStock = product.stock > 0 && product.stock <= 5;
   const brand = product.brand;
   
-  // Custom WhatsApp message
   const whatsappMessage = `Bonjour, je suis intéressé par l'annonce "${product.nom}" (réf: ${product.id.slice(-6)}) affichée à ${Number(product.prix_ttc).toLocaleString()} FCFA sur votre boutique. Est-il toujours disponible ?`;
-  // Using dummy phone if not available, usually brand.phone exists or fallback
-  const whatsappUrl = `https://wa.me/23560000000?text=${encodeURIComponent(whatsappMessage)}`;
+  const brandPhone = brand?.phone?.replace(/\D/g, '') || '23560909092';
+  const whatsappUrl = `https://wa.me/${brandPhone}?text=${encodeURIComponent(whatsappMessage)}`;
 
   return (
     <PageTransition>

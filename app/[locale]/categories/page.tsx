@@ -9,7 +9,7 @@ import PageTransition from '@/components/PageTransition';
 export default function CategoriesPage() {
   return (
     <PageTransition>
-      <div className="relative w-full min-h-screen bg-background overflow-hidden selection:bg-white/20 selection:text-white pb-24">
+      <div className="relative w-full min-h-screen bg-[#030303] overflow-hidden selection:bg-white/20 selection:text-white pb-24">
         {/* Background glow effects */}
         <div className="fixed top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-blue-600/10 blur-[120px] pointer-events-none" />
         <div className="fixed bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-purple-600/10 blur-[120px] pointer-events-none" />

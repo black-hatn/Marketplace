@@ -1,5 +1,6 @@
-import { Search, LogOut, ShoppingBag, Bell, Sparkles } from 'lucide-react';
+import { Search, ShoppingBag, Bell, Sparkles } from 'lucide-react';
 import { Link } from '@/i18n/routing';
+import { SignOutButton } from '@/components/SignOutButton';
 import { VendorNav } from './VendorNav';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
@@ -54,13 +55,7 @@ export default async function VendorDashboardLayout({ children }: { children: Re
 
             <div className="flex items-center gap-3 border-l border-white/5 pl-6">
               <NotificationBell brandId={brandId} />
-              <Link 
-                href="/api/auth/signout" 
-                className="flex items-center gap-2 px-4 py-2.5 rounded-2xl glass border-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition-all text-xs font-bold"
-              >
-                <LogOut className="h-4 w-4" /> 
-                <span className="hidden sm:inline">Déconnexion</span>
-              </Link>
+              <SignOutButton className="flex items-center gap-2 px-4 py-2.5 rounded-2xl glass border-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition-all text-xs font-bold" />
             </div>
           </div>
         </header>

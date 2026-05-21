@@ -6,6 +6,7 @@ import { uploadImage } from "./upload";
 import { z } from "zod";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "./auth";
+import bcrypt from 'bcryptjs';
 
 // --- SCHEMAS ---
 const productSchema = z.object({
@@ -42,17 +43,23 @@ export async function createProduct(data: any) {
 
   const brandId = session.user.role === "VENDOR" ? session.user.id : data.brandId;
 
+  const prix_ht = parseFloat(data.price || data.prix_ht);
+  const tva = parseFloat(data.tva ?? '18');
+  const prix_ttc = parseFloat(data.prix_ttc) || parseFloat((prix_ht * (1 + tva / 100)).toFixed(2));
+  const rawCategory = data.category || data.categories?.[0];
+  const categories = rawCategory ? [rawCategory] : [];
+
   const product = await prisma.produit.create({
     data: {
       sku: data.sku || `SKU-${Date.now()}`,
       nom: data.title || data.nom,
       description: data.description,
-      prix_ht: parseFloat(data.price || data.prix_ht),
-      tva: 18,
-      prix_ttc: parseFloat(data.price || data.prix_ttc),
+      prix_ht,
+      tva,
+      prix_ttc,
       stock: parseInt(data.stock),
       images: data.images ? data.images.split(',').map((u: string) => u.trim()).filter(Boolean) : (data.image ? [data.image] : []),
-      categories: [data.category || data.categories?.[0]],
+      categories,
       brandId: brandId,
       threeDStyle: data.threeDStyle || "cube",
     }
@@ -88,13 +95,17 @@ export async function updateProduct(id: string, data: any) {
     throw new Error("Accès refusé");
   }
 
+  const prix_ht = parseFloat(data.price || data.prix_ht);
+  const tva = parseFloat(data.tva ?? existingProduct.tva.toString());
+  const prix_ttc = parseFloat(data.prix_ttc) || parseFloat((prix_ht * (1 + tva / 100)).toFixed(2));
+
   const product = await prisma.produit.update({
     where: { id },
     data: {
       nom: data.title || data.nom,
       description: data.description,
-      prix_ht: parseFloat(data.price || data.prix_ht),
-      prix_ttc: parseFloat(data.price || data.prix_ttc),
+      prix_ht,
+      prix_ttc,
       stock: parseInt(data.stock),
       images: data.images ? data.images.split(',').map((u: string) => u.trim()).filter(Boolean) : (data.image ? [data.image] : undefined),
       threeDStyle: data.threeDStyle,
@@ -347,8 +358,6 @@ export async function getOrdersByEmail(email: string) {
   });
 }
 
-import bcrypt from 'bcryptjs';
-
 // --- ACTIONS AUTH ---
 
 export async function registerUser(formData: FormData) {
@@ -589,7 +598,7 @@ export async function updateProfile(id: string, role: string, formData: FormData
 }
 
 export async function getNotifications(brandId: string) {
-  return (prisma as any).notification.findMany({
+  return prisma.notification.findMany({
     where: { brandId },
     orderBy: { createdAt: 'desc' },
     take: 10
@@ -597,7 +606,7 @@ export async function getNotifications(brandId: string) {
 }
 
 export async function markAsRead(notificationId: string) {
-  await (prisma as any).notification.update({
+  await prisma.notification.update({
     where: { id: notificationId },
     data: { read: true }
   });
@@ -753,7 +762,7 @@ export async function getRecommendedProducts(productId: string) {
 // --- ADVANCED VENDOR ACTIONS ---
 
 export async function getCoupons(brandId: string) {
-  return (prisma as any).coupon.findMany({
+  return prisma.coupon.findMany({
     where: { brandId },
     orderBy: { createdAt: 'desc' }
   });
@@ -765,7 +774,7 @@ export async function createCoupon(brandId: string, formData: FormData) {
   const type = formData.get('type') as string;
   const expiresAt = new Date(formData.get('expiresAt') as string);
 
-  await (prisma as any).coupon.create({
+  await prisma.coupon.create({
     data: {
       code,
       discount,
@@ -778,25 +787,25 @@ export async function createCoupon(brandId: string, formData: FormData) {
 }
 
 export async function deleteCoupon(id: string) {
-  await (prisma as any).coupon.delete({ where: { id } });
+  await prisma.coupon.delete({ where: { id } });
   revalidatePath('/vendeur/dashboard');
 }
 
 export async function replyToReview(reviewId: string, reply: string) {
-  await (prisma as any).review.update({
+  await prisma.review.update({
     where: { id: reviewId },
-    data: { reply } as any
+    data: { reply }
   });
 }
 
 export async function getVendorWallet(brandId: string) {
-  let wallet = await (prisma as any).wallet.findUnique({
+  let wallet = await prisma.wallet.findUnique({
     where: { brandId },
     include: { requests: { orderBy: { createdAt: 'desc' } } }
   });
 
   if (!wallet) {
-    wallet = await (prisma as any).wallet.create({
+    wallet = await prisma.wallet.create({
       data: { brandId, balance: 0 },
       include: { requests: { orderBy: { createdAt: 'desc' } } }
     });
@@ -805,17 +814,17 @@ export async function getVendorWallet(brandId: string) {
 }
 
 export async function requestWithdrawal(walletId: string, amount: number, method: string) {
-  const wallet = await (prisma as any).wallet.findUnique({ where: { id: walletId } });
+  const wallet = await prisma.wallet.findUnique({ where: { id: walletId } });
   if (!wallet || Number(wallet.balance) < amount) {
     throw new Error("Solde insuffisant");
   }
 
-  await (prisma as any).$transaction([
-    (prisma as any).wallet.update({
+  await prisma.$transaction([
+    prisma.wallet.update({
       where: { id: walletId },
       data: { balance: { decrement: amount } }
     }),
-    (prisma as any).withdrawalRequest.create({
+    prisma.withdrawalRequest.create({
       data: { walletId, amount, method }
     })
   ]);
@@ -823,7 +832,7 @@ export async function requestWithdrawal(walletId: string, amount: number, method
 }
 
 export async function createNotification(brandId: string, type: string, title: string, message: string) {
-  return (prisma as any).notification.create({
+  return prisma.notification.create({
     data: { brandId, type, title, message }
   });
 }

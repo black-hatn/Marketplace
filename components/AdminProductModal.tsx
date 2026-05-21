@@ -112,7 +112,7 @@ export function AdminProductModal({
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-5">
+            <form id="product-form" onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-5">
               <div>
                 <label className={labelClass}>Nom du produit *</label>
                 <input name="title" required defaultValue={product?.nom || product?.title} placeholder="ex: Casque Audio XR-900" className={inputClass} />
@@ -184,13 +184,10 @@ export function AdminProductModal({
               <button type="button" onClick={() => setOpen(false)} className="flex-1 py-3 rounded-xl border border-slate-200 text-sm font-bold">
                 Annuler
               </button>
-              <button 
-                type="submit" 
-                onClick={(e: any) => {
-                  const form = e.target.closest('div').previousElementSibling;
-                  form.requestSubmit();
-                }}
-                disabled={isPending} 
+              <button
+                type="submit"
+                form="product-form"
+                disabled={isPending}
                 className="flex-1 py-3 rounded-xl bg-cyan-600 text-white text-sm font-bold shadow-lg shadow-cyan-500/20 disabled:opacity-50"
               >
                 {isPending ? <Loader2 className="h-4 w-4 animate-spin mx-auto" /> : (editMode ? 'Enregistrer' : 'Créer')}

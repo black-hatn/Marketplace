@@ -45,93 +45,96 @@ export default function AdminLogin() {
 
   return (
     <PageTransition>
-      <div className="relative w-full min-h-screen bg-background overflow-hidden selection:bg-white/20 selection:text-white flex items-center justify-center p-6">
-        {/* Background glow effects */}
-        <div className="fixed top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-blue-600/10 blur-[120px] pointer-events-none" />
-        <div className="fixed bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-purple-600/10 blur-[120px] pointer-events-none" />
+      {/* Force dark background explicitly — indépendant du thème utilisateur */}
+      <div className="dark" style={{ colorScheme: 'dark' }}>
+        <div className="relative w-full min-h-screen bg-[#050505] overflow-hidden selection:bg-white/20 selection:text-white flex items-center justify-center p-6">
+          {/* Background glow effects */}
+          <div className="fixed top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-blue-600/10 blur-[120px] pointer-events-none" />
+          <div className="fixed bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-purple-600/10 blur-[120px] pointer-events-none" />
 
-        <div className="relative z-10 w-full max-w-md">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-12"
-          >
-            <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center mx-auto mb-6 shadow-2xl">
-              <Sparkles className="w-8 h-8 text-black" />
-            </div>
-            <h1 className="text-4xl font-bold text-white tracking-tight mb-3">Espace Partenaire</h1>
-            <p className="text-muted-foreground font-light text-sm">
-              Gérez votre boutique et vos commandes premium.
-            </p>
-          </motion.div>
+          <div className="relative z-10 w-full max-w-md">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center mb-12"
+            >
+              <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center mx-auto mb-6 shadow-2xl">
+                <Sparkles className="w-8 h-8 text-black" />
+              </div>
+              <h1 className="text-4xl font-bold text-white tracking-tight mb-3">Espace Partenaire</h1>
+              <p className="text-white/40 font-light text-sm">
+                Gérez votre boutique et vos commandes premium.
+              </p>
+            </motion.div>
 
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.1 }}
-            className="p-8 sm:p-10 glass-card rounded-[2.5rem] border border-white/5"
-          >
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 ml-1">Utilisateur</label>
-                <div className="relative">
-                  <User className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
-                  <input
-                    type="text"
-                    required
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    placeholder="votre_pseudo"
-                    className="w-full pl-14 pr-6 py-4 rounded-2xl glass text-white placeholder-white/10 outline-none focus:border-white/20 transition-all text-sm"
-                  />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.1 }}
+              className="p-8 sm:p-10 rounded-[2.5rem] border border-white/10 bg-white/[0.04] backdrop-blur-xl"
+            >
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 ml-1">Utilisateur</label>
+                  <div className="relative">
+                    <User className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                    <input
+                      type="text"
+                      required
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      placeholder="email@exemple.com"
+                      className="w-full pl-14 pr-6 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-white/20 outline-none focus:border-white/30 focus:bg-white/8 transition-all text-sm"
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 ml-1">Mot de passe</label>
-                <div className="relative">
-                  <Key className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
-                  <input
-                    type="password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    className="w-full pl-14 pr-6 py-4 rounded-2xl glass text-white placeholder-white/10 outline-none focus:border-white/20 transition-all text-sm"
-                  />
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 ml-1">Mot de passe</label>
+                  <div className="relative">
+                    <Key className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                    <input
+                      type="password"
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="••••••••"
+                      className="w-full pl-14 pr-6 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-white/20 outline-none focus:border-white/30 focus:bg-white/8 transition-all text-sm"
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full py-5 rounded-2xl bg-white text-black font-bold tracking-wide hover:bg-white/90 transition-all shadow-xl flex items-center justify-center gap-3 disabled:opacity-50"
-              >
-                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Accéder au Dashboard'}
-                {!loading && <ArrowRight className="w-4 h-4" />}
-              </button>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-5 rounded-2xl bg-white text-black font-bold tracking-wide hover:bg-white/90 transition-all shadow-xl flex items-center justify-center gap-3 disabled:opacity-50"
+                >
+                  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Accéder au Dashboard'}
+                  {!loading && <ArrowRight className="w-4 h-4" />}
+                </button>
 
-              <div className="pt-6 text-center border-t border-white/5">
-                <p className="text-xs text-muted-foreground font-light">
-                  Nouveau partenaire ?{' '}
-                  <Link href="/register" className="text-white font-bold hover:underline">
-                    Rejoindre l&apos;écosystème
-                  </Link>
-                </p>
-              </div>
-            </form>
-          </motion.div>
+                <div className="pt-6 text-center border-t border-white/5">
+                  <p className="text-xs text-white/30 font-light">
+                    Nouveau partenaire ?{' '}
+                    <Link href="/register" className="text-white font-bold hover:underline">
+                      Rejoindre l&apos;écosystème
+                    </Link>
+                  </p>
+                </div>
+              </form>
+            </motion.div>
 
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="mt-12 text-center"
-          >
-            <Link href="/" className="text-[10px] font-black uppercase tracking-[0.3em] text-white/20 hover:text-white transition-colors">
-              Retour à la boutique
-            </Link>
-          </motion.div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              className="mt-12 text-center"
+            >
+              <Link href="/" className="text-[10px] font-black uppercase tracking-[0.3em] text-white/20 hover:text-white transition-colors">
+                Retour à la boutique
+              </Link>
+            </motion.div>
+          </div>
         </div>
       </div>
     </PageTransition>

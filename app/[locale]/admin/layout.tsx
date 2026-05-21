@@ -1,6 +1,7 @@
-import { Search, Bell, LogOut, Sparkles } from 'lucide-react';
+import { Search, Bell, Sparkles } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import { AdminNav } from './AdminNav';
+import { SignOutButton } from '@/components/SignOutButton';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 
@@ -55,14 +56,7 @@ export default async function AdminDashboardLayout({ children }: { children: Rea
               <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-red-500" />
             </button>
 
-            {/* Sign out */}
-            <Link 
-              href="/api/auth/signout" 
-              className="flex items-center gap-2 px-4 py-2 rounded-xl border border-red-500/20 text-red-400 hover:bg-red-500 hover:text-white hover:border-transparent transition-all text-xs font-bold"
-            >
-              <LogOut className="h-3.5 w-3.5" /> 
-              <span className="hidden sm:inline">Quitter</span>
-            </Link>
+            <SignOutButton className="flex items-center gap-2 px-4 py-2 rounded-xl border border-red-500/20 text-red-400 hover:bg-red-500 hover:text-white hover:border-transparent transition-all text-xs font-bold" />
           </div>
         </header>
 
