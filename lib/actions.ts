@@ -544,9 +544,20 @@ export async function getVendorAnalytics(brandId: string) {
 export async function getUserProfile(id: string, role: string) {
   if (role === 'VENDOR') {
     return prisma.brand.findUnique({ where: { id } });
-  } else {
-    return prisma.client.findUnique({ where: { id } });
   }
+  if (role === 'ADMIN') {
+    // Admin is defined by env vars, not stored in DB — return a synthetic profile
+    return {
+      id: 'admin',
+      nom: process.env.ADMIN_NAME || 'Administrateur',
+      prenom: '',
+      email: process.env.ADMIN_EMAIL || '',
+      telephone: null,
+      image: null,
+      role: 'ADMIN',
+    };
+  }
+  return prisma.client.findUnique({ where: { id } });
 }
 
 export async function updateProfile(id: string, role: string, formData: FormData) {
@@ -580,6 +591,9 @@ export async function updateProfile(id: string, role: string, formData: FormData
         themeColor: themeColor || "#06B6D4"
       } as any
     });
+  } else if (role === 'ADMIN') {
+    // Admin profile is stored in env vars — nothing to update in DB
+    // (name/email changes would need to update env vars manually)
   } else {
     await prisma.client.update({
       where: { id },

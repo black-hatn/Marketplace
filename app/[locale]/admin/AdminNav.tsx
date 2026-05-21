@@ -4,6 +4,7 @@ import { LayoutDashboard, ShoppingCart, Tags, Users, BarChart3, ShieldAlert, Set
 import { Link } from '@/i18n/routing';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
+import { SignOutButton } from '@/components/SignOutButton';
 
 export function AdminNav({ userName }: { userName?: string }) {
   const pathname = usePathname();
@@ -90,13 +91,10 @@ export function AdminNav({ userName }: { userName?: string }) {
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> En Ligne
             </p>
           </div>
-          <Link
-            href="/api/auth/signout"
-            className="text-white/20 hover:text-red-400 transition-colors"
-            title="Déconnexion"
-          >
-            <ArrowRight className="w-4 h-4 rotate-180" />
-          </Link>
+          <SignOutButton
+            className="text-white/20 hover:text-red-400 transition-colors p-1"
+            showLabel={false}
+          />
         </div>
         <Link href="/produits" className="flex items-center justify-center gap-2 mt-3 text-[9px] font-black text-white/20 hover:text-white transition-colors uppercase tracking-widest py-2">
           Voir la Boutique Live <ArrowRight className="w-3 h-3" />
