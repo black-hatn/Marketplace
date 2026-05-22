@@ -102,7 +102,7 @@ export async function POST(req: NextRequest) {
       lineItems.push({
         price_data: {
           currency: 'xaf',
-          product_data: { name: 'Frais de livraison' },
+          product_data: { name: 'Frais de livraison', images: [] },
           unit_amount: shipping,
         },
         quantity: 1,
