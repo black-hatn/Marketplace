@@ -215,7 +215,7 @@ export function SearchHero() {
                     className="flex items-center gap-4 px-5 py-4 hover:bg-amber-50 transition-colors border-b border-slate-50 last:border-0"
                   >
                     <div className="relative w-11 h-11 rounded-xl overflow-hidden bg-slate-100 flex-shrink-0">
-                      <Image src={r.image} alt={r.label} fill className="object-cover" unoptimized />
+                      <Image src={r.image} alt={r.label} fill className="object-cover" />
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="font-bold text-slate-900 truncate text-sm">{r.label}</p>

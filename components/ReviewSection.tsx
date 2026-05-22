@@ -48,11 +48,10 @@ export function ReviewSection({ productId, initialReviews }: { productId: string
     const fd = new FormData(e.currentTarget);
     startTransition(async () => {
       try {
-        const r = await addReview(productId, { 
-          rating, 
-          comment: fd.get('comment') as string, 
-          authorName: fd.get('authorName') as string, 
-          authorEmail: fd.get('authorEmail') as string 
+        const r = await addReview(productId, {
+          rating,
+          comment: fd.get('comment') as string,
+          authorName: fd.get('authorName') as string,
         });
         const newReview = {
           id: r.id,

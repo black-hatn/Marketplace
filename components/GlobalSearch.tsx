@@ -158,7 +158,7 @@ export function GlobalSearch() {
                             className="flex items-center gap-4 p-3 rounded-2xl hover:bg-white/5 transition-all group"
                           >
                             <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-surface-light border border-white/5 flex-shrink-0">
-                              <Image src={p.image} alt={p.title} fill unoptimized={true} className="object-cover" />
+                              <Image src={p.image} alt={p.title} fill className="object-cover" />
                             </div>
                             <div className="flex-1 min-w-0">
                               <h4 className="text-sm font-bold text-white group-hover:text-blue-400 transition-colors truncate">{p.title}</h4>
@@ -189,7 +189,7 @@ export function GlobalSearch() {
                             className="flex items-center gap-3 p-3 rounded-2xl hover:bg-white/5 transition-all group"
                           >
                             <div className="relative w-10 h-10 rounded-full overflow-hidden border border-white/10 flex-shrink-0">
-                              <Image src={b.image} alt={b.name} fill unoptimized={true} className="object-cover" />
+                              <Image src={b.image} alt={b.name} fill className="object-cover" />
                             </div>
                             <div className="min-w-0">
                               <h4 className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors truncate">{b.name}</h4>

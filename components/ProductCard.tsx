@@ -3,13 +3,15 @@
 import Image from 'next/image';
 import { Link } from '@/i18n/routing';
 import { motion } from 'framer-motion';
-import { ShoppingBag, Star, MapPin, Scale, Zap, ShoppingCart, ArrowRight } from 'lucide-react';
+import { Star, MapPin, Scale, ShoppingCart } from 'lucide-react';
 import { useCartStore } from '@/lib/store';
+import { useCompareStore } from '@/lib/compareStore';
 import toast from 'react-hot-toast';
 import { WishlistButton } from './WishlistButton';
 
 export function ProductCard({ product, className = "", onQuickView }: { product: any; className?: string; onQuickView?: (product: any) => void }) {
   const addItem = useCartStore((state) => state.addItem);
+  const { add: addCompare, remove: removeCompare, has: inCompare } = useCompareStore();
 
   const title = product.nom || product.title || 'Produit sans nom';
   const price = Number(product.prix_ttc || product.price || 0);
@@ -46,7 +48,6 @@ export function ProductCard({ product, className = "", onQuickView }: { product:
           src={(image.startsWith('http') || image.startsWith('/')) ? image : '/placeholder.png'}
           alt={title}
           fill
-          unoptimized={true}
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
           className="object-cover transition-transform duration-700 group-hover:scale-105"
         />
@@ -62,9 +63,21 @@ export function ProductCard({ product, className = "", onQuickView }: { product:
             </button>
           )}
           <button
+            onClick={(e) => {
+              e.preventDefault(); e.stopPropagation();
+              const comparing = inCompare(product.id);
+              if (comparing) { removeCompare(product.id); toast('Retiré du comparateur'); }
+              else { addCompare({ id: product.id, title, price, image, category, vendor, rating, reviews, stock: product.stock }); toast('Ajouté au comparateur'); }
+            }}
+            aria-label={inCompare(product.id) ? `Retirer ${title} du comparateur` : `Comparer ${title}`}
+            className={`rounded-full p-2.5 transition shadow-xl ${inCompare(product.id) ? 'bg-blue-500 text-white' : 'bg-white/20 backdrop-blur-md text-white hover:bg-blue-500'}`}
+          >
+            <Scale className="h-4 w-4" />
+          </button>
+          <button
             onClick={handleAddToCart}
+            aria-label={`Ajouter ${title} au panier`}
             className="rounded-full bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600 hover:from-amber-300 hover:to-amber-700 p-2.5 text-slate-950 transition shadow-xl"
-            title="Ajouter au panier"
           >
             <ShoppingCart className="h-4 w-4" />
           </button>
@@ -120,6 +133,7 @@ export function ProductCard({ product, className = "", onQuickView }: { product:
           </span>
           <button
             onClick={handleAddToCart}
+            aria-label={`Ajouter ${title} au panier`}
             className="relative z-20 w-9 h-9 flex items-center justify-center rounded-xl bg-white/10 text-white hover:bg-gradient-to-r hover:from-amber-200 hover:via-amber-400 hover:to-amber-600 hover:text-slate-950 transition-all hover:shadow-lg hover:shadow-amber-500/10 group-hover:scale-105"
           >
             <PlusIcon />

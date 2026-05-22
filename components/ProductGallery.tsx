@@ -34,7 +34,7 @@ export function ProductGallery({ images, title }: { images: string[]; title: str
               src={allImages[current]} 
               alt={`${title} ${current + 1}`} 
               fill 
-              unoptimized={true}
+             
               className="object-cover transition-transform duration-700 group-hover:scale-105" 
             />
           </motion.div>
@@ -76,7 +76,7 @@ export function ProductGallery({ images, title }: { images: string[]; title: str
                 i === current ? 'border-blue-500 scale-95' : 'border-transparent opacity-60 hover:opacity-100'
               }`}
             >
-              <Image src={img} alt={`${title} ${i + 1}`} fill unoptimized={true} className="object-cover" />
+              <Image src={img} alt={`${title} ${i + 1}`} fill className="object-cover" />
             </button>
           ))}
         </div>
@@ -98,7 +98,7 @@ export function ProductGallery({ images, title }: { images: string[]; title: str
             
             <div className="relative w-full h-[80vh] flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
               <div className="relative w-full h-full max-w-[90vw]">
-                <Image src={allImages[current]} alt={title} fill unoptimized={true} className="object-contain" />
+                <Image src={allImages[current]} alt={title} fill className="object-contain" />
               </div>
               
               {allImages.length > 1 && (

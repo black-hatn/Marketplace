@@ -11,6 +11,7 @@ import { SmartRecommendations } from '@/components/SmartRecommendations';
 import { ReviewSection } from '@/components/ReviewSection';
 import { ThreeDButton } from '@/components/ThreeDButton';
 import PageTransition from '@/components/PageTransition';
+import { ProductJsonLd } from '@/components/JsonLd'; // E
 
 type Props = { params: { id: string, locale: string } };
 
@@ -64,6 +65,8 @@ export default async function ProductPage({ params }: Props) {
 
   return (
     <PageTransition>
+      {/* E — Données structurées produit pour Google Shopping */}
+      <ProductJsonLd product={product} />
       <div className="relative w-full min-h-screen bg-[#030303] text-white overflow-hidden selection:bg-cyan-500/30 pb-24">
         {/* Background glow effects */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[120%] h-[800px] bg-[radial-gradient(circle_at_center,_rgba(6,182,212,0.08),_transparent_70%)] pointer-events-none" />

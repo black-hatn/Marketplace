@@ -93,10 +93,10 @@ export function SiteHeader() {
             )}
             
             {session && (
-              <button 
+              <button
                 onClick={() => signOut({ callbackUrl: '/' })}
+                aria-label="Se déconnecter"
                 className="p-2.5 rounded-full hover:bg-red-50 transition-colors text-red-500"
-                title="Déconnexion"
               >
                 <LogOut className="h-5 w-5" />
               </button>
@@ -110,8 +110,10 @@ export function SiteHeader() {
           <CartSlideOver />
 
           {/* Mobile menu button */}
-          <button 
+          <button
             onClick={() => setMenuOpen(!menuOpen)}
+            aria-label={menuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
+            aria-expanded={menuOpen}
             className="lg:hidden p-2 sm:p-2.5 rounded-xl sm:rounded-2xl bg-primary text-white shadow-xl"
           >
             {menuOpen ? <X className="h-4 w-4 sm:h-5 sm:w-5" /> : <Menu className="h-4 w-4 sm:h-5 sm:w-5" />}

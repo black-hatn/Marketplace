@@ -1,7 +1,32 @@
 import { prisma } from '@/lib/db';
 import HomePageClient from '@/components/HomePageClient';
+import type { Metadata } from 'next';
 
 export const dynamic = 'force-dynamic';
+
+// F — Métadonnées spécifiques à la page d'accueil
+export const metadata: Metadata = {
+  title: 'Immersive — Marketplace Premium au Tchad',
+  description:
+    "Découvrez l'avenir du e-commerce au Tchad. Produits premium, marques locales et internationales, livraison rapide depuis N'Djaména.",
+  openGraph: {
+    title: 'Immersive — Marketplace Premium au Tchad',
+    description:
+      "Produits premium, marques locales et internationales. Livraison rapide depuis N'Djaména pour toute l'Afrique.",
+    images: [
+      {
+        url: '/og-home.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Immersive Marketplace — Tchad',
+      },
+    ],
+  },
+  alternates: {
+    canonical: '/',
+    languages: { fr: '/', en: '/en', ar: '/ar' },
+  },
+};
 
 export default async function HomePage() {
   let produits: any[] = [];

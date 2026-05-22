@@ -2,11 +2,12 @@ import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { SiteHeader } from '@/components/SiteHeader';
-import { WebsiteJsonLd } from '@/components/JsonLd';
+import { WebsiteJsonLd, OrganizationJsonLd } from '@/components/JsonLd';
 import { Toaster } from 'react-hot-toast';
 import { Providers } from '@/components/Providers';
 import { Footer } from '@/components/Footer';
 import { FloatingSupport } from '@/components/FloatingSupport';
+import { CompareBar } from '@/components/CompareBar';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
@@ -63,9 +64,11 @@ export default async function RootLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} suppressHydrationWarning className="scroll-smooth dark">
+    // J — dir="rtl" pour l'arabe, ltr pour fr et en
+    <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'} suppressHydrationWarning className="scroll-smooth dark">
       <head>
         <WebsiteJsonLd />
+        <OrganizationJsonLd />
         <script dangerouslySetInnerHTML={{ __html: `
           (function() {
             const saved = localStorage.getItem('theme') || 'dark';
@@ -96,6 +99,7 @@ export default async function RootLayout({
             />
             <SiteHeader />
             {children}
+            <CompareBar />
             <FloatingSupport />
             <Footer />
           </Providers>
