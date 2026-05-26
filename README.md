@@ -50,14 +50,24 @@ Avant de lancer le projet, assurez-vous d'avoir :
 
 ---
 
-## 🏗️ Structure du Projet
+## 🏗️ Structure du Projet & Base de Données
 
+Le projet se divise entre le code applicatif et les scripts de base de données avancés (PostgreSQL) exigés par le cours :
+
+### 1. Code E-Commerce (Next.js)
 - `/app` : Pages et configuration de routage Next.js (App Router).
 - `/components` : Composants réutilisables (UI, 3D, formulaires, etc.).
 - `/lib` : Fonctions utilitaires, store Zustand.
-- `/public` : Ressources statiques (images, polices).
 - `/prisma` : Schémas et migrations de la base de données.
-- `tailwind.config.ts` : Configuration des styles, couleurs (Tailwind CSS).
+
+### 2. Scripts de Base de Données Avancées (`/database_sql`)
+Le dossier `database_sql` contient tout le code SQL natif démontrant des compétences avancées en PostgreSQL :
+- **Tables, Enums & UUIDs** (`01_creation_tables.sql`)
+- **Procédures Stockées Transactionnelles** (`02_procedures_stockees.sql`) : Gère la validation des commandes et la mise à jour des stocks.
+- **Vues Matérialisées & Analytiques** (`03_vues_analytiques.sql`) : Historique des achats, analyse des ventes et recommandations de produits.
+- **Recherche Full-Text GIN** (`04_recherche_full_text.sql`) : Indexation vectorielle pour des recherches rapides.
+- **Triggers et Audit** (`05_triggers_audit.sql`) : Historisation automatique des changements de prix.
+- **Partitionnement de Tables** (`06_partitionnement_commandes.sql`) : Stratégie de partitionnement par plage de dates.
 
 ---
 
