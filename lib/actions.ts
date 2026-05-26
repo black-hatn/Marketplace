@@ -762,13 +762,14 @@ export async function getVendorAnalytics(brandId: string) {
 export async function getUserProfile(id: string, role: string) {
   if (role === 'VENDOR') return prisma.brand.findUnique({ where: { id } });
   if (role === 'ADMIN') {
+    const dbAdmin = await prisma.client.findFirst({ where: { role: 'ADMIN' } });
     return {
-      id: 'admin',
-      nom: process.env.ADMIN_NAME || 'Administrateur',
-      prenom: '',
-      email: process.env.ADMIN_EMAIL || '',
-      telephone: null,
-      image: null,
+      id: dbAdmin?.id || 'admin',
+      nom: dbAdmin?.nom || process.env.ADMIN_NAME || 'Administrateur',
+      prenom: dbAdmin?.prenom || '',
+      email: dbAdmin?.email || process.env.ADMIN_EMAIL || '',
+      telephone: dbAdmin?.telephone || null,
+      image: dbAdmin?.image || null,
       role: 'ADMIN',
     };
   }
@@ -794,7 +795,27 @@ export async function updateProfile(id: string, role: string, formData: FormData
       where: { id },
       data: { name, email, phone, image: imageUrl, banner: bannerUrl, themeColor: themeColor || "#06B6D4" } as any,
     });
-  } else if (role !== 'ADMIN') {
+  } else if (role === 'ADMIN') {
+    const dbAdmin = await prisma.client.findFirst({ where: { role: 'ADMIN' } });
+    if (dbAdmin) {
+      await prisma.client.update({
+        where: { id: dbAdmin.id },
+        data: { nom: name, prenom: prenom || "", email, telephone: phone, image: imageUrl } as any,
+      });
+    } else {
+      await prisma.client.create({
+        data: {
+          nom: name,
+          prenom: prenom || "",
+          email: email || process.env.ADMIN_EMAIL || 'admin@immersive.com',
+          mot_de_passe_hash: '', // Unused for admin since auth reads from env
+          telephone: phone,
+          image: imageUrl,
+          role: 'ADMIN',
+        },
+      });
+    }
+  } else {
     await prisma.client.update({
       where: { id },
       data: { nom: name, prenom: prenom || "", email, telephone: phone, image: imageUrl } as any,
@@ -806,12 +827,19 @@ export async function updateProfile(id: string, role: string, formData: FormData
 }
 
 export async function getNotifications(brandId: string) {
+  if (brandId === 'admin') {
+    return prisma.notification.findMany({
+      orderBy: { createdAt: 'desc' },
+      take: 10,
+    });
+  }
   return prisma.notification.findMany({
     where: { brandId },
     orderBy: { createdAt: 'desc' },
     take: 10,
   });
 }
+
 
 export async function markAsRead(notificationId: string) {
   await prisma.notification.update({

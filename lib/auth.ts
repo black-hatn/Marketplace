@@ -33,9 +33,17 @@ export const authOptions: NextAuthOptions = {
             ? await bcrypt.compare(credentials.password, adminPassword)
             : credentials.password === adminPassword;
           if (isAdminValid) {
-            return { id: "admin", name: "Nouradine Admin", email: adminEmail, role: "ADMIN" };
+            const dbAdmin = await prisma.client.findFirst({ where: { role: 'ADMIN' } });
+            return { 
+              id: dbAdmin?.id || "admin", 
+              name: dbAdmin ? `${dbAdmin.nom} ${dbAdmin.prenom}`.trim() : "Nouradine Admin", 
+              email: adminEmail, 
+              role: "ADMIN",
+              image: dbAdmin?.image || null
+            };
           }
         }
+
 
         // Check Vendors in DB
         const vendor = await prisma.brand.findFirst({

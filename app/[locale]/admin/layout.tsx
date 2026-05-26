@@ -1,9 +1,10 @@
-import { Search, Bell, Sparkles } from 'lucide-react';
+import { Search, Sparkles } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import { AdminNav } from './AdminNav';
 import { SignOutButton } from '@/components/SignOutButton';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
+import { NotificationBell } from '@/components/NotificationBell';
 
 export default async function AdminDashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions) as any;
@@ -51,14 +52,12 @@ export default async function AdminDashboardLayout({ children }: { children: Rea
             <div className="h-6 w-px bg-white/5" />
 
             {/* Notifications */}
-            <button className="relative w-9 h-9 rounded-xl bg-white/5 border border-white/5 flex items-center justify-center text-white/30 hover:text-white hover:bg-white/10 transition-all">
-              <Bell className="h-4 w-4" />
-              <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-red-500" />
-            </button>
+            <NotificationBell brandId="admin" />
 
             <SignOutButton className="flex items-center gap-2 px-4 py-2 rounded-xl border border-red-500/20 text-red-400 hover:bg-red-500 hover:text-white hover:border-transparent transition-all text-xs font-bold" />
           </div>
         </header>
+
 
         {/* Content */}
         <div className="p-6 lg:p-10 flex-1 overflow-x-hidden">
