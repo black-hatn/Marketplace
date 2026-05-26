@@ -45,7 +45,11 @@ export function ProfileForm({ user, role }: ProfileFormProps) {
     }
   };
 
-  const inputClass = "w-full pl-12 pr-4 py-3 rounded-2xl bg-white/5 border border-black/10 dark:border-white/10 focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 transition-all outline-none text-slate-900 dark:text-white admin:text-white admin:bg-white/5";
+  const inputClass = `w-full pl-12 pr-4 py-3 rounded-2xl bg-white/5 border focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 transition-all outline-none ${
+    role === 'ADMIN' 
+      ? 'border-white/10 text-white bg-white/5' 
+      : 'border-black/10 dark:border-white/10 text-slate-900 dark:text-white'
+  }`;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8 max-w-2xl">
