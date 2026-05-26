@@ -1,5 +1,9 @@
 # Marketplace Immersive - L'Horizon
 
+[![Déployé sur Vercel](https://img.shields.io/badge/Vercel-Déployé-black?style=for-the-badge&logo=vercel)](https://marketplacetd.vercel.app/)
+
+🌍 **Lien du projet en direct** : [https://marketplacetd.vercel.app/](https://marketplacetd.vercel.app/)
+
 Plateforme e-commerce multi-secteurs de pointe, conçue avec **Next.js 14**, **Tailwind CSS**, **Framer Motion**, **Zustand**, et une **architecture headless**. Elle propose une expérience utilisateur ultra-moderne avec des animations fluides, un design glassmorphism, et un support 3D interactif.
 
 ---
@@ -55,21 +59,10 @@ Avant de lancer le projet, assurez-vous d'avoir :
 - `/prisma` : Schémas et migrations de la base de données.
 - `tailwind.config.ts` : Configuration des styles, couleurs (Tailwind CSS).
 
-## 🌐 Déploiement Vercel
-
-Ce projet est configuré pour être déployé très facilement sur [Vercel](https://vercel.com/), la plateforme native pour Next.js.
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FL2-info2-enastic%2Fbd-avancee-black-hatn)
-
-1. Connectez-vous à votre compte Vercel.
-2. Importez le dépôt GitHub `L2-info2-enastic/bd-avancee-black-hatn`.
-3. Configurez les variables d'environnement nécessaires.
-4. Cliquez sur **Deploy**.
-
 ---
 
 ## 👨‍💻 Auteur
 
 - **Nouradine Zakaria Mahamat** ([@black-hatn](https://github.com/black-hatn))
 - **Email** : nouradinezakariamahamat2@gmail.com
-- **Projet** : ENASTIC (Licence 2 Informatique) - Base de Données Avancées
+- **Projet** : Base de Données Avancées : Site E-commerce
