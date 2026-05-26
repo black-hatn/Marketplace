@@ -193,17 +193,19 @@ export function ReviewSection({ productId, initialReviews }: { productId: string
                     />
                   </div>
 
-                  <button 
+                  <motion.button 
                     type="submit" 
                     disabled={isPending} 
-                    className="w-full py-5 rounded-2xl bg-white text-black font-bold tracking-wide hover:bg-white/90 transition-all disabled:opacity-50 flex items-center justify-center gap-3 group"
+                    whileHover={{ scale: 1.02, y: -1 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full py-5 rounded-2xl bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600 hover:from-amber-300 hover:to-amber-700 text-slate-950 font-black uppercase tracking-widest text-xs transition-all disabled:opacity-50 flex items-center justify-center gap-3 group shadow-xl shadow-amber-500/10"
                   >
                     {isPending ? (
-                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <Loader2 className="w-5 h-5 animate-spin text-slate-950" />
                     ) : (
-                      <>Envoyer l'avis <Send className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" /></>
+                      <>Envoyer l'avis <Send className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" /></>
                     )}
-                  </button>
+                  </motion.button>
                 </form>
               </motion.div>
             )}
