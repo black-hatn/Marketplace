@@ -1,6 +1,6 @@
 import { Search, Sparkles } from 'lucide-react';
 import { Link } from '@/i18n/routing';
-import { AdminNav } from './AdminNav';
+import { AdminNav } from '../AdminNav';
 import { SignOutButton } from '@/components/SignOutButton';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
