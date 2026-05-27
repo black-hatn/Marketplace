@@ -210,7 +210,7 @@ async function main() {
     { sku: 'MAIS-TAP-003', nom: 'Tapis Berbère Authentique', prix_ht: 120000, stock: 10, brandId: homeBrand.id, catId: categories[4].id, rating: 4.8, reviews: 15, images: ['https://images.unsplash.com/photo-1534349762230-e0cadf78f5da?w=800&q=80'] },
     { sku: 'MAIS-TAB-004', nom: 'Table Basse en Bois Massif', prix_ht: 85000, stock: 8, brandId: homeBrand.id, catId: categories[4].id, rating: 4.7, reviews: 9, images: ['https://images.unsplash.com/photo-1533090481720-856c6e3c1fdc?w=800&q=80'] },
     { sku: 'MAIS-VA-005', nom: 'Vase en Céramique Artisanale', prix_ht: 18000, stock: 25, brandId: homeBrand.id, catId: categories[4].id, rating: 4.5, reviews: 6, images: ['https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=800&q=80'] },
-    { sku: 'MAIS-MIR-006', nom: 'Miroir Mural Soleil', prix_ht: 32000, stock: 15, brandId: homeBrand.id, catId: categories[4].id, rating: 4.8, reviews: 11, images: ['https://images.unsplash.com/photo-1618220179428-22790b46a0eb?w=800&q=80'] },
+    { sku: 'MAIS-MIR-006', nom: 'Miroir Mural Soleil', prix_ht: 32000, stock: 15, brandId: homeBrand.id, catId: categories[4].id, rating: 4.8, reviews: 11, images: ['https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=800&q=80'] },
     { sku: 'MAIS-DR-007', nom: 'Parure de Lit en Lin', prix_ht: 45000, stock: 20, brandId: homeBrand.id, catId: categories[4].id, rating: 4.6, reviews: 14, images: ['https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=800&q=80'] },
     { sku: 'MAIS-CHA-008', nom: 'Chaise de Salle à Manger Scandinave', prix_ht: 28000, stock: 40, brandId: homeBrand.id, catId: categories[4].id, rating: 4.4, reviews: 22, images: ['https://images.unsplash.com/photo-1503602642458-232111445657?w=800&q=80'] },
   ];
