@@ -9,9 +9,15 @@ import { Metadata } from 'next';
 import { AddToCartButton } from '@/components/AddToCartButton';
 import { SmartRecommendations } from '@/components/SmartRecommendations';
 import { ReviewSection } from '@/components/ReviewSection';
-import { ThreeDButton } from '@/components/ThreeDButton';
+import dynamicImport from 'next/dynamic';
 import PageTransition from '@/components/PageTransition';
 import { ProductJsonLd } from '@/components/JsonLd'; // E
+
+// Lazy-load du composant 3D : Three.js (~150kB gz) n'est chargé qu'au besoin
+const ThreeDButton = dynamicImport(
+  () => import('@/components/ThreeDButton').then((m) => m.ThreeDButton),
+  { ssr: false, loading: () => <div className="h-48 rounded-3xl bg-white/5 animate-pulse" /> }
+);
 
 type Props = { params: { id: string, locale: string } };
 

@@ -10,6 +10,7 @@ import bcrypt from 'bcryptjs';
 import { cookies, headers } from 'next/headers';
 import { stripe } from './stripe';
 import { checkRateLimit } from './rateLimit';
+import { v4 as uuidv4 } from 'uuid';
 import {
   sendOrderConfirmation,
   sendShippingNotification,
@@ -354,53 +355,56 @@ export async function addReview(
 
 /** #8 Vérification de stock + #9 mot de passe guest sécurisé + emails (#15) */
 export async function createOrder(data: OrderInput) {
-  // #8 — Vérification du stock avant toute création
-  for (const item of data.items) {
-    const product = await prisma.produit.findUnique({ where: { id: item.productId } });
-    if (!product) throw new Error(`Produit introuvable : ${item.productId}`);
-    if (product.stock < item.quantity) {
-      throw new Error(`Stock insuffisant pour « ${product.nom} » (disponible : ${product.stock})`);
+  // Tout est dans une seule transaction atomique pour éviter la race condition
+  // entre la vérification du stock et la création de la commande.
+  const commande = await prisma.$transaction(async (tx) => {
+    // #8 — Vérification ET réservation du stock dans la même transaction
+    for (const item of data.items) {
+      const product = await tx.produit.findUnique({ where: { id: item.productId } });
+      if (!product) throw new Error(`Produit introuvable : ${item.productId}`);
+      if (product.stock < item.quantity) {
+        throw new Error(`Stock insuffisant pour « ${product.nom} » (disponible : ${product.stock})`);
+      }
     }
-  }
 
-  let client = await prisma.client.findUnique({ where: { email: data.customerEmail } });
-  if (!client) {
-    // #9 — Mot de passe invité cryptographiquement inutilisable (pas de login possible)
-    const { v4: uuidv4 } = await import('uuid');
-    const guestHash = await bcrypt.hash(`guest:${uuidv4()}`, 10);
-    client = await prisma.client.create({
+    let client = await tx.client.findUnique({ where: { email: data.customerEmail } });
+    if (!client) {
+      // #9 — Mot de passe invité cryptographiquement inutilisable (pas de login possible)
+      const guestHash = await bcrypt.hash(`guest:${uuidv4()}`, 10);
+      client = await tx.client.create({
+        data: {
+          email: data.customerEmail,
+          nom: data.customerName.split(' ')[0] || data.customerName,
+          prenom: data.customerName.split(' ').slice(1).join(' ') || '',
+          mot_de_passe_hash: guestHash,
+          telephone: data.customerPhone || null,
+          role: 'CLIENT',
+        },
+      });
+    }
+
+    return tx.commande.create({
       data: {
-        email: data.customerEmail,
-        nom: data.customerName.split(' ')[0] || data.customerName,
-        prenom: data.customerName.split(' ').slice(1).join(' ') || '',
-        mot_de_passe_hash: guestHash,
-        telephone: data.customerPhone || null,
-        role: 'CLIENT',
+        numero_commande: `CMD-${Date.now()}`,
+        client_id: client.id,
+        adresse_livraison: `${data.customerAddress}, ${data.customerCity}`,
+        adresse_facturation: `${data.customerAddress}, ${data.customerCity}`,
+        statut: 'EN_ATTENTE',
+        montant_total: data.total,
+        lignes_commande: {
+          create: data.items.map((item) => ({
+            produit_id: item.productId,
+            quantite: item.quantity,
+            prix_unitaire_ht: item.price,
+            tva_appliquee: 18,
+          })),
+        },
       },
+      include: { lignes_commande: { include: { produit: true } } },
     });
-  }
-
-  const commande = await prisma.commande.create({
-    data: {
-      numero_commande: `CMD-${Date.now()}`,
-      client_id: client.id,
-      adresse_livraison: `${data.customerAddress}, ${data.customerCity}`,
-      adresse_facturation: `${data.customerAddress}, ${data.customerCity}`,
-      statut: 'EN_ATTENTE',
-      montant_total: data.total,
-      lignes_commande: {
-        create: data.items.map((item) => ({
-          produit_id: item.productId,
-          quantite: item.quantity,
-          prix_unitaire_ht: item.price,
-          tva_appliquee: 18,
-        })),
-      },
-    },
-    include: { lignes_commande: { include: { produit: true } } },
   });
 
-  // Notifications vendeurs
+  // Notifications vendeurs (hors transaction car non critiques)
   const vendorIds = [...new Set(data.items.map((i) => i.brandId).filter(Boolean))];
   for (const brandId of vendorIds) {
     await createNotification(
@@ -411,7 +415,7 @@ export async function createOrder(data: OrderInput) {
     );
   }
 
-  // #15 — Email de confirmation
+  // #15 — Email de confirmation (non bloquant)
   sendOrderConfirmation({
     to: data.customerEmail,
     name: data.customerName,

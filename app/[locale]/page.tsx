@@ -2,7 +2,8 @@ import { prisma } from '@/lib/db';
 import HomePageClient from '@/components/HomePageClient';
 import type { Metadata } from 'next';
 
-export const dynamic = 'force-dynamic';
+// Revalidation ISR toutes les 60s — les produits changent peu souvent
+export const revalidate = 60;
 
 // F — Métadonnées spécifiques à la page d'accueil
 export const metadata: Metadata = {
