@@ -3,7 +3,7 @@
 import { useMemo, useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FilterX, Plus, Star, SlidersHorizontal, X } from 'lucide-react';
+import { FilterX, Plus, Star, SlidersHorizontal, X, Search } from 'lucide-react';
 import { ProductCard } from '@/components/ProductCard';
 
 type ProductProps = {
@@ -118,24 +118,27 @@ export default function ProductsClient({ initialProducts }: { initialProducts: P
         {/* Header */}
         <section className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-8 border-b border-white/10">
           <div className="max-w-2xl">
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-white mb-4">La Boutique</h1>
+            <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-4 text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-white/50">
+              La Boutique
+            </h1>
             <p className="text-lg text-white/60">L'intégralité de notre catalogue premium, soigneusement sélectionné.</p>
           </div>
           <div className="flex gap-3">
-            <div className="relative flex-1 lg:w-80">
+            <div className="relative flex-1 lg:w-80 group">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40 group-focus-within:text-blue-400 transition-colors" />
               <input
                 type="search"
-                placeholder="Rechercher..."
+                placeholder="Rechercher une pièce rare..."
                 value={search}
                 onChange={(e) => { setSearch(e.target.value); setVisibleCount(ITEMS_PER_PAGE); }}
-                className="w-full pl-4 pr-4 py-4 rounded-2xl glass text-white placeholder-white/40 outline-none focus:border-white/30 transition-all"
+                className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-white/40 outline-none focus:border-blue-500/50 focus:bg-white/10 transition-all shadow-lg"
               />
             </div>
             <button
               onClick={() => setShowFilters((v) => !v)}
               aria-label="Filtres avancés"
               aria-expanded={showFilters}
-              className={`relative flex items-center gap-2 px-4 py-4 rounded-2xl glass font-medium text-sm transition-all ${showFilters ? 'bg-white text-black' : 'text-white hover:bg-white/10'}`}
+              className={`relative flex items-center gap-2 px-5 py-4 rounded-2xl font-semibold text-sm transition-all shadow-lg ${showFilters ? 'bg-white text-black border border-transparent' : 'bg-white/5 text-white border border-white/10 hover:bg-white/10'}`}
             >
               <SlidersHorizontal className="w-4 h-4" />
               <span className="hidden sm:inline">Filtres</span>
@@ -259,24 +262,31 @@ export default function ProductsClient({ initialProducts }: { initialProducts: P
           )}
         </AnimatePresence>
 
-        {/* Catégories */}
-        <section className="flex flex-wrap items-center gap-3">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => { setCategory(cat); setVisibleCount(ITEMS_PER_PAGE); }}
-              className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all ${
-                category === cat ? 'bg-white text-black' : 'glass text-white/70 hover:text-white hover:bg-white/10'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </section>
+        {/* Catégories & Résultats */}
+        <section className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center gap-2">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => { setCategory(cat); setVisibleCount(ITEMS_PER_PAGE); }}
+                className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 ${
+                  category === cat 
+                  ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-lg shadow-blue-500/25 border border-transparent scale-105' 
+                  : 'bg-white/5 text-white/70 hover:text-white hover:bg-white/10 border border-white/10'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
 
-        <div className="text-sm font-medium text-white/50">
-          {filteredProducts.length} résultat{filteredProducts.length > 1 ? 's' : ''}
-        </div>
+          <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 w-fit backdrop-blur-md">
+            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.8)]" />
+            <span className="text-sm font-bold text-white/90">
+              {filteredProducts.length} résultat{filteredProducts.length > 1 ? 's' : ''}
+            </span>
+          </div>
+        </section>
 
         {/* Grille produits */}
         <AnimatePresence mode="wait">
