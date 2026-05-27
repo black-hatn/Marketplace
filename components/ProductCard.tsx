@@ -114,7 +114,7 @@ export function ProductCard({ product, className = "", onQuickView }: { product:
           </div>
         </div>
 
-        <h3 className="text-base font-bold text-white truncate mb-1">
+        <h3 className="text-base font-bold text-white line-clamp-2 min-h-[48px] mb-1 leading-tight">
           {title}
         </h3>
         <p className="text-xs text-white/40 truncate mb-3">{vendor}</p>
