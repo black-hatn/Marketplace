@@ -1,9 +1,10 @@
 'use client';
 
 import Image from 'next/image';
+import { useState } from 'react';
 import { Link } from '@/i18n/routing';
 import { motion } from 'framer-motion';
-import { Star, MapPin, Scale, ShoppingCart } from 'lucide-react';
+import { Star, MapPin, Scale, ShoppingCart, ImageOff } from 'lucide-react';
 import { useCartStore } from '@/lib/store';
 import { useCompareStore } from '@/lib/compareStore';
 import toast from 'react-hot-toast';
@@ -12,16 +13,18 @@ import { WishlistButton } from './WishlistButton';
 export function ProductCard({ product, className = "", onQuickView }: { product: any; className?: string; onQuickView?: (product: any) => void }) {
   const addItem = useCartStore((state) => state.addItem);
   const { add: addCompare, remove: removeCompare, has: inCompare } = useCompareStore();
+  const [imgError, setImgError] = useState(false);
 
   const title = product.nom || product.title || 'Produit sans nom';
   const price = Number(product.prix_ttc || product.price || 0);
-  const image = product.images?.[0] || product.image || '/placeholder.png';
+  const image = product.images?.[0] || product.image || '';
   const category = product.categories?.[0] || product.category || 'Général';
   const vendor = product.brand?.name || product.vendor || 'Boutique Premium';
   const rating = Number(product.rating || 4.5);
   const reviews = Number(product.reviews || 0);
   const isLowStock = product.stock > 0 && product.stock <= 5;
   const href = product.href || `/produit/${product.id}`;
+  const hasValidImage = !imgError && image && (image.startsWith('http') || image.startsWith('/'));
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -43,14 +46,22 @@ export function ProductCard({ product, className = "", onQuickView }: { product:
       {/* Primary Navigation Link */}
       <Link href={href} className="absolute inset-0 z-10" aria-label={title} />
 
-      <div className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden bg-surface-light mb-4">
-        <Image
-          src={(image.startsWith('http') || image.startsWith('/')) ? image : '/placeholder.png'}
-          alt={title}
-          fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-          className="object-cover transition-transform duration-700 group-hover:scale-105"
-        />
+      <div className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden bg-white/5 mb-4">
+        {hasValidImage ? (
+          <Image
+            src={image}
+            alt={title}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            className="object-cover transition-transform duration-700 group-hover:scale-105"
+            onError={() => setImgError(true)}
+          />
+        ) : (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-white/5 to-white/[0.02]">
+            <ImageOff className="w-10 h-10 text-white/15 mb-2" />
+            <span className="text-[10px] text-white/20 font-medium text-center px-4 line-clamp-2">{title}</span>
+          </div>
+        )}
 
         {/* Action overlays */}
         <div className="absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100 flex items-center justify-center gap-3 z-20">

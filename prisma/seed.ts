@@ -172,10 +172,10 @@ async function main() {
     { sku: 'TECH-SP-007', nom: 'iPhone 13 Pro 128GB', prix_ht: 650000, stock: 10, brandId: techBrand.id, catId: categories[0].id, rating: 4.9, reviews: 20, images: ['https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&q=80'] },
     { sku: 'TECH-CM-008', nom: 'Appareil Photo Sony Alpha 7', prix_ht: 1200000, stock: 4, brandId: techBrand.id, catId: categories[0].id, rating: 5.0, reviews: 3, images: ['https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&q=80'] },
     { sku: 'TECH-CO-009', nom: 'Console PlayStation 5', prix_ht: 550000, stock: 6, brandId: techBrand.id, catId: categories[0].id, rating: 4.8, reviews: 18, images: ['https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&q=80'] },
-    { sku: 'TECH-RO-010', nom: 'Routeur Wi-Fi 6 TP-Link', prix_ht: 35000, stock: 40, brandId: techBrand.id, catId: categories[0].id, rating: 4.4, reviews: 7, images: ['https://images.unsplash.com/photo-1614064010892-3489b03cbab6?w=800&q=80'] },
+    { sku: 'TECH-RO-010', nom: 'Routeur Wi-Fi 6 TP-Link', prix_ht: 35000, stock: 40, brandId: techBrand.id, catId: categories[0].id, rating: 4.4, reviews: 7, images: ['https://images.unsplash.com/photo-1606904825846-647eb07f5be2?w=800&q=80'] },
 
     // --- MODE (10 produits) ---
-    { sku: 'MODE-BOU-001', nom: 'Boubou Grand Bazin Royal', prix_ht: 45000, stock: 15, brandId: modeBrand.id, catId: categories[1].id, rating: 4.9, reviews: 11, images: ['https://images.unsplash.com/photo-1519671282429-b8d31a4fbc7b?w=800&q=80'] },
+    { sku: 'MODE-BOU-001', nom: 'Boubou Grand Bazin Royal', prix_ht: 45000, stock: 15, brandId: modeBrand.id, catId: categories[1].id, rating: 4.9, reviews: 11, images: ['https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=800&q=80'] },
     { sku: 'MODE-SAC-002', nom: 'Sac Cuir Artisanal Premium', prix_ht: 38000, stock: 8, brandId: modeBrand.id, catId: categories[1].id, rating: 4.7, reviews: 6, images: ['https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=800&q=80'] },
     { sku: 'MODE-RBE-003', nom: 'Robe de Soirée Élégance', prix_ht: 65000, stock: 12, brandId: modeBrand.id, catId: categories[1].id, rating: 4.8, reviews: 4, images: ['https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?w=800&q=80'] },
     { sku: 'MODE-CSM-004', nom: 'Costume Homme Sur-Mesure', prix_ht: 85000, stock: 10, brandId: modeBrand.id, catId: categories[1].id, rating: 4.9, reviews: 9, images: ['https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=800&q=80'] },
