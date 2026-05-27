@@ -112,7 +112,17 @@
     "submitting": "Submitting...",
     "verified": "Verified purchase",
     "average": "Average rating",
-    "based_on": "based on {count} reviews"
+    "based_on": "based on {count} reviews",
+    "select_rating_error": "Please select a rating.",
+    "published_toast": "Review published!",
+    "error_toast": "Error while publishing review.",
+    "success_title": "Review published!",
+    "success_desc": "Your feedback is valuable to the community.",
+    "share_experience": "Share your review",
+    "your_experience_placeholder": "Tell us about your experience...",
+    "fullname_placeholder": "Your full name",
+    "email_placeholder": "your@email.com",
+    "no_reviews_desc": "Be the first to share your experience."
   },
   "Checkout": {
     "title": "Checkout",

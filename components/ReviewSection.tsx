@@ -5,6 +5,7 @@ import { Star, Send, Loader2, CheckCircle } from 'lucide-react';
 import { addReview } from '@/lib/actions';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslations, useLocale } from 'next-intl';
 
 type Review = {
   id: string;
@@ -35,6 +36,8 @@ function StarRating({ value, onChange }: { value: number; onChange: (v: number) 
 }
 
 export function ReviewSection({ productId, initialReviews }: { productId: string; initialReviews: Review[] }) {
+  const t = useTranslations('Review');
+  const locale = useLocale();
   const [reviews, setReviews] = useState<Review[]>(initialReviews);
   const [rating, setRating] = useState(0);
   const [submitted, setSubmitted] = useState(false);
@@ -44,7 +47,7 @@ export function ReviewSection({ productId, initialReviews }: { productId: string
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (rating === 0) { toast.error('Veuillez sélectionner une note.'); return; }
+    if (rating === 0) { toast.error(t('select_rating_error')); return; }
     const fd = new FormData(e.currentTarget);
     startTransition(async () => {
       try {
@@ -62,8 +65,8 @@ export function ReviewSection({ productId, initialReviews }: { productId: string
         };
         setReviews((prev) => [newReview, ...prev]);
         setSubmitted(true);
-        toast.success('Avis publié !', { icon: '⭐' });
-      } catch { toast.error('Erreur lors de la publication.'); }
+        toast.success(t('published_toast'), { icon: '⭐' });
+      } catch { toast.error(t('error_toast')); }
     });
   };
 
@@ -76,7 +79,7 @@ export function ReviewSection({ productId, initialReviews }: { productId: string
           <div className="flex items-center gap-1">
             {[1,2,3,4,5].map((s) => <Star key={s} className={`h-4 w-4 ${s <= Math.round(avgRating) ? 'fill-amber-400 text-amber-400' : 'text-white/10'}`} />)}
           </div>
-          <span className="text-xs text-muted-foreground uppercase tracking-widest font-bold">{reviews.length} avis</span>
+          <span className="text-xs text-muted-foreground uppercase tracking-widest font-bold">{t('based_on', { count: reviews.length })}</span>
         </div>
         
         <div className="space-y-3">
@@ -106,7 +109,7 @@ export function ReviewSection({ productId, initialReviews }: { productId: string
         <div className="space-y-8">
           {reviews.length === 0 ? (
             <div className="py-12 text-center glass-card rounded-3xl border-dashed border-white/10">
-              <p className="text-muted-foreground italic font-light">Soyez le premier à partager votre expérience.</p>
+              <p className="text-muted-foreground italic font-light">{t('no_reviews_desc')}</p>
             </div>
           ) : (
             <div className="space-y-6">
@@ -126,7 +129,7 @@ export function ReviewSection({ productId, initialReviews }: { productId: string
                       <div>
                         <p className="font-bold text-white">{review.authorName}</p>
                         <p className="text-[10px] text-muted-foreground uppercase tracking-widest">
-                          {new Date(review.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })}
+                          {new Date(review.createdAt).toLocaleDateString(locale, { day: '2-digit', month: 'long', year: 'numeric' })}
                         </p>
                       </div>
                     </div>
@@ -139,9 +142,7 @@ export function ReviewSection({ productId, initialReviews }: { productId: string
               ))}
             </div>
           )}
-        </div>
-
-        {/* Submit Form */}
+        </div>        {/* Submit Form */}
         <div className="sticky top-24 h-fit">
           <AnimatePresence mode="wait">
             {submitted ? (
@@ -153,8 +154,8 @@ export function ReviewSection({ productId, initialReviews }: { productId: string
                 <div className="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-6">
                   <CheckCircle className="w-8 h-8 text-emerald-400" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-2">Avis publié !</h3>
-                <p className="text-muted-foreground text-sm font-light">Votre retour est précieux pour la communauté.</p>
+                <h3 className="text-xl font-bold text-white mb-2">{t('success_title')}</h3>
+                <p className="text-muted-foreground text-sm font-light">{t('success_desc')}</p>
               </motion.div>
             ) : (
               <motion.div 
@@ -163,36 +164,36 @@ export function ReviewSection({ productId, initialReviews }: { productId: string
                 className="p-8 glass-card rounded-[2.5rem]"
               >
                 <form onSubmit={handleSubmit} className="space-y-6">
-                  <h3 className="text-xl font-bold text-white mb-8">Partagez votre avis</h3>
+                  <h3 className="text-xl font-bold text-white mb-8">{t('share_experience')}</h3>
                   
                   <div className="space-y-3">
-                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">Votre Note</span>
+                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">{t('your_rating')}</span>
                     <StarRating value={rating} onChange={setRating} />
                   </div>
-
+ 
                   <div className="space-y-4 pt-4">
                     <input 
                       name="authorName" 
                       required 
-                      placeholder="Votre nom complet" 
+                      placeholder={t('fullname_placeholder')} 
                       className="w-full px-5 py-4 rounded-2xl glass text-white placeholder-white/20 outline-none focus:border-white/20 transition-all text-sm" 
                     />
                     <input 
                       name="authorEmail" 
                       type="email"
                       required 
-                      placeholder="votre@email.com" 
+                      placeholder={t('email_placeholder')} 
                       className="w-full px-5 py-4 rounded-2xl glass text-white placeholder-white/20 outline-none focus:border-white/20 transition-all text-sm" 
                     />
                     <textarea 
                       name="comment" 
                       required 
                       rows={5} 
-                      placeholder="Racontez-nous votre expérience..." 
+                      placeholder={t('your_experience_placeholder')} 
                       className="w-full px-5 py-4 rounded-2xl glass text-white placeholder-white/20 outline-none focus:border-white/20 transition-all text-sm resize-none" 
                     />
                   </div>
-
+ 
                   <motion.button 
                     type="submit" 
                     disabled={isPending} 
@@ -203,7 +204,7 @@ export function ReviewSection({ productId, initialReviews }: { productId: string
                     {isPending ? (
                       <Loader2 className="w-5 h-5 animate-spin text-slate-950" />
                     ) : (
-                      <>Envoyer l'avis <Send className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" /></>
+                      <>{t('submit')} <Send className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" /></>
                     )}
                   </motion.button>
                 </form>

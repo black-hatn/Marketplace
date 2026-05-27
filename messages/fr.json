@@ -112,7 +112,17 @@
     "submitting": "Publication...",
     "verified": "Achat vérifié",
     "average": "Note moyenne",
-    "based_on": "basé sur {count} avis"
+    "based_on": "basé sur {count} avis",
+    "select_rating_error": "Veuillez sélectionner une note.",
+    "published_toast": "Avis publié !",
+    "error_toast": "Erreur lors de la publication.",
+    "success_title": "Avis publié !",
+    "success_desc": "Votre retour est précieux pour la communauté.",
+    "share_experience": "Partagez votre avis",
+    "your_experience_placeholder": "Racontez-nous votre expérience...",
+    "fullname_placeholder": "Votre nom complet",
+    "email_placeholder": "votre@email.com",
+    "no_reviews_desc": "Soyez le premier à partager votre expérience."
   },
   "Checkout": {
     "title": "Paiement",

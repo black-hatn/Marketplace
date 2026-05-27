@@ -7,7 +7,7 @@ import { z } from "zod";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "./auth";
 import bcrypt from 'bcryptjs';
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import { stripe } from './stripe';
 import { checkRateLimit } from './rateLimit';
 import {
@@ -296,7 +296,13 @@ export async function addReview(
   const session = await getServerSession(authOptions) as any;
 
   // Rate limiting : 3 avis max par heure par utilisateur/IP
-  const rateLimitKey = `review:${session?.user?.id || 'anon'}:${productId}`;
+  // Pour les anonymes, on utilise l'IP réelle pour éviter qu'une clé partagée
+  // "review:anon:<productId>" bloque tous les invités en même temps.
+  const headersList = await headers();
+  const ip = headersList.get('x-forwarded-for')?.split(',')[0]?.trim()
+    || headersList.get('x-real-ip')
+    || 'unknown';
+  const rateLimitKey = `review:${session?.user?.id || `anon:${ip}`}:${productId}`;
   if (!checkRateLimit(rateLimitKey, 3, 60 * 60 * 1000)) {
     throw new Error("Trop de tentatives. Réessayez dans une heure.");
   }
@@ -777,6 +783,12 @@ export async function getUserProfile(id: string, role: string) {
 }
 
 export async function updateProfile(id: string, role: string, formData: FormData) {
+  // Sécurité : seul l'utilisateur lui-même ou un admin peut modifier un profil
+  const session = await getServerSession(authOptions) as any;
+  if (!session) throw new Error("Non autorisé");
+  if (session.user.role !== 'ADMIN' && session.user.id !== id) {
+    throw new Error("Accès refusé : vous ne pouvez modifier que votre propre profil");
+  }
   const name = formData.get('name') as string;
   const email = formData.get('email') as string;
   const phone = formData.get('phone') as string;
@@ -842,6 +854,19 @@ export async function getNotifications(brandId: string) {
 
 
 export async function markAsRead(notificationId: string) {
+  const session = await getServerSession(authOptions) as any;
+  if (!session) throw new Error("Non autorisé");
+
+  // Vérifier que la notification appartient bien à l'utilisateur courant
+  const notif = await prisma.notification.findUnique({ where: { id: notificationId } });
+  if (!notif) throw new Error("Notification introuvable");
+  if (
+    session.user.role !== 'ADMIN' &&
+    notif.brandId !== session.user.id
+  ) {
+    throw new Error("Accès refusé");
+  }
+
   await prisma.notification.update({
     where: { id: notificationId },
     data: { read: true },
@@ -1034,8 +1059,21 @@ export async function getVendorWallet(brandId: string) {
 }
 
 export async function requestWithdrawal(walletId: string, amount: number, method: string) {
+  const session = await getServerSession(authOptions) as any;
+  if (!session || (session.user.role !== 'VENDOR' && session.user.role !== 'ADMIN')) {
+    throw new Error("Non autorisé");
+  }
+
   const wallet = await prisma.wallet.findUnique({ where: { id: walletId } });
-  if (!wallet || Number(wallet.balance) < amount) throw new Error("Solde insuffisant");
+  if (!wallet) throw new Error("Portefeuille introuvable");
+
+  // Vérifier que le wallet appartient bien au vendeur connecté
+  if (session.user.role === 'VENDOR' && wallet.brandId !== session.user.id) {
+    throw new Error("Accès refusé");
+  }
+
+  if (Number(wallet.balance) < amount) throw new Error("Solde insuffisant");
+  if (amount <= 0) throw new Error("Montant invalide");
 
   await prisma.$transaction([
     prisma.wallet.update({ where: { id: walletId }, data: { balance: { decrement: amount } } }),

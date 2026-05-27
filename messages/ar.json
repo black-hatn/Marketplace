@@ -112,7 +112,17 @@
     "submitting": "جاري النشر...",
     "verified": "شراء موثق",
     "average": "متوسط التقييم",
-    "based_on": "بناءً على {count} رأي"
+    "based_on": "بناءً على {count} رأي",
+    "select_rating_error": "يرجى تحديد تقييم.",
+    "published_toast": "تم نشر التقييم!",
+    "error_toast": "خطأ أثناء نشر التقييم.",
+    "success_title": "تم نشر التقييم!",
+    "success_desc": "ملاحظاتك قيمة للمجتمع.",
+    "share_experience": "شاركنا رأيك",
+    "your_experience_placeholder": "أخبرنا عن تجربتك...",
+    "fullname_placeholder": "اسمك الكامل",
+    "email_placeholder": "بريدك@الإلكتروني.كوم",
+    "no_reviews_desc": "كن أول من يشارك تجربته."
   },
   "Checkout": {
     "title": "إتمام الطلب",

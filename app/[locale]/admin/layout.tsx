@@ -5,12 +5,13 @@ import { SignOutButton } from '@/components/SignOutButton';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { NotificationBell } from '@/components/NotificationBell';
+import { redirect } from 'next/navigation';
 
 export default async function AdminDashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await getServerSession(authOptions) as any;
   
   if (!session || session.user.role !== 'ADMIN') {
-    return <>{children}</>;
+    redirect('/admin/login');
   }
 
   return (

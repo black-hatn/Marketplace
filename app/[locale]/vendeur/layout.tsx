@@ -12,7 +12,7 @@ export default async function VendorDashboardLayout({ children }: { children: Re
   const session = await getServerSession(authOptions) as any;
   
   if (!session || (session.user.role !== 'VENDOR' && session.user.role !== 'ADMIN')) {
-    return <>{children}</>;
+    redirect('/admin/login');
   }
 
   let brandId = session.user.id;
