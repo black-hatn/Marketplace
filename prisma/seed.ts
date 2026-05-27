@@ -30,13 +30,17 @@ async function main() {
   console.log('🗑️  Tables nettoyées\n');
 
   // ─── CATÉGORIES ─────────────────────────────────────────────────────────
-  const categories = await Promise.all([
-    prisma.category.create({ data: { name: 'Électronique', description: 'Smartphones, laptops, accessoires tech' } }),
-    prisma.category.create({ data: { name: 'Mode & Vêtements', description: 'Vêtements et accessoires de mode' } }),
-    prisma.category.create({ data: { name: 'Beauté & Bien-être', description: 'Soins, cosmétiques, parfums' } }),
-    prisma.category.create({ data: { name: 'Alimentation', description: 'Produits alimentaires locaux et importés' } }),
-    prisma.category.create({ data: { name: 'Maison & Déco', description: 'Mobilier, décoration, électroménager' } }),
-  ]);
+  const categoriesData = [
+    { name: 'Électronique', description: 'Smartphones, laptops, accessoires tech' },
+    { name: 'Mode & Vêtements', description: 'Vêtements et accessoires de mode' },
+    { name: 'Beauté & Bien-être', description: 'Soins, cosmétiques, parfums' },
+    { name: 'Alimentation', description: 'Produits alimentaires locaux et importés' },
+    { name: 'Maison & Déco', description: 'Mobilier, décoration, électroménager' },
+  ];
+  const categories = [];
+  for (const data of categoriesData) {
+    categories.push(await prisma.category.create({ data }));
+  }
   console.log(`✅ ${categories.length} catégories créées`);
 
   // ─── MARQUES VENDEURS ────────────────────────────────────────────────────
@@ -140,13 +144,15 @@ async function main() {
   console.log('✅ 5 marques créées');
 
   // ─── PORTEFEUILLES VENDEURS ──────────────────────────────────────────────
-  await Promise.all([
-    prisma.wallet.create({ data: { brandId: techBrand.id, balance: 485000 } }),
-    prisma.wallet.create({ data: { brandId: modeBrand.id, balance: 127500 } }),
-    prisma.wallet.create({ data: { brandId: beautyBrand.id, balance: 63000 } }),
-    prisma.wallet.create({ data: { brandId: foodBrand.id, balance: 35000 } }),
-    prisma.wallet.create({ data: { brandId: homeBrand.id, balance: 890000 } }),
-  ]);
+  for (const data of [
+    { brandId: techBrand.id, balance: 485000 },
+    { brandId: modeBrand.id, balance: 127500 },
+    { brandId: beautyBrand.id, balance: 63000 },
+    { brandId: foodBrand.id, balance: 35000 },
+    { brandId: homeBrand.id, balance: 890000 },
+  ]) {
+    await prisma.wallet.create({ data });
+  }
   console.log('✅ Portefeuilles créés');
 
   // ─── PRODUITS (40+) ────────────────────────────────────────────────────────
@@ -230,120 +236,132 @@ async function main() {
   console.log(`✅ ${produits.length} produits créés avec succès`);
 
   // ─── VARIANTES ───────────────────────────────────────────────────────────
-  await Promise.all([
-    prisma.variante.create({ data: { produit_id: produits[0].id, nom: 'Couleur', valeur: 'Noir Carbone', stock: 10, sku_suffix: '-BLK' } }),
-    prisma.variante.create({ data: { produit_id: produits[0].id, nom: 'Couleur', valeur: 'Lavande', stock: 15, sku_suffix: '-LAV' } }),
-    prisma.variante.create({ data: { produit_id: produits[10].id, nom: 'Taille', valeur: 'S', stock: 5, sku_suffix: '-S' } }),
-    prisma.variante.create({ data: { produit_id: produits[10].id, nom: 'Taille', valeur: 'M', stock: 7, sku_suffix: '-M' } }),
-    prisma.variante.create({ data: { produit_id: produits[10].id, nom: 'Taille', valeur: 'L', stock: 3, sku_suffix: '-L' } }),
-  ]);
+  for (const data of [
+    { produit_id: produits[0].id, nom: 'Couleur', valeur: 'Noir Carbone', stock: 10, sku_suffix: '-BLK' },
+    { produit_id: produits[0].id, nom: 'Couleur', valeur: 'Lavande', stock: 15, sku_suffix: '-LAV' },
+    { produit_id: produits[10].id, nom: 'Taille', valeur: 'S', stock: 5, sku_suffix: '-S' },
+    { produit_id: produits[10].id, nom: 'Taille', valeur: 'M', stock: 7, sku_suffix: '-M' },
+    { produit_id: produits[10].id, nom: 'Taille', valeur: 'L', stock: 3, sku_suffix: '-L' },
+  ]) {
+    await prisma.variante.create({ data });
+  }
   console.log('✅ Variantes créées');
 
   // ─── CLIENTS ────────────────────────────────────────────────────────────
   const clientHash = await bcrypt.hash('Client2024!', 10);
-  const clients = await Promise.all([
-    prisma.client.create({ data: {
+  const clientsData = [
+    {
       email: 'amina.hassan@email.td', mot_de_passe_hash: clientHash,
-      nom: 'Hassan', prenom: 'Amina', telephone: '+235 66 11 22 33', role: 'CLIENT',
-    }}),
-    prisma.client.create({ data: {
+      nom: 'Hassan', prenom: 'Amina', telephone: '+235 66 11 22 33', role: 'CLIENT' as const,
+    },
+    {
       email: 'ibrahim.moussa@email.td', mot_de_passe_hash: clientHash,
-      nom: 'Moussa', prenom: 'Ibrahim', telephone: '+235 66 44 55 66', role: 'CLIENT',
-    }}),
-    prisma.client.create({ data: {
+      nom: 'Moussa', prenom: 'Ibrahim', telephone: '+235 66 44 55 66', role: 'CLIENT' as const,
+    },
+    {
       email: 'fatima.ali@email.td', mot_de_passe_hash: clientHash,
-      nom: 'Ali', prenom: 'Fatima', telephone: '+235 66 77 88 99', role: 'CLIENT',
-    }}),
-    prisma.client.create({ data: {
+      nom: 'Ali', prenom: 'Fatima', telephone: '+235 66 77 88 99', role: 'CLIENT' as const,
+    },
+    {
       email: 'jean.dupont@email.td', mot_de_passe_hash: clientHash,
-      nom: 'Dupont', prenom: 'Jean', telephone: '+235 66 88 11 22', role: 'CLIENT',
-    }}),
-  ]);
+      nom: 'Dupont', prenom: 'Jean', telephone: '+235 66 88 11 22', role: 'CLIENT' as const,
+    },
+  ];
+  const clients = [];
+  for (const data of clientsData) {
+    clients.push(await prisma.client.create({ data }));
+  }
   console.log(`✅ ${clients.length} clients créés`);
 
   // ─── AVIS PRODUITS ──────────────────────────────────────────────────────
-  await Promise.all([
-    prisma.review.create({ data: {
+  for (const data of [
+    {
       produit_id: produits[0].id, clientId: clients[0].id,
       rating: 5, userName: 'Amina H.',
       comment: 'Excellent smartphone ! La caméra est incroyable, les photos sont d\'une netteté parfaite même la nuit. Livraison très rapide, emballage soigné.',
-    }}),
-    prisma.review.create({ data: {
+    },
+    {
       produit_id: produits[0].id, clientId: clients[1].id,
       rating: 5, userName: 'Ibrahim M.',
       comment: 'Très satisfait de cet achat. La batterie tient facilement 2 jours. Le 5G est vraiment rapide. Je recommande vivement !',
       reply: 'Merci Ibrahim pour ce retour positif ! N\'hésitez pas à nous contacter pour tout besoin. 🙏',
-    }}),
-    prisma.review.create({ data: {
+    },
+    {
       produit_id: produits[10].id, clientId: clients[0].id,
       rating: 5, userName: 'Amina H.',
       comment: 'La qualité du tissu est exceptionnelle, exactement comme sur les photos. Les broderies sont magnifiques. Je l\'ai porté à un mariage, j\'ai eu beaucoup de compliments !',
-    }}),
-    prisma.review.create({ data: {
+    },
+    {
       produit_id: produits[20].id, clientId: clients[2].id,
       rating: 5, userName: 'Fatima A.',
       comment: 'Crème vraiment efficace ! Ma peau est transformée en 2 semaines. L\'odeur est délicate et naturelle. Je rachète dès que possible !',
-    }}),
-    prisma.review.create({ data: {
+    },
+    {
       produit_id: produits[1].id, clientId: clients[2].id,
       rating: 4, userName: 'Fatima A.',
       comment: 'Très bon laptop, rapide et fiable. Petit bémol sur l\'autonomie de la batterie (environ 5h). Sinon parfait pour le travail.',
-    }}),
-    prisma.review.create({ data: {
+    },
+    {
       produit_id: produits[34].id, clientId: clients[3].id,
       rating: 5, userName: 'Jean D.',
       comment: 'Un canapé d\'une qualité remarquable. Le tissu est doux et la structure solide. Livré monté et en parfait état.',
-    }}),
-    prisma.review.create({ data: {
+    },
+    {
       produit_id: produits[28].id, clientId: clients[1].id,
       rating: 4, userName: 'Ibrahim M.',
       comment: 'Les épices sont très parfumées et relèvent parfaitement les plats. Petit bémol sur l\'emballage qui pourrait être plus hermétique.',
-    }}),
-  ]);
+    },
+  ]) {
+    await prisma.review.create({ data });
+  }
   console.log('✅ Avis créés');
 
   // ─── COUPONS ────────────────────────────────────────────────────────────
   const inOneYear = new Date();
   inOneYear.setFullYear(inOneYear.getFullYear() + 1);
 
-  await Promise.all([
-    prisma.coupon.create({ data: {
-      code: 'DEMO20', discount: 20, type: 'PERCENTAGE',
+  for (const data of [
+    {
+      code: 'DEMO20', discount: 20, type: 'PERCENTAGE' as const,
       expiresAt: inOneYear, maxUses: 100, brandId: techBrand.id,
-    }}),
-    prisma.coupon.create({ data: {
-      code: 'BIENVENUE', discount: 5000, type: 'FIXED',
+    },
+    {
+      code: 'BIENVENUE', discount: 5000, type: 'FIXED' as const,
       expiresAt: inOneYear, maxUses: 50, brandId: modeBrand.id,
-    }}),
-    prisma.coupon.create({ data: {
-      code: 'BEAUTY10', discount: 10, type: 'PERCENTAGE',
+    },
+    {
+      code: 'BEAUTY10', discount: 10, type: 'PERCENTAGE' as const,
       expiresAt: inOneYear, maxUses: null, brandId: beautyBrand.id,
-    }}),
-    prisma.coupon.create({ data: {
-      code: 'FOOD15', discount: 15, type: 'PERCENTAGE',
+    },
+    {
+      code: 'FOOD15', discount: 15, type: 'PERCENTAGE' as const,
       expiresAt: inOneYear, maxUses: 200, brandId: foodBrand.id,
-    }}),
-  ]);
+    },
+  ]) {
+    await prisma.coupon.create({ data });
+  }
   console.log('✅ Coupons créés (DEMO20, BIENVENUE, BEAUTY10, FOOD15)');
 
   // ─── NOTIFICATIONS ───────────────────────────────────────────────────────
-  await Promise.all([
-    prisma.notification.create({ data: {
-      brandId: techBrand.id, type: 'ORDER',
+  for (const data of [
+    {
+      brandId: techBrand.id, type: 'ORDER' as const,
       title: 'Nouvelle commande reçue !',
       message: 'Une nouvelle commande CMD-1716000001 vient d\'être passée pour vos produits.',
-    }}),
-    prisma.notification.create({ data: {
-      brandId: modeBrand.id, type: 'REVIEW',
+    },
+    {
+      brandId: modeBrand.id, type: 'REVIEW' as const,
       title: 'Nouvel avis client',
       message: 'Amina H. a laissé une note de 5/5 sur Boubou Grand Bazin Royal.',
-    }}),
-    prisma.notification.create({ data: {
-      brandId: homeBrand.id, type: 'ORDER',
+    },
+    {
+      brandId: homeBrand.id, type: 'ORDER' as const,
       title: 'Alerte Stock',
       message: 'Le produit Canapé Design 3 Places a atteint un seuil critique (5 restants).',
-    }}),
-  ]);
+    },
+  ]) {
+    await prisma.notification.create({ data });
+  }
   console.log('✅ Notifications créées');
 
   console.log('\n🎉 Seed terminé avec succès !');
